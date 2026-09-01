@@ -1,104 +1,140 @@
 <!doctype html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f7f9f7" />
-    <title>うりあげノート</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260901-2" />
-  </head>
-  <body>
-    <div class="app-shell">
-      <header class="app-header">
-        <a class="brand" href="#dashboard" aria-label="うりあげノート ホーム">
-          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
-          <span>うりあげノート</span>
-        </a>
-        <button class="header-add" type="button" data-open-form><span>＋</span> 売上を登録</button>
-      </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f9f7" />
+  <title>うりあげノート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=20260901-3" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="#dashboard" aria-label="うりあげノート ホーム">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>うりあげノート</span>
+      </a>
+      <div class="header-actions">
+        <button class="secondary-action" type="button" data-open-event>＋ 会期を作成</button>
+        <button class="header-add" type="button" data-open-sale>＋ 売上を登録</button>
+      </div>
+    </header>
 
-      <main id="dashboard">
-        <section class="hero">
-          <div>
-            <p class="eyebrow" id="today-label"></p>
-            <h1>おつかれさまです！</h1>
-            <p class="hero-copy">今日の売上を確認しましょう。</p>
-          </div>
-          <button class="primary-action" type="button" data-open-form><span>＋</span> 売上を登録する</button>
-        </section>
-
-        <section class="summary-grid" aria-label="売上サマリー">
-          <article class="summary-card accent">
-            <div class="summary-icon">¥</div><span class="summary-period">今日</span>
-            <p>今日の売上</p><strong id="today-sales">¥0</strong>
-            <small id="today-count">登録はまだありません</small>
-          </article>
-          <article class="summary-card">
-            <div class="summary-icon mint">↗</div><span class="summary-period">今月</span>
-            <p>今月の売上</p><strong id="month-sales">¥0</strong>
-            <small id="month-count">0件の催事</small>
-          </article>
-          <article class="summary-card profit">
-            <div class="summary-icon amber">●</div><span class="summary-period">今月</span>
-            <p>今月の利益</p><strong id="month-profit">¥0</strong>
-            <small id="month-margin">利益率 0.0%</small>
-          </article>
-        </section>
-
-        <section class="dashboard-grid">
-          <article class="panel chart-panel">
-            <div class="panel-heading"><div><h2>月別売上推移</h2><p>直近6ヶ月の売上</p></div><span class="legend"><i></i> 売上</span></div>
-            <div class="chart-wrap"><canvas id="sales-chart" aria-label="月別売上推移グラフ"></canvas><div id="chart-empty" class="chart-empty">売上を登録するとグラフが表示されます</div></div>
-          </article>
-          <article class="panel events-panel">
-            <div class="panel-heading"><div><h2>売上履歴</h2></div><button class="text-button" id="show-all" type="button">すべて見る</button></div>
-            <div id="event-list" class="event-list"></div>
-          </article>
-        </section>
-      </main>
-
-      <footer>データはこの端末に安全に保存されます</footer>
-    </div>
-
-    <nav class="mobile-nav" aria-label="メインメニュー">
-      <a class="active" href="#dashboard"><span>⌂</span>ホーム</a>
-      <button type="button" data-open-form><span class="nav-plus">＋</span>登録</button>
-      <button type="button" id="mobile-history"><span>▤</span>履歴</button>
-    </nav>
-
-    <dialog id="sales-dialog">
-      <form id="sales-form" method="dialog">
-        <div class="form-header"><div><p class="eyebrow">SALES ENTRY</p><h2 id="form-title">売上を登録</h2><p>催事の売上と経費を入力してください</p></div><button class="close-button" type="button" data-close aria-label="閉じる">×</button></div>
-        <div class="form-body">
-          <div class="form-grid">
-            <label>日付<input required type="date" name="date" /></label>
-            <label>店舗名<input required name="store" placeholder="例：〇〇百貨店" /></label>
-            <label class="full">催事名<input required name="event" placeholder="例：秋の北海道物産展" /></label>
-          </div>
-          <h3>売上・仕入</h3>
-          <div class="form-grid three">
-            <label>売上金額<div class="input-unit"><span>¥</span><input required min="0" inputmode="numeric" type="number" name="sales" placeholder="0" /></div></label>
-            <label>仕入金額<div class="input-unit"><span>¥</span><input required min="0" inputmode="numeric" type="number" name="purchase" placeholder="0" /></div></label>
-            <label>歩率<div class="input-unit suffix"><input required min="0" max="100" step="0.1" inputmode="decimal" type="number" name="commissionRate" value="20" /><span>%</span></div></label>
-          </div>
-          <h3>経費</h3>
-          <div class="form-grid two">
-            <label>人件費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="labor" placeholder="0" /></div></label>
-            <label>交通費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="transport" placeholder="0" /></div></label>
-            <label>宿泊費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="lodging" placeholder="0" /></div></label>
-            <label>その他経費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="other" placeholder="0" /></div></label>
-          </div>
-          <div class="calculation-box">
-            <div><span>粗利益</span><strong id="preview-gross">¥0</strong></div><div><span>歩率金額</span><strong id="preview-commission">¥0</strong></div><div><span>経費合計</span><strong id="preview-expenses">¥0</strong></div><div class="total"><span>最終利益 <small id="preview-margin">利益率 0.0%</small></span><strong id="preview-profit">¥0</strong></div>
-          </div>
+    <main id="dashboard">
+      <section class="hero">
+        <div>
+          <p class="eyebrow" id="today-label"></p>
+          <h1>おつかれさまです！</h1>
+          <p class="hero-copy">毎日の売上を入れて、会期ごとに利益を確認できます。</p>
         </div>
-        <div class="form-actions"><button type="button" class="secondary" data-close>キャンセル</button><button id="form-submit" type="submit" class="submit-button">保存する</button></div>
-      </form>
-    </dialog>
-    <div id="toast" role="status">売上を保存しました</div>
-    <script src="app.js?v=20260901-2"></script>
-  </body>
+        <div class="hero-actions">
+          <button class="secondary-action" type="button" data-open-event>＋ 会期を作成</button>
+          <button class="primary-action" type="button" data-open-sale>＋ 今日の売上</button>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-label="売上サマリー">
+        <article class="summary-card accent">
+          <div class="summary-icon">¥</div><span class="summary-period">今日</span>
+          <p>今日の売上</p><strong id="today-sales">¥0</strong>
+          <small id="today-count">登録はまだありません</small>
+        </article>
+        <article class="summary-card">
+          <div class="summary-icon mint">↗</div><span class="summary-period">今月</span>
+          <p>今月の売上</p><strong id="month-sales">¥0</strong>
+          <small id="month-count">0件の売上</small>
+        </article>
+        <article class="summary-card profit">
+          <div class="summary-icon amber">●</div><span class="summary-period">会期</span>
+          <p>進行中の会期利益</p><strong id="active-profit">¥0</strong>
+          <small id="active-count">進行中の会期なし</small>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><h2>月別売上推移</h2><p>直近6ヶ月の売上</p></div><span class="legend"><i></i> 売上</span></div>
+          <div class="chart-wrap"><canvas id="sales-chart" aria-label="月別売上推移グラフ"></canvas><div id="chart-empty" class="chart-empty">売上を登録するとグラフが表示されます</div></div>
+        </article>
+
+        <article class="panel events-panel" id="events-section">
+          <div class="panel-heading event-heading">
+            <div><h2>会期ごとの実績</h2><p>仕入・人件費・経費は会期単位でまとめて管理</p></div>
+            <button class="text-button" type="button" data-open-event>＋ 会期</button>
+          </div>
+          <div id="event-list" class="event-list"></div>
+          <button class="show-all-button" id="show-all" type="button">すべて見る</button>
+        </article>
+      </section>
+    </main>
+
+    <footer>データはこの端末に保存されます</footer>
+  </div>
+
+  <nav class="mobile-nav" aria-label="メインメニュー">
+    <a class="active" href="#dashboard"><span>⌂</span>ホーム</a>
+    <button type="button" data-open-sale><span class="nav-plus">＋</span>売上</button>
+    <button type="button" id="mobile-events"><span>▤</span>会期</button>
+  </nav>
+
+  <dialog id="sale-dialog">
+    <form id="sale-form" method="dialog">
+      <div class="form-header">
+        <div><p class="eyebrow">DAILY SALES</p><h2 id="sale-form-title">売上を登録</h2><p>毎日は「会期・日付・売上」だけでOKです。</p></div>
+        <button class="close-button" type="button" data-close-sale aria-label="閉じる">×</button>
+      </div>
+      <div class="form-body">
+        <div class="form-grid">
+          <label class="full">会期
+            <select required name="eventId" id="sale-event-select"></select>
+          </label>
+          <label>日付<input required type="date" name="date" /></label>
+          <label>売上金額<div class="input-unit"><span>¥</span><input required min="0" inputmode="numeric" type="number" name="sales" placeholder="0" /></div></label>
+        </div>
+      </div>
+      <div class="form-actions"><button type="button" class="secondary" data-close-sale>キャンセル</button><button id="sale-submit" type="submit" class="submit-button">保存する</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="event-dialog">
+    <form id="event-form" method="dialog">
+      <div class="form-header">
+        <div><p class="eyebrow">EVENT PERIOD</p><h2 id="event-form-title">会期を作成</h2><p>仕入や経費は、この会期の合計額を入力します。</p></div>
+        <button class="close-button" type="button" data-close-event aria-label="閉じる">×</button>
+      </div>
+      <div class="form-body">
+        <div class="form-grid">
+          <label>店舗名<input required name="store" placeholder="例：東武宇都宮百貨店" /></label>
+          <label>催事名<input required name="name" placeholder="例：秋の北海道物産展" /></label>
+          <label>会期開始<input required type="date" name="startDate" /></label>
+          <label>会期終了<input required type="date" name="endDate" /></label>
+        </div>
+
+        <h3>会期全体の原価・経費</h3>
+        <div class="form-grid three">
+          <label>仕入合計<div class="input-unit"><span>¥</span><input required min="0" inputmode="numeric" type="number" name="purchase" placeholder="0" /></div></label>
+          <label>歩率<div class="input-unit suffix"><input required min="0" max="100" step="0.1" inputmode="decimal" type="number" name="commissionRate" value="20" /><span>%</span></div></label>
+          <label>人件費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="labor" placeholder="0" /></div></label>
+          <label>交通費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="transport" placeholder="0" /></div></label>
+          <label>宿泊費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="lodging" placeholder="0" /></div></label>
+          <label>その他経費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="other" placeholder="0" /></div></label>
+        </div>
+
+        <div class="calculation-box event-preview">
+          <div><span>現在の売上</span><strong id="event-preview-sales">¥0</strong></div>
+          <div><span>歩率金額</span><strong id="event-preview-commission">¥0</strong></div>
+          <div><span>経費合計</span><strong id="event-preview-expenses">¥0</strong></div>
+          <div class="total"><span>会期利益 <small id="event-preview-margin">利益率 0.0%</small></span><strong id="event-preview-profit">¥0</strong></div>
+        </div>
+      </div>
+      <div class="form-actions"><button type="button" class="secondary" data-close-event>キャンセル</button><button id="event-submit" type="submit" class="submit-button">保存する</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status"></div>
+  <script src="app.js?v=20260901-3"></script>
+</body>
 </html>
