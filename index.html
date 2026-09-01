@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="events-browser.css?v=20260901-1" />
   <link rel="stylesheet" href="purchase.css?v=20260901-1" />
   <link rel="stylesheet" href="expense-editor.css?v=20260901-1" />
+  <link rel="stylesheet" href="cloud.css?v=20260901-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -118,7 +119,7 @@
       </section>
     </main>
 
-    <footer>データはこの端末に保存されます</footer>
+    <footer>データはクラウドに保存されます</footer>
   </div>
 
   <nav class="mobile-nav" aria-label="メインメニュー">
@@ -200,11 +201,6 @@
   </dialog>
 
   <div id="toast" role="status"></div>
-  <script src="app.js?v=20260901-4"></script>
-  <script src="initial-costs.js?v=20260901-1"></script>
-  <script src="inventory.js?v=20260901-5"></script>
-  <script src="events-browser.js?v=20260901-1"></script>
-  <script src="purchase.js?v=20260901-1"></script>
-  <script src="expense-editor.js?v=20260901-1"></script>
+  <script type="module" src="cloud-sync.js?v=20260901-1"></script>
 </body>
 </html>
