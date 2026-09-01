@@ -11,9 +11,14 @@
     details: { x: 50, y: 87 }
   };
 
+  const DEFAULT_SCALES = { name: 1, price: 1, note: 1, details: 1 };
+
   let draftPositions = clonePositions(DEFAULT_POSITIONS);
+  let draftScales = cloneScales(DEFAULT_SCALES);
   let adjustMode = false;
   let activeDrag = null;
+  let activeResize = null;
+  let selectedRole = null;
 
   function clonePositions(source) {
     const result = {};
@@ -32,22 +37,35 @@
     return Math.max(3, Math.min(97, Math.round(value * 10) / 10));
   }
 
+  function cloneScales(source) {
+    const result = {};
+    for (const role of Object.keys(DEFAULT_SCALES)) {
+      const value = Number(source?.[role]);
+      result[role] = Number.isFinite(value)
+        ? Math.max(0.5, Math.min(2, Math.round(value * 100) / 100))
+        : DEFAULT_SCALES[role];
+    }
+    return result;
+  }
+
   const originalCurrentCard = currentCard;
   currentCard = function() {
     const item = originalCurrentCard();
     item.positions = clonePositions(draftPositions);
+    item.fontScales = cloneScales(draftScales);
     return item;
   };
 
   const originalApplyCard = applyCard;
   applyCard = function(el, item) {
     originalApplyCard(el, item);
-    applyFreeLayout(el, item?.positions || DEFAULT_POSITIONS);
+    applyFreeLayout(el, item?.positions || DEFAULT_POSITIONS, item?.fontScales || DEFAULT_SCALES);
     if (el === preview) updateAdjustState();
   };
 
-  function applyFreeLayout(card, positions) {
+  function applyFreeLayout(card, positions, scales) {
     const pos = clonePositions(positions);
+    const fontScales = cloneScales(scales);
     const blocks = [
       ['name', card.querySelector('.pc-name')],
       ['price', card.querySelector('.pc-price-row')],
@@ -64,8 +82,34 @@
       element.style.right = 'auto';
       element.style.bottom = 'auto';
       element.style.margin = '0';
-      element.style.transform = 'translate(-50%, -50%)';
+      element.style.setProperty('--text-scale', fontScales[role]);
+      element.style.transform = 'translate(-50%, -50%) scale(var(--text-scale))';
     });
+  }
+
+  function selectBlock(element) {
+    preview.querySelectorAll('[data-drag-role]').forEach(block => {
+      block.classList.remove('text-selected');
+      block.querySelector('.text-resize-handle')?.remove();
+    });
+    if (!adjustMode || !element) {
+      selectedRole = null;
+      return;
+    }
+    selectedRole = element.dataset.dragRole;
+    element.classList.add('text-selected');
+    const handle = document.createElement('span');
+    handle.className = 'text-resize-handle';
+    handle.setAttribute('aria-label', '文字サイズを変更');
+    element.appendChild(handle);
+  }
+
+  function applyScale(role, scale) {
+    const value = Math.max(0.5, Math.min(2, Math.round(scale * 100) / 100));
+    draftScales[role] = value;
+    const element = preview.querySelector(`[data-drag-role="${role}"]`);
+    if (element) element.style.setProperty('--text-scale', value);
+  }
   }
 
   const previewWrap = preview.closest('.preview-wrap');
@@ -73,7 +117,7 @@
   controls.className = 'position-editor';
   controls.innerHTML = `
     <div class="position-editor-head">
-      <div><b>文字位置</b><small>ONにして、プレビューの文字を指で動かせます</small></div>
+      <div><b>文字位置・大きさ</b><small>ONにして文字を移動。選択後、右下の丸で拡大・縮小できます</small></div>
       <button id="position-toggle" type="button" aria-pressed="false">文字位置を動かす</button>
     </div>
     <button id="position-reset" class="position-reset" type="button">位置を初期に戻す</button>`;
@@ -86,11 +130,14 @@
     adjustMode = !adjustMode;
     toggleButton.setAttribute('aria-pressed', String(adjustMode));
     toggleButton.textContent = adjustMode ? '位置調整 ON' : '文字位置を動かす';
+    if (!adjustMode) selectBlock(null);
     updateAdjustState();
   });
 
   resetButton.addEventListener('click', () => {
     draftPositions = clonePositions(DEFAULT_POSITIONS);
+    draftScales = cloneScales(DEFAULT_SCALES);
+    selectedRole = null;
     renderPreview();
     if (typeof showToast === 'function') showToast('文字位置を初期に戻しました');
   });
@@ -100,6 +147,10 @@
     preview.querySelectorAll('[data-drag-role]').forEach(element => {
       element.classList.toggle('position-draggable', adjustMode);
     });
+    if (adjustMode && selectedRole) {
+      const selected = preview.querySelector(`[data-drag-role="${selectedRole}"]`);
+      if (selected) selectBlock(selected);
+    }
   }
 
   preview.addEventListener('pointerdown', event => {
@@ -109,22 +160,55 @@
     event.preventDefault();
     const role = target.dataset.dragRole;
     if (!draftPositions[role]) return;
-    activeDrag = { role, pointerId: event.pointerId, target };
+    selectBlock(target);
     target.setPointerCapture?.(event.pointerId);
+
+    if (event.target.closest('.text-resize-handle')) {
+      const rect = target.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      activeResize = {
+        role,
+        pointerId: event.pointerId,
+        target,
+        centerX,
+        centerY,
+        startDistance: Math.max(20, Math.hypot(event.clientX - centerX, event.clientY - centerY)),
+        startScale: draftScales[role] || 1
+      };
+      target.classList.add('resizing');
+      return;
+    }
+
+    activeDrag = { role, pointerId: event.pointerId, target };
     target.classList.add('dragging');
     moveToPointer(event, role);
   });
 
   preview.addEventListener('pointermove', event => {
+    if (activeResize && activeResize.pointerId === event.pointerId) {
+      event.preventDefault();
+      const distance = Math.max(10, Math.hypot(
+        event.clientX - activeResize.centerX,
+        event.clientY - activeResize.centerY
+      ));
+      applyScale(activeResize.role, activeResize.startScale * distance / activeResize.startDistance);
+      return;
+    }
     if (!activeDrag || activeDrag.pointerId !== event.pointerId) return;
     event.preventDefault();
     moveToPointer(event, activeDrag.role);
   });
 
   function finishDrag(event) {
-    if (!activeDrag || (event.pointerId != null && activeDrag.pointerId !== event.pointerId)) return;
-    activeDrag.target?.classList.remove('dragging');
-    activeDrag = null;
+    if (activeResize && (event.pointerId == null || activeResize.pointerId === event.pointerId)) {
+      activeResize.target?.classList.remove('resizing');
+      activeResize = null;
+    }
+    if (activeDrag && (event.pointerId == null || activeDrag.pointerId === event.pointerId)) {
+      activeDrag.target?.classList.remove('dragging');
+      activeDrag = null;
+    }
   }
   preview.addEventListener('pointerup', finishDrag);
   preview.addEventListener('pointercancel', finishDrag);
@@ -149,6 +233,8 @@
       const item = products.find(product => product.id === edit.dataset.edit);
       if (!item) return;
       draftPositions = clonePositions(item.positions || DEFAULT_POSITIONS);
+      draftScales = cloneScales(item.fontScales || DEFAULT_SCALES);
+      selectedRole = null;
       renderPreview();
     }, 0);
   });
@@ -156,6 +242,8 @@
   document.querySelector('#reset-form')?.addEventListener('click', () => {
     setTimeout(() => {
       draftPositions = clonePositions(DEFAULT_POSITIONS);
+      draftScales = cloneScales(DEFAULT_SCALES);
+      selectedRole = null;
       adjustMode = false;
       toggleButton.setAttribute('aria-pressed', 'false');
       toggleButton.textContent = '文字位置を動かす';
@@ -166,6 +254,8 @@
   form.addEventListener('submit', () => {
     setTimeout(() => {
       draftPositions = clonePositions(DEFAULT_POSITIONS);
+      draftScales = cloneScales(DEFAULT_SCALES);
+      selectedRole = null;
       adjustMode = false;
       toggleButton.setAttribute('aria-pressed', 'false');
       toggleButton.textContent = '文字位置を動かす';
@@ -191,8 +281,11 @@
     .free-layout-card .pc-details{width:88%;text-align:left}
     .position-adjusting [data-drag-role]{outline:1px dashed rgba(255,255,255,.75);outline-offset:4px;cursor:move;touch-action:none;user-select:none;-webkit-user-select:none}
     .position-adjusting [data-drag-role]::after{content:'↕';position:absolute;right:-13px;top:-12px;font-size:9px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;width:16px;height:16px;display:grid;place-items:center;font-family:sans-serif}
-    .position-adjusting [data-drag-role].dragging{outline-style:solid;opacity:.92}
-    @media print{.position-adjusting [data-drag-role]{outline:0!important}.position-adjusting [data-drag-role]::after{display:none!important}}
+    .position-adjusting [data-drag-role].dragging,.position-adjusting [data-drag-role].resizing{outline-style:solid;opacity:.92}
+    .position-adjusting [data-drag-role].text-selected{outline:2px solid #38bdf8;outline-offset:5px}
+    .text-resize-handle{position:absolute;right:-15px;bottom:-15px;width:24px;height:24px;border:3px solid #fff;border-radius:999px;background:#0ea5e9;box-shadow:0 1px 5px rgba(0,0,0,.35);cursor:nwse-resize;touch-action:none;z-index:10}
+    .text-resize-handle::after{content:'↘';display:grid;place-items:center;width:100%;height:100%;color:#fff;font:900 12px/1 sans-serif}
+    @media print{.position-adjusting [data-drag-role]{outline:0!important}.position-adjusting [data-drag-role]::after,.text-resize-handle{display:none!important}}
   `;
   document.head.appendChild(style);
 
