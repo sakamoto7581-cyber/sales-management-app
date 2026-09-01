@@ -1,0 +1,197 @@
+:root{
+  color-scheme:light;
+  --ink:#27353b;
+  --muted:#69767d;
+  --green:#4f727a;
+  --green-dark:#3e5d64;
+  --mint:#e6eef0;
+  --line:#dde3e7;
+  --cream:#f5f7fa;
+  --white:#fcfdfd;
+  --amber:#a57944;
+  --danger:#a85d5d;
+  --shadow:0 10px 28px rgba(35,51,58,.055);
+  --surface:#fcfdfd;
+  --surface-soft:#f8fafb;
+  --surface-tint:#eef3f4;
+  --accent-fill:#4f727a;
+  --accent-fill-hover:#3e5d64;
+}
+
+body{background:var(--cream);color:var(--ink)}
+.app-header{background:rgba(245,247,250,.94)}
+.mobile-nav{background:rgba(248,250,251,.97)!important}
+
+.summary-card:not(.accent),
+.panel,
+.event-card,
+dialog,
+#sale-form,
+#event-form,
+#cost-form,
+.form-actions,
+.secondary-action,
+.secondary,
+.inventory-panel,
+.back-dashboard,
+.inventory-tabs button,
+.inventory-row-actions button,
+.cost-history-row button,
+.cost-row>button,
+.header-actions .inventory-header-button,
+.period-browser-row,
+.event-browser-row,
+.event-detail-shell,
+.danger-outline,
+.event-detail-sale-actions button,
+.purchase-shell,
+.purchase-history-row button,
+.purchase-field-helper button,
+.purchase-actions,
+.expense-shell,
+.cloud-auth-card,
+.cloud-auth-secondary,
+.cloud-status,
+.cloud-logout{
+  background:var(--surface);
+}
+
+input,
+select,
+.input-unit,
+.purchase-qty,
+.cloud-auth-form input{
+  background:var(--surface-soft);
+  border-color:var(--line);
+  color:var(--ink);
+}
+
+.secondary-action,
+.secondary,
+.back-dashboard,
+.inventory-tabs button,
+.inventory-row-actions button,
+.cost-history-row button,
+.cost-row>button,
+.header-actions .inventory-header-button,
+.period-browser-row,
+.event-browser-row,
+.danger-outline,
+.event-detail-sale-actions button,
+.purchase-history-row button,
+.purchase-field-helper button,
+.cloud-auth-secondary,
+.cloud-status,
+.cloud-logout{
+  border-color:var(--line);
+}
+
+.brand-mark,
+.header-add,
+.primary-action,
+.submit-button,
+.summary-card.accent,
+.inventory-tabs button.active,
+.event-detail-summary .event-detail-primary,
+.cloud-auth-primary{
+  background:var(--accent-fill);
+  border-color:var(--accent-fill);
+  color:#fff;
+}
+
+.header-add:hover,
+.primary-action:hover,
+.submit-button:hover{
+  background:var(--accent-fill-hover);
+}
+
+.event-kpis>div,
+.event-detail-summary>div,
+.show-all-button,
+.close-button{
+  background:var(--surface-soft);
+}
+
+.event-kpis>div.big,
+.event-detail-summary .event-detail-profit,
+.calculation-box,
+.inventory-total,
+.purchase-total{
+  background:var(--surface-tint);
+}
+
+.stock-name span,
+.cost-product span,
+.add-daily-button,
+.purchase-product-name>span{
+  background:var(--mint);
+}
+
+.summary-icon.amber,
+.event-status.upcoming{
+  background:#f3eee6;
+  color:var(--amber);
+}
+
+.event-status.active{background:#e9f0f1;color:var(--green)}
+.event-status.done{background:#eef1f3;color:var(--muted)}
+.expense-editable-card:active{background:var(--surface-tint)!important}
+.cloud-auth-overlay{background:var(--cream)}
+.cloud-auth-card{border-color:var(--line);box-shadow:0 18px 50px rgba(35,51,58,.09)}
+.cloud-auth-mark{background:var(--accent-fill)}
+.cloud-auth-card>p,.cloud-auth-message{color:var(--muted)!important}
+.cloud-auth-form input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(79,114,122,.11)}
+.cloud-status.remote{color:var(--green);background:var(--surface-tint);border-color:#cedcdf}
+
+#sales-chart{filter:saturate(.68) hue-rotate(14deg)}
+
+body .sales-history-launch{
+  background:var(--surface)!important;
+  color:var(--green)!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--shadow)!important;
+}
+body #sales-history-dialog{color:var(--ink)}
+body .sales-history-shell{background:var(--surface)!important}
+body .sales-history-head,
+body .sales-history-row{border-color:var(--line)!important}
+body .sales-history-head p,
+body .sales-history-main span,
+body .sales-history-empty{color:var(--muted)!important}
+body .sales-history-add{background:var(--accent-fill)!important;color:#fff!important}
+body .sales-history-actions button{background:var(--surface)!important;border-color:var(--line)!important;color:var(--green)!important}
+body .sales-history-actions .danger{color:var(--danger)!important}
+
+/* Future dark theme. Activate later by setting data-theme="dark" on <html>. */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#e4eaed;
+  --muted:#9eabb1;
+  --green:#8fb1b7;
+  --green-dark:#a1c0c5;
+  --mint:#26383d;
+  --line:#354147;
+  --cream:#12181c;
+  --white:#182126;
+  --amber:#c6a06e;
+  --danger:#d08a8a;
+  --shadow:0 10px 28px rgba(0,0,0,.18);
+  --surface:#182126;
+  --surface-soft:#1d282e;
+  --surface-tint:#223239;
+  --accent-fill:#466a72;
+  --accent-fill-hover:#527983;
+}
+
+html[data-theme="dark"] .app-header{background:rgba(18,24,28,.94)}
+html[data-theme="dark"] .mobile-nav{background:rgba(24,33,38,.97)!important}
+html[data-theme="dark"] .summary-icon.amber,
+html[data-theme="dark"] .event-status.upcoming{background:#392f25;color:#d3af7c}
+html[data-theme="dark"] .event-status.active{background:#263b3d;color:#9cbcc1}
+html[data-theme="dark"] .event-status.done{background:#242d32;color:#a4afb4}
+html[data-theme="dark"] .accent p,
+html[data-theme="dark"] .accent small{color:#d8e5e7}
+html[data-theme="dark"] .accent .summary-period{color:#e1eaec;border-color:rgba(255,255,255,.2)}
+html[data-theme="dark"] .cloud-status.syncing{background:#342d23;border-color:#554632;color:#d1aa72}
+html[data-theme="dark"] .cloud-status.error{background:#382727;border-color:#5e3c3c;color:#dc9292}
+html[data-theme="dark"] #sales-chart{filter:saturate(.62) brightness(1.35) hue-rotate(14deg)}
