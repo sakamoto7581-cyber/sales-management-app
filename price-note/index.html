@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101c32">
+  <title>プライスノート</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">PRICE CARD MAKER</p>
+      <h1>プライスノート</h1>
+    </div>
+    <button class="ghost" id="open-print" type="button">A4印刷</button>
+  </header>
+
+  <main class="layout">
+    <section class="editor panel">
+      <div class="section-head">
+        <div><h2>プライスを作る</h2><p>入力または写真から取り込み</p></div>
+        <button class="photo-button" type="button" id="pick-photo">写真から取込</button>
+        <input id="photo-input" type="file" accept="image/*" capture="environment" hidden>
+      </div>
+
+      <div id="photo-box" class="photo-box" hidden>
+        <img id="photo-preview" alt="取り込んだプライスカード">
+        <div class="photo-info">
+          <strong id="photo-status">写真を準備しています…</strong>
+          <progress id="ocr-progress" max="100" value="0"></progress>
+          <small>文字は読み取り後に必ず確認してください。背景色も写真から推定します。</small>
+        </div>
+      </div>
+
+      <form id="card-form">
+        <input type="hidden" id="editing-id">
+        <label class="full">商品名
+          <input id="product-name" required placeholder="例：数の子松前漬け">
+        </label>
+
+        <div class="two-col">
+          <label>価格
+            <div class="money-input"><span>¥</span><input id="price" required type="number" min="0" inputmode="numeric" placeholder="1296"></div>
+          </label>
+          <label>単位
+            <select id="unit">
+              <option value="100g">100g</option>
+              <option value="1個">1個</option>
+              <option value="1パック">1パック</option>
+              <option value="1本">1本</option>
+              <option value="1袋">1袋</option>
+              <option value="">表示なし</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="two-col">
+          <label>価格表示
+            <select id="tax-label">
+              <option value="税込">税込</option>
+              <option value="税込価格">税込価格</option>
+              <option value="">表示なし</option>
+            </select>
+          </label>
+          <label>カードサイズ
+            <select id="card-size">
+              <option value="100x80">10cm × 8cm</option>
+              <option value="90x60">9cm × 6cm</option>
+              <option value="105x148">A6（10.5cm × 14.8cm）</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="full">アレルギー表示
+          <input id="allergens" placeholder="例：小麦、大豆">
+        </label>
+        <div class="chips" id="allergen-chips">
+          <button type="button" data-allergen="小麦">小麦</button>
+          <button type="button" data-allergen="大豆">大豆</button>
+          <button type="button" data-allergen="乳成分">乳成分</button>
+          <button type="button" data-allergen="卵">卵</button>
+          <button type="button" data-allergen="えび">えび</button>
+          <button type="button" data-allergen="かに">かに</button>
+          <button type="button" data-allergen="くるみ">くるみ</button>
+        </div>
+
+        <label class="full">補足文
+          <input id="note" placeholder="例：北海道加工">
+        </label>
+
+        <div class="design-grid">
+          <label>背景色<input id="bg-color" type="color" value="#101c32"></label>
+          <label>文字色<input id="text-color" type="color" value="#ffffff"></label>
+          <label class="full range-label">商品名サイズ
+            <div><input id="title-size" type="range" min="24" max="56" value="38"><span id="title-size-value">38</span></div>
+          </label>
+        </div>
+        <div class="presets" aria-label="背景色プリセット">
+          <button type="button" data-bg="#101c32" data-fg="#ffffff">紺</button>
+          <button type="button" data-bg="#ffffff" data-fg="#111827">白</button>
+          <button type="button" data-bg="#111111" data-fg="#ffffff">黒</button>
+          <button type="button" data-bg="#7f1d1d" data-fg="#ffffff">赤</button>
+          <button type="button" data-bg="#174b36" data-fg="#ffffff">緑</button>
+        </div>
+
+        <div class="preview-wrap">
+          <p>プレビュー</p>
+          <div id="live-preview" class="price-card size-100x80"></div>
+        </div>
+
+        <div class="form-actions">
+          <button class="secondary" type="button" id="reset-form">クリア</button>
+          <button class="primary" type="submit" id="save-card">商品マスターに保存</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="library panel">
+      <div class="section-head">
+        <div><h2>商品マスター</h2><p id="product-count">0商品</p></div>
+        <button class="danger-link" id="clear-all" type="button">全削除</button>
+      </div>
+      <div id="product-list" class="product-list"></div>
+    </section>
+  </main>
+
+  <dialog id="print-dialog">
+    <div class="print-dialog-shell">
+      <div class="print-dialog-head">
+        <div><h2>A4印刷</h2><p>印刷する商品を選択してください</p></div>
+        <button id="close-print" type="button" aria-label="閉じる">×</button>
+      </div>
+      <div id="print-select-list" class="print-select-list"></div>
+      <div class="print-actions">
+        <button class="secondary" type="button" id="select-all">全て選択</button>
+        <button class="primary" type="button" id="print-now">印刷 / PDF保存</button>
+      </div>
+    </div>
+  </dialog>
+
+  <section id="print-sheet" class="print-sheet" aria-hidden="true"></section>
+
+  <div id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="app.js?v=1"></script>
+</body>
+</html>
