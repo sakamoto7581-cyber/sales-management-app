@@ -19,17 +19,17 @@
   <main class="layout">
     <section class="editor panel">
       <div class="section-head">
-        <div><h2>プライスを作る</h2><p>入力または写真から取り込み</p></div>
-        <button class="photo-button" type="button" id="pick-photo">写真から取込</button>
-        <input id="photo-input" type="file" accept="image/*" capture="environment" hidden>
+        <div><h2>プライスを作る</h2><p>入力または写真・保存画像から取り込み</p></div>
+        <button class="photo-button" type="button" id="pick-photo">画像から取込</button>
+        <input id="photo-input" type="file" accept="image/*" hidden>
       </div>
 
       <div id="photo-box" class="photo-box" hidden>
         <img id="photo-preview" alt="取り込んだプライスカード">
         <div class="photo-info">
-          <strong id="photo-status">写真を準備しています…</strong>
+          <strong id="photo-status">画像を準備しています…</strong>
           <progress id="ocr-progress" max="100" value="0"></progress>
-          <small>文字は読み取り後に必ず確認してください。背景色も写真から推定します。</small>
+          <small>カメラ撮影または端末に保存した画像を選べます。文字は読み取り後に必ず確認してください。背景色も画像から推定します。</small>
         </div>
       </div>
 
