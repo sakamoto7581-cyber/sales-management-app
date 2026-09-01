@@ -8,16 +8,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260901-3" />
+  <link rel="stylesheet" href="styles.css?v=20260901-4" />
+  <link rel="stylesheet" href="inventory.css?v=20260901-4" />
 </head>
 <body>
   <div class="app-shell">
     <header class="app-header">
-      <a class="brand" href="#dashboard" aria-label="うりあげノート ホーム">
+      <a class="brand" href="#dashboard" aria-label="うりあげノート ホーム" data-close-inventory>
         <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
         <span>うりあげノート</span>
       </a>
       <div class="header-actions">
+        <button class="inventory-header-button" type="button" data-open-inventory>在庫・原価</button>
         <button class="secondary-action" type="button" data-open-event>＋ 会期を作成</button>
         <button class="header-add" type="button" data-open-sale>＋ 売上を登録</button>
       </div>
@@ -71,13 +73,56 @@
       </section>
     </main>
 
+    <main id="inventory-page" class="inventory-page" hidden>
+      <div class="inventory-topbar">
+        <div>
+          <p class="eyebrow">INVENTORY</p>
+          <h1>在庫・原価管理</h1>
+          <p>売上・利益とは別に、在庫数量と原価履歴を管理します。</p>
+        </div>
+        <button type="button" class="back-dashboard" data-close-inventory>← 売上管理へ戻る</button>
+      </div>
+
+      <div class="inventory-tabs" role="tablist">
+        <button type="button" class="active" data-inventory-tab="stock">在庫チェック</button>
+        <button type="button" data-inventory-tab="cost">原価マスター</button>
+      </div>
+
+      <section class="inventory-panel" data-inventory-panel="stock">
+        <div class="inventory-toolbar">
+          <label>棚卸日<input id="stock-date" type="date" /></label>
+          <button id="save-stock" type="button" class="submit-button"><span id="stock-save-label">在庫チェックを保存</span></button>
+        </div>
+        <div class="stock-header">
+          <div>商品名</div>
+          <div id="stock-previous-date">前回</div>
+          <div>数量</div>
+          <div>適用原価</div>
+        </div>
+        <div id="stock-list"></div>
+        <div class="inventory-total"><span>棚卸評価額</span><strong id="stock-value">¥0</strong></div>
+        <p class="inventory-note">数量 × 棚卸日時点の原価で評価します。原価未設定の商品は評価額に含みません。</p>
+
+        <div class="inventory-subsection">
+          <h3>保存履歴</h3>
+          <div id="stock-history-list"></div>
+        </div>
+      </section>
+
+      <section class="inventory-panel" data-inventory-panel="cost" hidden>
+        <p class="cost-intro">商品ごとに原価と「適用開始日」を保存します。原価が変わったら新しい履歴を追加してください。過去の原価は残ります。</p>
+        <div id="cost-list"></div>
+      </section>
+    </main>
+
     <footer>データはこの端末に保存されます</footer>
   </div>
 
   <nav class="mobile-nav" aria-label="メインメニュー">
-    <a class="active" href="#dashboard"><span>⌂</span>ホーム</a>
+    <a class="active" href="#dashboard" data-close-inventory><span>⌂</span>ホーム</a>
     <button type="button" data-open-sale><span class="nav-plus">＋</span>売上</button>
     <button type="button" id="mobile-events"><span>▤</span>会期</button>
+    <button type="button" class="mobile-inventory" data-open-inventory><span>▦</span>在庫</button>
   </nav>
 
   <dialog id="sale-dialog">
@@ -134,7 +179,25 @@
     </form>
   </dialog>
 
+  <dialog id="cost-dialog">
+    <form id="cost-form" method="dialog">
+      <div class="form-header">
+        <div><p class="eyebrow">COST HISTORY</p><h2 id="cost-dialog-product">商品原価</h2><p>原価が変わった日から、新しい原価を適用します。</p></div>
+        <button class="close-button" type="button" data-close-cost aria-label="閉じる">×</button>
+      </div>
+      <div class="form-body">
+        <div class="cost-form-grid">
+          <label>適用開始日<input required type="date" name="effectiveDate" /></label>
+          <label>原価<div class="input-unit"><span>¥</span><input required min="0" step="0.01" inputmode="decimal" type="number" name="cost" placeholder="0" /></div></label>
+        </div>
+        <div class="cost-history-box"><h3>原価履歴</h3><div id="cost-history-list"></div></div>
+      </div>
+      <div class="form-actions"><button type="button" class="secondary" data-close-cost>閉じる</button><button type="submit" class="submit-button">原価を保存</button></div>
+    </form>
+  </dialog>
+
   <div id="toast" role="status"></div>
-  <script src="app.js?v=20260901-3"></script>
+  <script src="app.js?v=20260901-4"></script>
+  <script src="inventory.js?v=20260901-4"></script>
 </body>
 </html>
