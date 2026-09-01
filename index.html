@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260901-2" />
   </head>
   <body>
     <div class="app-shell">
@@ -54,7 +54,7 @@
             <div class="chart-wrap"><canvas id="sales-chart" aria-label="月別売上推移グラフ"></canvas><div id="chart-empty" class="chart-empty">売上を登録するとグラフが表示されます</div></div>
           </article>
           <article class="panel events-panel">
-            <div class="panel-heading"><div><h2>売上履歴</h2><p>修正・削除もここからできます</p></div><button class="text-button" id="show-all" type="button">すべて見る</button></div>
+            <div class="panel-heading"><div><h2>売上履歴</h2><p>各記録の「修正」「削除」ボタンから操作できます</p></div><button class="text-button" id="show-all" type="button">すべて見る</button></div>
             <div id="event-list" class="event-list"></div>
           </article>
         </section>
@@ -99,6 +99,6 @@
       </form>
     </dialog>
     <div id="toast" role="status">売上を保存しました</div>
-    <script src="app.js"></script>
+    <script src="app.js?v=20260901-2"></script>
   </body>
 </html>
