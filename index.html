@@ -54,7 +54,7 @@
             <div class="chart-wrap"><canvas id="sales-chart" aria-label="月別売上推移グラフ"></canvas><div id="chart-empty" class="chart-empty">売上を登録するとグラフが表示されます</div></div>
           </article>
           <article class="panel events-panel">
-            <div class="panel-heading"><div><h2>催事ごとの実績</h2><p>売上と最終利益</p></div><button class="text-button" id="show-all" type="button">すべて見る</button></div>
+            <div class="panel-heading"><div><h2>売上履歴</h2><p>修正・削除もここからできます</p></div><button class="text-button" id="show-all" type="button">すべて見る</button></div>
             <div id="event-list" class="event-list"></div>
           </article>
         </section>
@@ -71,7 +71,7 @@
 
     <dialog id="sales-dialog">
       <form id="sales-form" method="dialog">
-        <div class="form-header"><div><p class="eyebrow">SALES ENTRY</p><h2>売上を登録</h2><p>催事の売上と経費を入力してください</p></div><button class="close-button" type="button" data-close aria-label="閉じる">×</button></div>
+        <div class="form-header"><div><p class="eyebrow">SALES ENTRY</p><h2 id="form-title">売上を登録</h2><p>催事の売上と経費を入力してください</p></div><button class="close-button" type="button" data-close aria-label="閉じる">×</button></div>
         <div class="form-body">
           <div class="form-grid">
             <label>日付<input required type="date" name="date" /></label>
@@ -95,7 +95,7 @@
             <div><span>粗利益</span><strong id="preview-gross">¥0</strong></div><div><span>歩率金額</span><strong id="preview-commission">¥0</strong></div><div><span>経費合計</span><strong id="preview-expenses">¥0</strong></div><div class="total"><span>最終利益 <small id="preview-margin">利益率 0.0%</small></span><strong id="preview-profit">¥0</strong></div>
           </div>
         </div>
-        <div class="form-actions"><button type="button" class="secondary" data-close>キャンセル</button><button type="submit" class="submit-button">保存する</button></div>
+        <div class="form-actions"><button type="button" class="secondary" data-close>キャンセル</button><button id="form-submit" type="submit" class="submit-button">保存する</button></div>
       </form>
     </dialog>
     <div id="toast" role="status">売上を保存しました</div>
