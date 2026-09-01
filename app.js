@@ -4,23 +4,35 @@ const dateText = new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: 'lon
 const today = new Date();
 const todayKey = localDateKey(today);
 let records = loadRecords();
+let editingId = null;
+let showAllRecords = false;
 
 const dialog = document.querySelector('#sales-dialog');
 const form = document.querySelector('#sales-form');
-document.querySelector('#today-label').textContent = dateText.format(today).replace('曜日', '');
-form.elements.date.value = todayKey;
+const formTitle = document.querySelector('#form-title');
+const formSubmit = document.querySelector('#form-submit');
+const eventList = document.querySelector('#event-list');
+const showAllButton = document.querySelector('#show-all');
 
-document.querySelectorAll('[data-open-form]').forEach(button => button.addEventListener('click', () => {
-  form.elements.date.value ||= todayKey;
-  updatePreview();
-  dialog.showModal();
-}));
-document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => dialog.close()));
-dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+document.querySelector('#today-label').textContent = dateText.format(today).replace('曜日', '');
+resetFormState();
+
+document.querySelectorAll('[data-open-form]').forEach(button => button.addEventListener('click', openCreateDialog));
+document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', closeDialog));
+dialog.addEventListener('click', event => { if (event.target === dialog) closeDialog(); });
 form.addEventListener('input', updatePreview);
 form.addEventListener('submit', saveRecord);
-document.querySelector('#show-all').addEventListener('click', () => document.querySelector('#event-list').scrollIntoView({ behavior: 'smooth' }));
+showAllButton.addEventListener('click', () => {
+  showAllRecords = !showAllRecords;
+  renderEvents();
+});
 document.querySelector('#mobile-history').addEventListener('click', () => document.querySelector('.events-panel').scrollIntoView({ behavior: 'smooth' }));
+eventList.addEventListener('click', event => {
+  const editButton = event.target.closest('[data-edit-id]');
+  if (editButton) return openEditDialog(editButton.dataset.editId);
+  const deleteButton = event.target.closest('[data-delete-id]');
+  if (deleteButton) deleteRecord(deleteButton.dataset.deleteId);
+});
 window.addEventListener('resize', renderChart);
 
 function localDateKey(date) {
@@ -30,6 +42,9 @@ function localDateKey(date) {
 function loadRecords() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
   catch { return []; }
+}
+function persistRecords() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
 }
 function numberValue(name) { return Math.max(0, Number(form.elements[name].value) || 0); }
 function calculate(data) {
@@ -51,15 +66,80 @@ function updatePreview() {
   document.querySelector('#preview-profit').textContent = yen.format(result.finalProfit);
   document.querySelector('#preview-margin').textContent = `利益率 ${result.margin.toFixed(1)}%`;
 }
+function resetFormState() {
+  editingId = null;
+  form.reset();
+  form.elements.date.value = todayKey;
+  form.elements.commissionRate.value = 20;
+  formTitle.textContent = '売上を登録';
+  formSubmit.textContent = '保存する';
+  updatePreview();
+}
+function openCreateDialog() {
+  resetFormState();
+  dialog.showModal();
+}
+function closeDialog() {
+  dialog.close();
+  resetFormState();
+}
+function openEditDialog(id) {
+  const record = records.find(item => item.id === id);
+  if (!record) return;
+  editingId = id;
+  form.elements.date.value = record.date;
+  form.elements.store.value = record.store;
+  form.elements.event.value = record.event;
+  ['sales','purchase','commissionRate','labor','transport','lodging','other'].forEach(name => {
+    form.elements[name].value = record[name] ?? 0;
+  });
+  formTitle.textContent = '売上を修正';
+  formSubmit.textContent = '更新する';
+  updatePreview();
+  dialog.showModal();
+}
 function saveRecord(event) {
   event.preventDefault();
   const numbers = formNumbers();
-  const record = { id: crypto.randomUUID(), date:form.elements.date.value, store:form.elements.store.value.trim(), event:form.elements.event.value.trim(), ...numbers, ...calculate(numbers), createdAt:Date.now() };
-  records.unshift(record);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-  form.reset(); form.elements.date.value = todayKey; form.elements.commissionRate.value = 20;
-  dialog.close(); render();
-  const toast = document.querySelector('#toast'); toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200);
+  const existing = editingId ? records.find(item => item.id === editingId) : null;
+  const record = {
+    id: editingId || crypto.randomUUID(),
+    date: form.elements.date.value,
+    store: form.elements.store.value.trim(),
+    event: form.elements.event.value.trim(),
+    ...numbers,
+    ...calculate(numbers),
+    createdAt: existing?.createdAt || Date.now(),
+    updatedAt: Date.now()
+  };
+  if (editingId) {
+    const index = records.findIndex(item => item.id === editingId);
+    if (index !== -1) records[index] = record;
+  } else {
+    records.unshift(record);
+  }
+  persistRecords();
+  const wasEditing = Boolean(editingId);
+  dialog.close();
+  resetFormState();
+  render();
+  showToast(wasEditing ? '売上を更新しました' : '売上を保存しました');
+}
+function deleteRecord(id) {
+  const record = records.find(item => item.id === id);
+  if (!record) return;
+  const label = `${record.date.replaceAll('-', '/')} ${record.event}（${yen.format(record.sales)}）`;
+  if (!window.confirm(`${label}\n\nこの売上記録を削除しますか？`)) return;
+  records = records.filter(item => item.id !== id);
+  persistRecords();
+  render();
+  showToast('売上を削除しました');
+}
+function showToast(message) {
+  const toast = document.querySelector('#toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
 }
 function render() {
   const monthKey = todayKey.slice(0, 7);
@@ -79,15 +159,26 @@ function render() {
 function sum(items, key) { return items.reduce((total, item) => total + (Number(item[key]) || 0), 0); }
 function renderEvents() {
   const list = document.querySelector('#event-list');
-  if (!records.length) { list.innerHTML = '<div class="empty-state"><b>催事の登録はまだありません</b>「売上を登録」から最初の実績を追加しましょう</div>'; return; }
-  const grouped = Object.values(records.reduce((groups, item) => {
-    const key = `${item.event}|${item.store}`;
-    groups[key] ||= { event:item.event, store:item.store, sales:0, profit:0, latest:item.date };
-    groups[key].sales += item.sales; groups[key].profit += item.finalProfit;
-    if (item.date > groups[key].latest) groups[key].latest = item.date;
-    return groups;
-  }, {})).sort((a,b) => b.latest.localeCompare(a.latest)).slice(0, 5);
-  list.innerHTML = grouped.map(item => `<div class="event-item"><div class="event-badge">${escapeHtml(item.event.charAt(0))}</div><div><h3>${escapeHtml(item.event)}</h3><p>${escapeHtml(item.store)} ・ ${item.latest.replaceAll('-', '/')}</p></div><div class="event-money"><strong>${yen.format(item.sales)}</strong><span>利益 ${yen.format(item.profit)}</span></div></div>`).join('');
+  if (!records.length) {
+    list.innerHTML = '<div class="empty-state"><b>売上の登録はまだありません</b>「売上を登録」から最初の実績を追加しましょう</div>';
+    showAllButton.style.display = 'none';
+    return;
+  }
+  const sorted = [...records].sort((a,b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+  const visible = showAllRecords ? sorted : sorted.slice(0, 5);
+  showAllButton.style.display = sorted.length > 5 ? 'inline-block' : 'none';
+  showAllButton.textContent = showAllRecords ? '5件だけ表示' : 'すべて見る';
+  list.innerHTML = visible.map(item => `<div class="event-item">
+    <div class="event-badge">${escapeHtml(item.event.charAt(0) || '売')}</div>
+    <div><h3>${escapeHtml(item.event)}</h3><p>${escapeHtml(item.store)} ・ ${item.date.replaceAll('-', '/')}</p></div>
+    <div class="event-money">
+      <strong>${yen.format(item.sales)}</strong><span>利益 ${yen.format(item.finalProfit)}</span>
+      <div class="record-actions">
+        <button type="button" class="edit-record" data-edit-id="${item.id}">修正</button>
+        <button type="button" class="delete-record" data-delete-id="${item.id}">削除</button>
+      </div>
+    </div>
+  </div>`).join('');
 }
 function escapeHtml(value) { const el=document.createElement('span'); el.textContent=value; return el.innerHTML; }
 function renderChart() {
