@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=20260901-5" />
   <link rel="stylesheet" href="inventory.css?v=20260901-4" />
+  <link rel="stylesheet" href="events-browser.css?v=20260901-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -64,7 +65,7 @@
 
         <article class="panel events-panel" id="events-section">
           <div class="panel-heading event-heading">
-            <div><h2>会期ごとの実績</h2><p>仕入・人件費・経費は会期単位でまとめて管理</p></div>
+            <div><h2>会期ごとの実績</h2><p>年 → 月 → 会期の順に確認できます</p></div>
             <button class="text-button" type="button" data-open-event>＋ 会期</button>
           </div>
           <div id="event-list" class="event-list"></div>
@@ -200,5 +201,6 @@
   <script src="app.js?v=20260901-4"></script>
   <script src="initial-costs.js?v=20260901-1"></script>
   <script src="inventory.js?v=20260901-5"></script>
+  <script src="events-browser.js?v=20260901-1"></script>
 </body>
 </html>
