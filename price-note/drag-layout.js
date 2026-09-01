@@ -110,7 +110,6 @@
     const element = preview.querySelector(`[data-drag-role="${role}"]`);
     if (element) element.style.setProperty('--text-scale', value);
   }
-  }
 
   const previewWrap = preview.closest('.preview-wrap');
   const controls = document.createElement('div');
@@ -120,7 +119,7 @@
       <div><b>文字位置・大きさ</b><small>ONにして文字を移動。選択後、右下の丸で拡大・縮小できます</small></div>
       <button id="position-toggle" type="button" aria-pressed="false">文字位置を動かす</button>
     </div>
-    <button id="position-reset" class="position-reset" type="button">位置を初期に戻す</button>`;
+    <button id="position-reset" class="position-reset" type="button">位置・大きさを初期に戻す</button>`;
   previewWrap?.insertBefore(controls, previewWrap.querySelector('#live-preview'));
 
   const toggleButton = controls.querySelector('#position-toggle');
@@ -139,7 +138,7 @@
     draftScales = cloneScales(DEFAULT_SCALES);
     selectedRole = null;
     renderPreview();
-    if (typeof showToast === 'function') showToast('文字位置を初期に戻しました');
+    if (typeof showToast === 'function') showToast('文字位置と大きさを初期に戻しました');
   });
 
   function updateAdjustState() {
