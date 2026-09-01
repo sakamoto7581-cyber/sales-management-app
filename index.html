@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260901-4" />
+  <link rel="stylesheet" href="styles.css?v=20260901-5" />
   <link rel="stylesheet" href="inventory.css?v=20260901-4" />
 </head>
 <body>
@@ -147,7 +147,7 @@
   <dialog id="event-dialog">
     <form id="event-form" method="dialog">
       <div class="form-header">
-        <div><p class="eyebrow">EVENT PERIOD</p><h2 id="event-form-title">会期を作成</h2><p>仕入や経費は、この会期の合計額を入力します。</p></div>
+        <div><p class="eyebrow">EVENT PERIOD</p><h2 id="event-form-title">会期を作成</h2><p>会期作成時は店舗名・催事名・日程だけでOKです。仕入や経費は終了後に「会期を修正」から入力できます。</p></div>
         <button class="close-button" type="button" data-close-event aria-label="閉じる">×</button>
       </div>
       <div class="form-body">
@@ -158,14 +158,14 @@
           <label>会期終了<input required type="date" name="endDate" /></label>
         </div>
 
-        <h3>会期全体の原価・経費</h3>
+        <h3>会期全体の原価・経費 <small>（後から入力でOK）</small></h3>
         <div class="form-grid three">
-          <label>仕入合計<div class="input-unit"><span>¥</span><input required min="0" inputmode="numeric" type="number" name="purchase" placeholder="0" /></div></label>
-          <label>歩率<div class="input-unit suffix"><input required min="0" max="100" step="0.1" inputmode="decimal" type="number" name="commissionRate" value="20" /><span>%</span></div></label>
-          <label>人件費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="labor" placeholder="0" /></div></label>
-          <label>交通費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="transport" placeholder="0" /></div></label>
-          <label>宿泊費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="lodging" placeholder="0" /></div></label>
-          <label>その他経費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="other" placeholder="0" /></div></label>
+          <label>仕入合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="purchase" placeholder="未入力でOK" /></div></label>
+          <label>歩率<div class="input-unit suffix"><input min="0" max="100" step="0.1" inputmode="decimal" type="number" name="commissionRate" value="20" /><span>%</span></div></label>
+          <label>人件費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="labor" placeholder="未入力でOK" /></div></label>
+          <label>交通費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="transport" placeholder="未入力でOK" /></div></label>
+          <label>宿泊費合計<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="lodging" placeholder="未入力でOK" /></div></label>
+          <label>その他経費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="other" placeholder="未入力でOK" /></div></label>
         </div>
 
         <div class="calculation-box event-preview">
