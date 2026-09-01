@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f9f7" />
+    <title>うりあげノート</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <a class="brand" href="#dashboard" aria-label="うりあげノート ホーム">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>うりあげノート</span>
+        </a>
+        <button class="header-add" type="button" data-open-form><span>＋</span> 売上を登録</button>
+      </header>
+
+      <main id="dashboard">
+        <section class="hero">
+          <div>
+            <p class="eyebrow" id="today-label"></p>
+            <h1>おつかれさまです！</h1>
+            <p class="hero-copy">今日の売上を確認しましょう。</p>
+          </div>
+          <button class="primary-action" type="button" data-open-form><span>＋</span> 売上を登録する</button>
+        </section>
+
+        <section class="summary-grid" aria-label="売上サマリー">
+          <article class="summary-card accent">
+            <div class="summary-icon">¥</div><span class="summary-period">今日</span>
+            <p>今日の売上</p><strong id="today-sales">¥0</strong>
+            <small id="today-count">登録はまだありません</small>
+          </article>
+          <article class="summary-card">
+            <div class="summary-icon mint">↗</div><span class="summary-period">今月</span>
+            <p>今月の売上</p><strong id="month-sales">¥0</strong>
+            <small id="month-count">0件の催事</small>
+          </article>
+          <article class="summary-card profit">
+            <div class="summary-icon amber">●</div><span class="summary-period">今月</span>
+            <p>今月の利益</p><strong id="month-profit">¥0</strong>
+            <small id="month-margin">利益率 0.0%</small>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h2>月別売上推移</h2><p>直近6ヶ月の売上</p></div><span class="legend"><i></i> 売上</span></div>
+            <div class="chart-wrap"><canvas id="sales-chart" aria-label="月別売上推移グラフ"></canvas><div id="chart-empty" class="chart-empty">売上を登録するとグラフが表示されます</div></div>
+          </article>
+          <article class="panel events-panel">
+            <div class="panel-heading"><div><h2>催事ごとの実績</h2><p>売上と最終利益</p></div><button class="text-button" id="show-all" type="button">すべて見る</button></div>
+            <div id="event-list" class="event-list"></div>
+          </article>
+        </section>
+      </main>
+
+      <footer>データはこの端末に安全に保存されます</footer>
+    </div>
+
+    <nav class="mobile-nav" aria-label="メインメニュー">
+      <a class="active" href="#dashboard"><span>⌂</span>ホーム</a>
+      <button type="button" data-open-form><span class="nav-plus">＋</span>登録</button>
+      <button type="button" id="mobile-history"><span>▤</span>履歴</button>
+    </nav>
+
+    <dialog id="sales-dialog">
+      <form id="sales-form" method="dialog">
+        <div class="form-header"><div><p class="eyebrow">SALES ENTRY</p><h2>売上を登録</h2><p>催事の売上と経費を入力してください</p></div><button class="close-button" type="button" data-close aria-label="閉じる">×</button></div>
+        <div class="form-body">
+          <div class="form-grid">
+            <label>日付<input required type="date" name="date" /></label>
+            <label>店舗名<input required name="store" placeholder="例：〇〇百貨店" /></label>
+            <label class="full">催事名<input required name="event" placeholder="例：秋の北海道物産展" /></label>
+          </div>
+          <h3>売上・仕入</h3>
+          <div class="form-grid three">
+            <label>売上金額<div class="input-unit"><span>¥</span><input required min="0" inputmode="numeric" type="number" name="sales" placeholder="0" /></div></label>
+            <label>仕入金額<div class="input-unit"><span>¥</span><input required min="0" inputmode="numeric" type="number" name="purchase" placeholder="0" /></div></label>
+            <label>歩率<div class="input-unit suffix"><input required min="0" max="100" step="0.1" inputmode="decimal" type="number" name="commissionRate" value="20" /><span>%</span></div></label>
+          </div>
+          <h3>経費</h3>
+          <div class="form-grid two">
+            <label>人件費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="labor" placeholder="0" /></div></label>
+            <label>交通費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="transport" placeholder="0" /></div></label>
+            <label>宿泊費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="lodging" placeholder="0" /></div></label>
+            <label>その他経費<div class="input-unit"><span>¥</span><input min="0" inputmode="numeric" type="number" name="other" placeholder="0" /></div></label>
+          </div>
+          <div class="calculation-box">
+            <div><span>粗利益</span><strong id="preview-gross">¥0</strong></div><div><span>歩率金額</span><strong id="preview-commission">¥0</strong></div><div><span>経費合計</span><strong id="preview-expenses">¥0</strong></div><div class="total"><span>最終利益 <small id="preview-margin">利益率 0.0%</small></span><strong id="preview-profit">¥0</strong></div>
+          </div>
+        </div>
+        <div class="form-actions"><button type="button" class="secondary" data-close>キャンセル</button><button type="submit" class="submit-button">保存する</button></div>
+      </form>
+    </dialog>
+    <div id="toast" role="status">売上を保存しました</div>
+    <script src="app.js"></script>
+  </body>
+</html>
