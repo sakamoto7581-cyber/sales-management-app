@@ -2,6 +2,11 @@
   const TEMPLATE_ID = 'hasegawa-black';
   if (typeof applyCard !== 'function') return;
 
+  const brushFont = document.createElement('link');
+  brushFont.rel = 'stylesheet';
+  brushFont.href = 'https://fonts.googleapis.com/css2?family=Yuji+Mai&display=swap';
+  document.head.appendChild(brushFont);
+
   // Keep the supplied artwork intact, but hide only the two brackets around the base-price line.
   const originalApplyCard = applyCard;
   applyCard = function(el, item) {
@@ -20,6 +25,9 @@
     }
     .template-hasegawa-black .pc-hasegawa-reference{
       mix-blend-mode:screen!important;
+    }
+    .template-hasegawa-black .pc-name{
+      font-family:'Yuji Mai','Yuji Boku','Yuji Syuku',serif!important;
     }
     .template-hasegawa-black::before,
     .template-hasegawa-black::after{
