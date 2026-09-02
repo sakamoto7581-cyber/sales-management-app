@@ -20,6 +20,13 @@
     });
   }
 
+  function normalizeNameLayout(root, item) {
+    const name = root?.querySelector?.('.pc-name');
+    if (!name) return;
+    const slider = Math.max(.7, Math.min(1.35, (Number(item?.titleSize) || 56) / 56));
+    name.style.setProperty('--hasegawa-name-size', `${(11.2 * slider).toFixed(2)}cqw`);
+  }
+
   function normalizeUnitOptions() {
     if (!unitSelect) return;
     [...unitSelect.options]
@@ -48,6 +55,7 @@
       if (item?.template === TEMPLATE_ID) {
         replaceLogo(el);
         normalizeAllergenLabel(el);
+        normalizeNameLayout(el, item);
       }
     };
   }
@@ -80,6 +88,8 @@
       object-fit:contain!important;
     }
     .template-hasegawa-black .pc-name{
+      width:83%!important;
+      text-align:left!important;
       font-family:system-ui,-apple-system,'Segoe UI','Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif!important;
       font-weight:800!important;
       line-height:1!important;
