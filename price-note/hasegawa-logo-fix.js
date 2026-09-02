@@ -1,6 +1,6 @@
 (() => {
   const TEMPLATE_ID = 'hasegawa-black';
-  const LOGO_SRC = 'hasegawa-logo-original.svg';
+  const LOGO_SRC = 'hasegawa-logo-original.svg?v=20260902-2';
   const unitSelect = document.querySelector('#unit');
 
   function replaceLogo(root = document) {
@@ -46,6 +46,17 @@
     if (!button) return;
     setTimeout(use100gForNewHasegawaTemplate, 0);
   });
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .template-hasegawa-black .pc-hasegawa-logo{
+      left:4.30%!important;
+      top:4.49%!important;
+      width:10.09%!important;
+      height:auto!important;
+    }
+  `;
+  document.head.appendChild(style);
 
   normalizeUnitOptions();
   replaceLogo();
