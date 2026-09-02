@@ -12,6 +12,14 @@
     if (thumb && thumb.getAttribute('src') !== LOGO_SRC) thumb.setAttribute('src', LOGO_SRC);
   }
 
+  function normalizeAllergenLabel(root = document) {
+    root.querySelectorAll?.('.template-hasegawa-black .pc-hasegawa-details .h-row b').forEach(label => {
+      if (label.textContent.trim() === '特定原材料等(28品目)') {
+        label.textContent = '特定原材料等';
+      }
+    });
+  }
+
   function normalizeUnitOptions() {
     if (!unitSelect) return;
     [...unitSelect.options]
@@ -37,7 +45,10 @@
     const originalApplyCard = applyCard;
     applyCard = function(el, item) {
       originalApplyCard(el, item);
-      if (item?.template === TEMPLATE_ID) replaceLogo(el);
+      if (item?.template === TEMPLATE_ID) {
+        replaceLogo(el);
+        normalizeAllergenLabel(el);
+      }
     };
   }
 
@@ -73,5 +84,6 @@
 
   normalizeUnitOptions();
   replaceLogo();
+  normalizeAllergenLabel();
   if (typeof renderPreview === 'function') renderPreview();
 })();
