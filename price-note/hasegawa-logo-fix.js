@@ -2,6 +2,9 @@
   const TEMPLATE_ID = 'hasegawa-black';
   const LOGO_SRC = 'hasegawa-logo-original.svg?v=20260902-3';
   const unitSelect = document.querySelector('#unit');
+  const titleSizeInput = document.querySelector('#title-size');
+  const preview = document.querySelector('#live-preview');
+  let pendingNamePosition = null;
 
   function replaceLogo(root = document) {
     root.querySelectorAll?.('.pc-hasegawa-logo').forEach(img => {
@@ -26,6 +29,45 @@
     const slider = Math.max(.7, Math.min(1.35, (Number(item?.titleSize) || 56) / 56));
     name.style.setProperty('--hasegawa-name-size', `${(11.2 * slider).toFixed(2)}cqw`);
   }
+
+  function captureNamePosition() {
+    if (!preview?.classList.contains('template-hasegawa-black')) return;
+    const name = preview.querySelector('.pc-name');
+    if (!name) return;
+    pendingNamePosition = {
+      left: name.style.left,
+      top: name.style.top,
+      right: name.style.right,
+      bottom: name.style.bottom,
+      transform: name.style.transform
+    };
+  }
+
+  function restoreNamePosition() {
+    if (!pendingNamePosition || !preview?.classList.contains('template-hasegawa-black')) {
+      pendingNamePosition = null;
+      return;
+    }
+    const name = preview.querySelector('.pc-name');
+    if (!name) {
+      pendingNamePosition = null;
+      return;
+    }
+    name.style.left = pendingNamePosition.left;
+    name.style.top = pendingNamePosition.top;
+    name.style.right = pendingNamePosition.right;
+    name.style.bottom = pendingNamePosition.bottom;
+    name.style.transform = pendingNamePosition.transform;
+    pendingNamePosition = null;
+  }
+
+  function preserveNamePositionThroughResize() {
+    captureNamePosition();
+    queueMicrotask(restoreNamePosition);
+  }
+
+  titleSizeInput?.addEventListener('input', preserveNamePositionThroughResize);
+  titleSizeInput?.addEventListener('change', preserveNamePositionThroughResize);
 
   function normalizeUnitOptions() {
     if (!unitSelect) return;
