@@ -57,6 +57,9 @@
     el.classList.remove('template-hasegawa-black');
     el.querySelector('.pc-hasegawa-logo')?.remove();
     el.querySelector('.pc-hasegawa-base')?.remove();
+    el.querySelector('.pc-hasegawa-details')?.remove();
+    const details = el.querySelector('.pc-details');
+    if (details) details.style.display = '';
     const movedUnit = el.querySelector('.pc-hasegawa-unit');
     const priceRow = el.querySelector('.pc-price-row');
     if (movedUnit && priceRow) {
@@ -67,7 +70,7 @@
 
   function applyHasegawaTemplate(el, item) {
     el.classList.add('template-hasegawa-black');
-    el.style.background = '#050912';
+    el.style.background = '#05070d';
     el.style.color = '#ffffff';
 
     const logo = document.createElement('div');
@@ -84,15 +87,31 @@
 
     const tax = priceRow?.querySelector('.pc-tax');
     if (tax) {
-      tax.textContent = tax.textContent || '税込価格';
+      tax.textContent = '税込価格';
       priceRow.insertBefore(tax, priceRow.firstChild);
     }
+
+    const normalDetails = el.querySelector('.pc-details');
+    if (normalDetails) normalDetails.style.display = 'none';
+
+    const left = document.createElement('div');
+    left.className = 'pc-hasegawa-details';
+    const allergy = item.allergens ? esc(item.allergens) : '';
+    const origin = item.origin ? esc(item.origin) : '';
+    const processing = item.processingPlace ? esc(item.processingPlace) : '';
+    const note = item.note ? esc(item.note) : '';
+    left.innerHTML = `
+      <div><b>特定原材料等(28品目)</b><span>${allergy}</span></div>
+      <div><b>原料原産地</b><span>${origin}</span></div>
+      <div><b>加工地</b><span>${processing}</span></div>
+      ${note ? `<div class="pc-hasegawa-note">（${note}）</div>` : ''}`;
+    el.appendChild(left);
 
     if (priceRow && Number(item.price) > 0) {
       const base = document.createElement('div');
       base.className = 'pc-hasegawa-base';
       const basePrice = Math.round(Number(item.price) / 1.08);
-      base.textContent = `［本体価格 ${basePrice.toLocaleString('ja-JP')}円］`;
+      base.textContent = `［本体価格　${basePrice.toLocaleString('ja-JP')}円］`;
       priceRow.insertAdjacentElement('afterend', base);
     }
   }
@@ -104,11 +123,11 @@
     });
 
     if (activeTemplate === TEMPLATE_ID && !fromEdit) {
-      document.querySelector('#bg-color').value = '#050912';
+      document.querySelector('#bg-color').value = '#05070d';
       document.querySelector('#text-color').value = '#ffffff';
       document.querySelector('#tax-label').value = '税込価格';
-      document.querySelector('#title-size').value = '50';
-      document.querySelector('#title-size-value').textContent = '50';
+      document.querySelector('#title-size').value = '56';
+      document.querySelector('#title-size-value').textContent = '56';
       if (unitSelect) unitSelect.value = '1盛';
       const width = document.querySelector('#card-width-cm');
       const height = document.querySelector('#card-height-cm');
@@ -155,10 +174,10 @@
 
   function initTemplateLayout() {
     if (activeTemplate !== TEMPLATE_ID) return;
-    moveRole('name', 52, 34);
-    moveRole('price', 78, 79);
-    moveRole('note', 50, 61);
-    moveRole('details', 26, 82);
+    moveRole('name', 52, 33.5);
+    moveRole('price', 79, 79.5);
+    moveRole('note', 50, 59.5);
+    moveRole('details', 25, 82);
   }
 
   form.addEventListener('input', () => {
@@ -197,24 +216,31 @@
     .price-template-option>b{font-size:10px;line-height:1.35}
     .template-thumb{height:42px;border-radius:6px;overflow:hidden;display:grid;place-items:center;font-size:10px;font-weight:900;line-height:1.05;position:relative}
     .standard-thumb{background:#101c32;color:#fff}.standard-thumb em{font-size:8px;font-style:normal}
-    .hasegawa-thumb{background:#050912;color:#fff;font-family:'Yuji Syuku',serif}.hasegawa-thumb i{position:absolute;left:4px;top:3px;font-size:5px;font-style:normal}.hasegawa-thumb strong{font-size:9px;text-shadow:1px 0 #b91c1c,-1px 0 #b91c1c}.hasegawa-thumb em{position:absolute;right:4px;bottom:3px;font-size:6px;font-style:normal}
+    .hasegawa-thumb{background:#05070d;color:#fff;font-family:'Yuji Syuku',serif}.hasegawa-thumb i{position:absolute;left:4px;top:3px;font-size:5px;font-style:normal}.hasegawa-thumb strong{font-size:9px;text-shadow:1px 0 #d41925,-1px 0 #d41925}.hasegawa-thumb em{position:absolute;right:4px;bottom:3px;font-size:6px;font-style:normal}
 
-    .template-hasegawa-black{border:1px solid rgba(255,255,255,.34)!important;font-family:'Yuji Syuku','Yu Mincho',serif!important}
-    .template-hasegawa-black .pc-hasegawa-logo{position:absolute;left:4.6%;top:5%;width:12%;z-index:5;color:#fff;text-align:center;font-family:'Yuji Syuku','Yu Mincho',serif;line-height:1}
-    .template-hasegawa-black .pc-hakodate{display:block;font-size:6px;letter-spacing:.22em;margin-bottom:1px}
-    .template-hasegawa-black .pc-hasegawa-mark{display:block;font:400 28px/1 'Yuji Boku','Yuji Syuku',serif;transform:scaleX(1.15)}
-    .template-hasegawa-black .pc-hasegawa-store{display:block;font-size:6px;font-weight:700;margin-top:2px;white-space:nowrap}
-    .template-hasegawa-black .pc-name{font-family:'Yuji Boku','Yuji Syuku',serif!important;font-weight:400!important;letter-spacing:.02em!important;line-height:1.05!important;text-shadow:1px 0 #c51f2b,-1px 0 #c51f2b,0 1px #c51f2b,0 -1px #c51f2b!important;width:84%!important;white-space:nowrap;overflow:visible!important}
-    .template-hasegawa-black .pc-hasegawa-unit{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);font:400 24px/1 'Yuji Boku','Yuji Syuku',serif!important;margin:0!important;z-index:3;white-space:nowrap}
-    .template-hasegawa-black .pc-price-row{font-family:'Yuji Syuku','Yu Mincho',serif!important;gap:6px!important;align-items:center!important;width:auto!important;max-width:48%!important;white-space:nowrap}
-    .template-hasegawa-black .pc-tax{font-family:'Yuji Boku','Yuji Syuku',serif!important;color:#e01c26!important;font-size:12px!important;font-weight:400!important;margin:0 3px 0 0!important;opacity:1!important}
-    .template-hasegawa-black .pc-yen{font-family:'Yuji Syuku','Yu Mincho',serif!important;font-size:30px!important;font-weight:700!important;margin:0!important}
-    .template-hasegawa-black .pc-price{font-family:'Yuji Syuku','Yu Mincho',serif!important;font-size:44px!important;font-weight:700!important;letter-spacing:.06em!important}
-    .template-hasegawa-black .pc-hasegawa-base{position:absolute;right:5%;bottom:8%;font:700 8px/1.2 'Yuji Syuku','Yu Mincho',serif;letter-spacing:.05em;white-space:nowrap}
-    .template-hasegawa-black .pc-details{font-family:'Yuji Syuku','Yu Mincho',serif!important;font-size:8px!important;line-height:1.45!important;font-weight:700!important;width:43%!important;text-align:left!important;white-space:normal}
-    .template-hasegawa-black .pc-note{font-family:'Yuji Boku','Yuji Syuku',serif!important;font-size:11px!important;font-weight:400!important}
-    @media(max-width:440px){.price-template-options{grid-template-columns:1fr}.template-hasegawa-black .pc-price{font-size:38px!important}.template-hasegawa-black .pc-yen{font-size:25px!important}.template-hasegawa-black .pc-tax{font-size:10px!important}.template-hasegawa-black .pc-hasegawa-unit{font-size:20px!important}}
-    @media print{.template-hasegawa-black .pc-name{font-size:inherit}.template-hasegawa-black .pc-price{font-size:44px!important}.template-hasegawa-black .pc-yen{font-size:30px!important}.template-hasegawa-black .pc-tax{font-size:12px!important}.template-hasegawa-black .pc-details{font-size:8px!important}.template-hasegawa-black .pc-hasegawa-base{font-size:8px!important}}
+    .template-hasegawa-black{border:1px solid rgba(255,255,255,.38)!important;font-family:'Yuji Syuku','Yu Mincho',serif!important;background:#05070d!important}
+    .template-hasegawa-black .pc-hasegawa-logo{position:absolute;left:4.1%;top:4.4%;width:12.2%;z-index:5;color:#fff;text-align:center;font-family:'Yuji Syuku','Yu Mincho',serif;line-height:1}
+    .template-hasegawa-black .pc-hakodate{display:block;font-size:6px;letter-spacing:.28em;margin:0 0 1px 3px}
+    .template-hasegawa-black .pc-hasegawa-mark{display:block;font:400 30px/1 'Yuji Boku','Yuji Syuku',serif;transform:scaleX(1.2)}
+    .template-hasegawa-black .pc-hasegawa-store{display:block;font-size:6.5px;font-weight:700;margin-top:2px;white-space:nowrap}
+
+    .template-hasegawa-black .pc-name{font-family:'Yuji Boku','Yuji Syuku',serif!important;font-weight:400!important;letter-spacing:.045em!important;line-height:.98!important;text-shadow:1px 0 #d71924,-1px 0 #d71924,0 1px #d71924,0 -1px #d71924!important;width:87%!important;white-space:nowrap;overflow:visible!important;font-size:56px!important}
+    .template-hasegawa-black .pc-hasegawa-unit{position:absolute;left:50.5%;top:58.2%;transform:translate(-50%,-50%);font:400 26px/1 'Yuji Boku','Yuji Syuku',serif!important;margin:0!important;z-index:3;white-space:nowrap}
+
+    .template-hasegawa-black .pc-price-row{font-family:'Yuji Syuku','Yu Mincho',serif!important;gap:7px!important;align-items:center!important;width:auto!important;max-width:50%!important;white-space:nowrap}
+    .template-hasegawa-black .pc-tax{font-family:'Yuji Boku','Yuji Syuku',serif!important;color:#df101d!important;font-size:12px!important;font-weight:400!important;margin:0 2px 0 0!important;opacity:1!important}
+    .template-hasegawa-black .pc-yen{font-family:'Yuji Syuku','Yu Mincho',serif!important;font-size:31px!important;font-weight:500!important;margin:0!important;line-height:1!important}
+    .template-hasegawa-black .pc-price{font-family:'Yuji Syuku','Yu Mincho',serif!important;font-size:45px!important;font-weight:500!important;letter-spacing:.07em!important;line-height:1!important}
+    .template-hasegawa-black .pc-hasegawa-base{position:absolute;right:4.8%;bottom:7.2%;font:700 8.5px/1.2 'Yuji Syuku','Yu Mincho',serif;letter-spacing:.04em;white-space:nowrap}
+
+    .template-hasegawa-black .pc-hasegawa-details{position:absolute;left:4.2%;bottom:6.4%;width:45%;z-index:4;color:#fff;font-family:'Yuji Syuku','Yu Mincho',serif;font-size:8.4px;font-weight:700;line-height:1.52;text-align:left}
+    .template-hasegawa-black .pc-hasegawa-details>div{display:grid;grid-template-columns:31% 1fr;column-gap:7px;align-items:baseline;white-space:nowrap}
+    .template-hasegawa-black .pc-hasegawa-details b{font-weight:700}
+    .template-hasegawa-black .pc-hasegawa-note{display:block!important;margin-left:-2px;margin-top:-1px;white-space:nowrap!important}
+    .template-hasegawa-black .pc-note{display:none!important}
+
+    @media(max-width:440px){.price-template-options{grid-template-columns:1fr}.template-hasegawa-black .pc-name{font-size:49px!important}.template-hasegawa-black .pc-price{font-size:39px!important}.template-hasegawa-black .pc-yen{font-size:27px!important}.template-hasegawa-black .pc-tax{font-size:10px!important}.template-hasegawa-black .pc-hasegawa-unit{font-size:22px!important}.template-hasegawa-black .pc-hasegawa-details{font-size:7px!important}}
+    @media print{.template-hasegawa-black .pc-name{font-size:56px!important}.template-hasegawa-black .pc-price{font-size:45px!important}.template-hasegawa-black .pc-yen{font-size:31px!important}.template-hasegawa-black .pc-tax{font-size:12px!important}.template-hasegawa-black .pc-hasegawa-details{font-size:8.4px!important}.template-hasegawa-black .pc-hasegawa-base{font-size:8.5px!important}}
   `;
   document.head.appendChild(style);
 })();
