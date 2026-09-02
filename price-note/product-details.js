@@ -41,22 +41,30 @@
     return item;
   };
 
-  function detailLines(item) {
-    const lines = [];
-    if (item.ingredients) lines.push(`原材料：${esc(item.ingredients)}`);
-    if (item.origin) lines.push(`原産地：${esc(item.origin)}`);
-    if (item.processingPlace) lines.push(`加工地：${esc(item.processingPlace)}`);
-    if (item.storageMethod) lines.push(`保存方法：${esc(item.storageMethod)}`);
-    if (item.allergens) lines.push(`アレルギー：${esc(item.allergens)}`);
-    return lines;
+  function detailRows(item) {
+    return [
+      { key: 'ingredients', label: '原材料', value: item.ingredients || '', lines: 2 },
+      { key: 'origin', label: '原産地', value: item.origin || '', lines: 1 },
+      { key: 'processing', label: '加工地', value: item.processingPlace || '', lines: 1 },
+      { key: 'storage', label: '保存方法', value: item.storageMethod || '', lines: 1 },
+      { key: 'allergens', label: 'アレルギー', value: item.allergens || '', lines: 1 }
+    ];
   }
 
   const originalCardHtml = cardHtml;
   cardHtml = function(item) {
     let html = originalCardHtml(item);
-    const lines = detailLines(item);
+    const rows = detailRows(item);
+    const hasDetails = rows.some(row => row.value);
     html = html.replace(/<div class="pc-allergy">[\s\S]*?<\/div>/, '');
-    if (lines.length) html += `<div class="pc-details">${lines.join('<br>')}</div>`;
+    if (hasDetails) {
+      const rowHtml = rows.map(row => {
+        const emptyClass = row.value ? '' : ' is-empty';
+        const value = row.value ? `${row.label}：${esc(row.value)}` : '&nbsp;';
+        return `<div class="pc-detail-row pc-detail-${row.key}${emptyClass}" style="--detail-lines:${row.lines}">${value}</div>`;
+      }).join('');
+      html += `<div class="pc-details pc-details-fixed">${rowHtml}</div>`;
+    }
     return html;
   };
 
@@ -110,6 +118,11 @@
     .detail-section-title{font-size:13px;font-weight:800;color:var(--ink);padding-top:4px}
     .detail-section-title small{font-size:9px;font-weight:600;color:var(--muted);margin-left:5px}
     .pc-details{position:absolute;left:6%;right:6%;bottom:5%;font-size:7px;line-height:1.45;font-weight:650;text-align:left;opacity:.94}
+    .pc-details-fixed{display:grid;grid-template-rows:repeat(6,1.45em);align-content:start}
+    .pc-details-fixed .pc-detail-row{min-height:calc(var(--detail-lines,1) * 1.45em);line-height:1.45;overflow:hidden}
+    .pc-details-fixed .pc-detail-ingredients{grid-row:span 2;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal}
+    .pc-details-fixed .pc-detail-row:not(.pc-detail-ingredients){white-space:nowrap;text-overflow:ellipsis}
+    .pc-details-fixed .pc-detail-row.is-empty{visibility:hidden}
     @media print{.pc-details{font-size:7px!important}}
   `;
   document.head.appendChild(style);
