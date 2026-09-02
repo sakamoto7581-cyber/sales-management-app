@@ -14,12 +14,19 @@
 
   const style = document.createElement('style');
   style.textContent = `
+    .template-hasegawa-black{
+      background:#101c32!important;
+      isolation:isolate!important;
+    }
+    .template-hasegawa-black .pc-hasegawa-reference{
+      mix-blend-mode:screen!important;
+    }
     .template-hasegawa-black::before,
     .template-hasegawa-black::after{
       content:''!important;
       display:block!important;
       position:absolute!important;
-      background:#000!important;
+      background:#101c32!important;
       z-index:3!important;
       pointer-events:none!important;
     }
