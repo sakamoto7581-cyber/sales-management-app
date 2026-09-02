@@ -5,12 +5,13 @@
   if (!form || !preview || typeof currentCard !== 'function' || typeof applyCard !== 'function') return;
 
   const TEMPLATE_ID = 'hasegawa-black';
-  const TEMPLATE_VERSION = 3;
+  const TEMPLATE_VERSION = 4;
+  const REFERENCE_IMAGE = window.__HASEGAWA_REF_IMAGE || 'hasegawa-logo-original.svg';
   const REFERENCE_POSITIONS = {
     name: { x: 50.5, y: 35.3 },
-    price: { x: 74.3, y: 79.0 },
-    note: { x: 17.3, y: 90.5 },
-    details: { x: 25.4, y: 81.6 }
+    price: { x: 82.2, y: 79.0 },
+    note: { x: 50, y: 70 },
+    details: { x: 46.3, y: 84.0 }
   };
   const REFERENCE_SCALES = { name: 1, price: 1, note: 1, details: 1 };
   let activeTemplate = 'standard';
@@ -22,18 +23,21 @@
   document.head.appendChild(fontLink);
 
   const unitSelect = document.querySelector('#unit');
-  if (unitSelect && ![...unitSelect.options].some(option => option.value === '1盛')) {
-    const option = document.createElement('option');
-    option.value = '1盛';
-    option.textContent = '1盛';
-    unitSelect.insertBefore(option, unitSelect.firstChild);
+  if (unitSelect) {
+    [...unitSelect.options].filter(option => option.value === '1盛').forEach(option => option.remove());
+    if (![...unitSelect.options].some(option => option.value === '100g')) {
+      const option = document.createElement('option');
+      option.value = '100g';
+      option.textContent = '100g';
+      unitSelect.insertBefore(option, unitSelect.firstChild);
+    }
   }
 
   const picker = document.createElement('div');
   picker.className = 'price-template-picker';
   picker.innerHTML = `
     <div class="price-template-heading">
-      <div><b>テンプレート</b><small>元画像の比率と配置を基準にしています</small></div>
+      <div><b>テンプレート</b><small>長谷川商店は送ってもらった画像をそのまま原版にしています</small></div>
     </div>
     <div class="price-template-options">
       <button type="button" class="price-template-option active" data-price-template="standard">
@@ -41,8 +45,8 @@
         <b>標準</b>
       </button>
       <button type="button" class="price-template-option" data-price-template="${TEMPLATE_ID}">
-        <span class="template-thumb hasegawa-thumb"><img src="hasegawa-logo.svg" alt=""><strong>商品名</strong><em>¥1,296</em></span>
-        <b>長谷川商店・原版</b>
+        <span class="template-thumb hasegawa-thumb"><img src="${REFERENCE_IMAGE}" alt=""></span>
+        <b>長谷川商店・画像原版</b>
       </button>
     </div>`;
   form.parentNode.insertBefore(picker, form);
@@ -88,15 +92,15 @@
   function fitNameCqw(name, titleSize) {
     const len = Math.max(1, Array.from(String(name || '')).length);
     let factor = 1;
-    if (len <= 4) factor = 1.1;
-    else if (len === 5) factor = 1.05;
+    if (len <= 4) factor = 1.08;
+    else if (len === 5) factor = 1.03;
     else if (len === 6) factor = 1;
     else if (len === 7) factor = .92;
     else if (len === 8) factor = .84;
     else if (len === 9) factor = .77;
-    else factor = Math.max(.58, 7.1 / len);
+    else factor = Math.max(.55, 7.0 / len);
     const slider = Math.max(.7, Math.min(1.35, (Number(titleSize) || 56) / 56));
-    return (14.8 * factor * slider).toFixed(2);
+    return (11.2 * factor * slider).toFixed(2);
   }
 
   function positionBlock(element, role, item) {
@@ -113,16 +117,23 @@
     element.style.transform = 'translate(-50%, -50%) scale(var(--text-scale))';
   }
 
+  function appendReferenceImage(el) {
+    const image = document.createElement('img');
+    image.className = 'pc-hasegawa-reference';
+    image.src = REFERENCE_IMAGE;
+    image.alt = '';
+    image.setAttribute('aria-hidden', 'true');
+    el.prepend(image);
+  }
+
   function applyHasegawaTemplate(el, item) {
     el.classList.add('template-hasegawa-black');
-    el.style.background = '';
+    el.style.background = '#000';
     el.style.color = '#fff';
+    appendReferenceImage(el);
 
-    const logo = document.createElement('img');
-    logo.className = 'pc-hasegawa-logo';
-    logo.src = 'hasegawa-logo.svg';
-    logo.alt = '函館 介 長谷川商店';
-    el.prepend(logo);
+    // The logo, frame, 100g, tax label, yen sign and left-side labels are part of the supplied image itself.
+    el.querySelector('.pc-hasegawa-logo')?.remove();
 
     const name = el.querySelector('.pc-name');
     if (name) {
@@ -131,50 +142,45 @@
     }
 
     const priceRow = el.querySelector('.pc-price-row');
-    const unit = priceRow?.querySelector('.pc-unit');
-    if (unit) {
-      unit.classList.add('pc-hasegawa-unit');
-      priceRow.parentNode.insertBefore(unit, priceRow);
+    if (priceRow) {
+      priceRow.querySelector('.pc-unit')?.remove();
+      priceRow.querySelector('.pc-yen')?.remove();
+      priceRow.querySelector('.pc-tax')?.remove();
+      const price = priceRow.querySelector('.pc-price');
+      if (price) price.textContent = Number(item.price) > 0 ? money(item.price) : '';
+      positionBlock(priceRow, 'price', item);
+    }
+    el.querySelector(':scope > .pc-tax')?.remove();
+
+    // The reference image has 100g already. Only cover it when another unit is explicitly chosen.
+    if ((item.unit || '100g') !== '100g') {
+      const unit = document.createElement('div');
+      unit.className = 'pc-hasegawa-unit-custom';
+      unit.textContent = item.unit || '';
+      el.appendChild(unit);
     }
 
-    const tax = priceRow?.querySelector('.pc-tax');
-    if (tax) {
-      tax.textContent = '税込価格';
-      priceRow.insertBefore(tax, priceRow.firstChild);
-    }
-    positionBlock(priceRow, 'price', item);
-
+    // The supplied image already contains these exact labels; only editable values are overlaid.
     el.querySelector('.pc-details')?.remove();
     const details = document.createElement('div');
-    details.className = 'pc-details pc-hasegawa-details';
+    details.className = 'pc-details pc-hasegawa-values';
     details.innerHTML = `
-      <div class="h-row"><b>特定原材料等(28品目)</b><span>${item.allergens ? esc(item.allergens) : ''}</span></div>
-      <div class="h-row"><b>原料原産地</b><span>${item.origin ? esc(item.origin) : ''}</span></div>
-      <div class="h-row"><b>加工地</b><span>${item.processingPlace ? esc(item.processingPlace) : ''}</span></div>`;
+      <div>${item.allergens ? esc(item.allergens) : ''}</div>
+      <div>${item.origin ? esc(item.origin) : ''}</div>
+      <div>${item.processingPlace ? esc(item.processingPlace) : ''}</div>`;
     el.appendChild(details);
     positionBlock(details, 'details', item);
 
-    let note = el.querySelector('.pc-note');
-    if (item.note) {
-      if (!note) {
-        note = document.createElement('div');
-        note.className = 'pc-note';
-        el.appendChild(note);
-      }
-      note.textContent = `（${item.note}）`;
-      positionBlock(note, 'note', item);
-    } else {
-      note?.remove();
-    }
+    // This exact reference has no extra note line, so do not duplicate one over the image.
+    el.querySelector('.pc-note')?.remove();
 
-    el.querySelector('.pc-hasegawa-base')?.remove();
+    const base = document.createElement('div');
+    base.className = 'pc-hasegawa-base';
     if (Number(item.price) > 0) {
-      const base = document.createElement('div');
-      base.className = 'pc-hasegawa-base';
       const basePrice = Math.round(Number(item.price) / 1.08);
-      base.textContent = `［本体価格　${basePrice.toLocaleString('ja-JP')}円］`;
-      el.appendChild(base);
+      base.textContent = `${basePrice.toLocaleString('ja-JP')}円］`;
     }
+    el.appendChild(base);
   }
 
   function updatePicker() {
@@ -189,12 +195,12 @@
     updatePicker();
 
     if (activeTemplate === TEMPLATE_ID && !fromEdit) {
-      document.querySelector('#bg-color').value = '#05060a';
+      document.querySelector('#bg-color').value = '#000000';
       document.querySelector('#text-color').value = '#ffffff';
       document.querySelector('#tax-label').value = '税込価格';
       document.querySelector('#title-size').value = '56';
       document.querySelector('#title-size-value').textContent = '56';
-      if (unitSelect) unitSelect.value = '1盛';
+      if (unitSelect) unitSelect.value = '100g';
       const width = document.querySelector('#card-width-cm');
       const height = document.querySelector('#card-height-cm');
       if (width) width.value = '12.8';
@@ -209,14 +215,14 @@
     if (!button) return;
     setTemplate(button.dataset.priceTemplate);
     if (typeof showToast === 'function') {
-      showToast(button.dataset.priceTemplate === TEMPLATE_ID ? '長谷川商店の原版テンプレートを適用しました' : '標準テンプレートに戻しました');
+      showToast(button.dataset.priceTemplate === TEMPLATE_ID
+        ? '送ってもらった長谷川商店の画像原版を適用しました'
+        : '標準テンプレートに戻しました');
     }
   });
 
   preview.addEventListener('pointerdown', event => {
-    if (activeTemplate === TEMPLATE_ID && event.target.closest('[data-drag-role]')) {
-      layoutTouched = true;
-    }
+    if (activeTemplate === TEMPLATE_ID && event.target.closest('[data-drag-role]')) layoutTouched = true;
   }, true);
 
   productList?.addEventListener('click', event => {
@@ -253,148 +259,63 @@
     .price-template-option>b{font-size:10px;line-height:1.35}
     .template-thumb{height:42px;border-radius:6px;overflow:hidden;display:grid;place-items:center;font-size:10px;font-weight:900;line-height:1.05;position:relative}
     .standard-thumb{background:#101c32;color:#fff}.standard-thumb em{font-size:8px;font-style:normal}
-    .hasegawa-thumb{background:#05060a;color:#fff;font-family:'Yuji Boku',serif}
-    .hasegawa-thumb img{position:absolute;left:3px;top:3px;width:11px;height:auto}
-    .hasegawa-thumb strong{font-size:9px;font-weight:400;text-shadow:.5px 0 #d71924,-.5px 0 #d71924}
-    .hasegawa-thumb em{position:absolute;right:4px;bottom:3px;font:normal 6px sans-serif}
+    .hasegawa-thumb{background:#000}.hasegawa-thumb img{width:100%;height:100%;object-fit:fill;display:block}
 
     .template-hasegawa-black{
       container-type:inline-size;
       border:0!important;
       border-radius:0!important;
-      background:
-        radial-gradient(circle at 52% 28%,rgba(18,20,28,.42),transparent 48%),
-        linear-gradient(135deg,#07080d 0%,#05060a 58%,#08090e 100%)!important;
+      background:#000!important;
       color:#fff!important;
+      overflow:hidden!important;
       font-family:'Yuji Syuku','Yu Mincho',serif!important;
     }
-    .template-hasegawa-black::after{
-      content:'';
-      position:absolute;
-      inset:1.05%;
-      border:1px solid rgba(255,255,255,.48);
-      pointer-events:none;
-      z-index:20;
+    .template-hasegawa-black::before,.template-hasegawa-black::after{content:none!important;display:none!important}
+    .template-hasegawa-black .pc-hasegawa-reference{
+      position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+      object-fit:fill!important;display:block!important;z-index:0!important;pointer-events:none!important;user-select:none!important;
     }
-    .template-hasegawa-black .pc-hasegawa-logo{
-      position:absolute;
-      left:4.2%;
-      top:4.0%;
-      width:12.45%;
-      height:auto;
-      z-index:8;
-      display:block;
-    }
+    .template-hasegawa-black .pc-hasegawa-logo{display:none!important}
 
     .template-hasegawa-black .pc-name{
-      width:86.5%!important;
-      max-width:none!important;
-      white-space:nowrap!important;
-      overflow:visible!important;
-      text-align:center!important;
-      font-family:'Yuji Boku','Yuji Syuku',serif!important;
-      font-size:var(--hasegawa-name-size)!important;
-      font-weight:400!important;
-      line-height:.95!important;
-      letter-spacing:.035em!important;
-      color:#fff!important;
-      -webkit-text-stroke:.18cqw #d71924;
-      paint-order:stroke fill;
-      text-shadow:none!important;
-    }
-
-    .template-hasegawa-black .pc-hasegawa-unit{
-      position:absolute!important;
-      left:50.7%!important;
-      top:58.7%!important;
-      transform:translate(-50%,-50%)!important;
-      margin:0!important;
-      z-index:6;
-      white-space:nowrap;
-      font:400 6.25cqw/.95 'Yuji Boku','Yuji Syuku',serif!important;
-      color:#fff!important;
+      z-index:4!important;width:86.5%!important;max-width:none!important;white-space:nowrap!important;overflow:visible!important;
+      text-align:center!important;font-family:'Yuji Boku','Yuji Syuku',serif!important;
+      font-size:var(--hasegawa-name-size)!important;font-weight:400!important;line-height:.95!important;letter-spacing:.025em!important;
+      color:#fff!important;-webkit-text-stroke:.14cqw #d71924;paint-order:stroke fill;text-shadow:none!important;
     }
 
     .template-hasegawa-black .pc-price-row{
-      display:flex!important;
-      align-items:center!important;
-      justify-content:center!important;
-      gap:1.35cqw!important;
-      width:max-content!important;
-      max-width:51%!important;
-      white-space:nowrap!important;
+      z-index:5!important;display:block!important;width:max-content!important;max-width:none!important;white-space:nowrap!important;
       font-family:'Yuji Syuku','Yu Mincho',serif!important;
-    }
-    .template-hasegawa-black .pc-tax{
-      color:#df101d!important;
-      font:400 2.85cqw/1 'Yuji Boku','Yuji Syuku',serif!important;
-      margin:0 .4cqw 0 0!important;
-      opacity:1!important;
-      white-space:nowrap!important;
-    }
-    .template-hasegawa-black .pc-yen{
-      color:#fff!important;
-      font:500 7.15cqw/.9 'Yuji Syuku','Yu Mincho',serif!important;
-      margin:0!important;
     }
     .template-hasegawa-black .pc-price{
-      color:#fff!important;
-      font:500 10.65cqw/.9 'Yuji Syuku','Yu Mincho',serif!important;
-      letter-spacing:.055em!important;
+      color:#fff!important;font:500 6.15cqw/.92 'Yuji Syuku','Yu Mincho',serif!important;letter-spacing:.035em!important;
     }
-    .template-hasegawa-black .pc-hasegawa-base{
-      position:absolute;
-      right:4.75%;
-      bottom:7.15%;
-      color:#fff;
-      font:700 2.05cqw/1.2 'Yuji Syuku','Yu Mincho',serif;
-      letter-spacing:.035em;
-      white-space:nowrap;
-      z-index:6;
+    .template-hasegawa-black .pc-yen,.template-hasegawa-black .pc-tax,.template-hasegawa-black .pc-unit{display:none!important}
+
+    .template-hasegawa-black .pc-hasegawa-unit-custom{
+      position:absolute;left:49.9%;top:58.7%;transform:translate(-50%,-50%);z-index:6;
+      min-width:22%;padding:.6cqw 1.2cqw;background:#000;color:#fff;text-align:center;white-space:nowrap;
+      font:400 5.45cqw/.95 'Yuji Boku','Yuji Syuku',serif!important;
     }
 
-    .template-hasegawa-black .pc-hasegawa-details{
-      width:45.5%!important;
-      color:#fff!important;
-      font-family:'Yuji Syuku','Yu Mincho',serif!important;
-      font-size:2.35cqw!important;
-      font-weight:700!important;
-      line-height:1.48!important;
-      text-align:left!important;
-      opacity:1!important;
-      white-space:normal!important;
+    .template-hasegawa-black .pc-hasegawa-values{
+      z-index:4!important;width:34%!important;color:#fff!important;text-align:left!important;opacity:1!important;white-space:nowrap!important;
+      font:700 2.25cqw/1.55 'Yuji Syuku','Yu Mincho',serif!important;letter-spacing:.01em!important;
     }
-    .template-hasegawa-black .pc-hasegawa-details .h-row{
-      display:grid;
-      grid-template-columns:43% 57%;
-      align-items:baseline;
-      white-space:nowrap;
+    .template-hasegawa-black .pc-hasegawa-values>div{height:1.55em;overflow:hidden;text-overflow:ellipsis}
+
+    .template-hasegawa-black .pc-hasegawa-base{
+      position:absolute;left:77.4%;bottom:7.0%;z-index:5;width:19.5%;height:5.7%;display:flex;align-items:center;justify-content:flex-start;
+      color:#fff;font:700 2.05cqw/1 'Yuji Syuku','Yu Mincho',serif;letter-spacing:.035em;white-space:nowrap;
     }
-    .template-hasegawa-black .pc-hasegawa-details b{font-weight:700}
-    .template-hasegawa-black .pc-note{
-      width:38%!important;
-      color:#fff!important;
-      text-align:left!important;
-      white-space:nowrap!important;
-      font:700 2.35cqw/1.2 'Yuji Syuku','Yu Mincho',serif!important;
-      opacity:1!important;
-    }
+    .template-hasegawa-black .pc-note{display:none!important}
 
     @media(max-width:440px){.price-template-options{grid-template-columns:1fr}}
     @media print{
-      .template-hasegawa-black{border-radius:0!important}
-      .template-hasegawa-black::after{border-width:.25mm}
-      .template-hasegawa-black .pc-name,
-      .template-hasegawa-black .pc-hasegawa-unit,
-      .template-hasegawa-black .pc-tax,
-      .template-hasegawa-black .pc-yen,
-      .template-hasegawa-black .pc-price,
-      .template-hasegawa-black .pc-hasegawa-base,
-      .template-hasegawa-black .pc-hasegawa-details,
-      .template-hasegawa-black .pc-note{
-        -webkit-print-color-adjust:exact!important;
-        print-color-adjust:exact!important;
-      }
+      .template-hasegawa-black{border-radius:0!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+      .template-hasegawa-black .pc-hasegawa-reference{display:block!important}
+      .template-hasegawa-black .pc-name,.template-hasegawa-black .pc-price,.template-hasegawa-black .pc-hasegawa-values,.template-hasegawa-black .pc-hasegawa-base,.template-hasegawa-black .pc-hasegawa-unit-custom{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     }
   `;
   document.head.appendChild(style);
