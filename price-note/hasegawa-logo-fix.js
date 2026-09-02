@@ -79,6 +79,18 @@
       z-index:8!important;
       object-fit:contain!important;
     }
+    .template-hasegawa-black .pc-name{
+      font-family:system-ui,-apple-system,'Segoe UI','Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif!important;
+      font-weight:800!important;
+      line-height:1!important;
+      letter-spacing:.015em!important;
+    }
+    .template-hasegawa-black .pc-hasegawa-unit{
+      font-family:system-ui,-apple-system,'Segoe UI','Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif!important;
+      font-weight:800!important;
+      line-height:1!important;
+      letter-spacing:.02em!important;
+    }
   `;
   document.head.appendChild(style);
 
