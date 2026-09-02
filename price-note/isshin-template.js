@@ -144,6 +144,14 @@
     return (size * sliderScale).toFixed(2);
   }
 
+  function fitPrice(value) {
+    const len = money(value).length;
+    if (len <= 3) return 15.2;
+    if (len <= 5) return 14.2;
+    if (len <= 6) return 13.2;
+    return 12.2;
+  }
+
   function formatAllergens(value) {
     return String(value || '').split(/[、,]/).map(v => v.trim()).filter(Boolean).join('　');
   }
@@ -183,6 +191,8 @@
 
     const name = el.querySelector('.pc-isshin-name');
     if (name) name.style.setProperty('--isshin-name-size', `${fitName(item.name, item.titleSize)}cqw`);
+    const priceNumber = el.querySelector('.pc-isshin-price-number');
+    if (priceNumber) priceNumber.style.setProperty('--isshin-price-size', `${fitPrice(price)}cqw`);
     positionBlock(name, 'name', item);
     positionBlock(el.querySelector('.pc-isshin-price-group'), 'price', item);
     positionBlock(el.querySelector('.pc-isshin-unit'), 'note', item);
@@ -322,7 +332,7 @@
     .template-isshin-premium .pc-isshin-unit{z-index:6!important;width:max-content!important;white-space:nowrap!important;color:#111!important;font:600 2.8cqw/1 'Zen Kaku Gothic New',sans-serif!important;letter-spacing:.01em!important;text-align:center!important}
     .template-isshin-premium .pc-isshin-price-group{z-index:6!important;width:max-content!important;max-width:none!important;display:grid!important;justify-items:center!important;gap:.2cqw!important;white-space:nowrap!important}
     .pc-isshin-price-line{display:flex;align-items:flex-end;gap:.65cqw;color:#071c42}
-    .pc-isshin-price-number{font:500 15.2cqw/.78 'Zen Kaku Gothic New',sans-serif;letter-spacing:-.045em}
+    .pc-isshin-price-number{font:500 var(--isshin-price-size,15.2cqw)/.78 'Zen Kaku Gothic New',sans-serif;letter-spacing:-.045em}
     .pc-isshin-yen{font:500 5.2cqw/.9 'Zen Kaku Gothic New',sans-serif;padding-bottom:.65cqw}
     .pc-isshin-base{color:#111;font:500 2.55cqw/1 'Zen Kaku Gothic New',sans-serif;letter-spacing:.01em;margin-top:.35cqw}
     .template-isshin-premium .pc-isshin-allergen{z-index:6!important;width:max-content!important;max-width:42%!important;white-space:nowrap!important;color:#111!important;opacity:1!important;font:600 2.35cqw/1 'Zen Kaku Gothic New',sans-serif!important;letter-spacing:.015em!important;text-align:left!important}
