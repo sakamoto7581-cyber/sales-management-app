@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">期限番</string>
-    <string name="launch_url">https://sakamoto7581-cyber.github.io/sales-management-app/kigenban/</string>
+    <string name="launch_url">https://sakamoto7581-cyber.github.io/sales-management-app/kigenban/play-v27.html</string>
     <string name="provider_authority">jp.kigenban.app.fileprovider</string>
     <string name="asset_statements">[{\"relation\":[\"delegate_permission/common.handle_all_urls\"],\"target\":{\"namespace\":\"web\",\"site\":\"https://sakamoto7581-cyber.github.io\"}}]</string>
 </resources>
