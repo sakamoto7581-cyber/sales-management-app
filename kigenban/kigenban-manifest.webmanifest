@@ -1,0 +1,12 @@
+{
+  "name": "期限番",
+  "short_name": "期限番",
+  "description": "期限切れで失うお金・ポイントを先に見える化",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#111827",
+  "lang": "ja",
+  "orientation": "portrait-primary"
+}
