@@ -1,0 +1,52 @@
+name: Build Kigenban Android
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'android-kigenban/**'
+      - '.github/workflows/build-kigenban-android.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 16 SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.1.0'
+
+      - name: Build debug APK and release AAB
+        working-directory: android-kigenban
+        run: |
+          gradle :app:assembleDebug
+          gradle :app:bundleRelease
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: kigenban-debug-apk
+          path: android-kigenban/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload unsigned release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: kigenban-release-aab-unsigned
+          path: android-kigenban/app/build/outputs/bundle/release/app-release.aab
