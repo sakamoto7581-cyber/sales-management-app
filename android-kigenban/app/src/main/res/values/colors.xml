@@ -4,4 +4,5 @@
     <color name="status_bar_color_dark">#0F0D0B</color>
     <color name="navigation_bar_color">#FFFFFF</color>
     <color name="navigation_bar_color_dark">#0F0D0B</color>
+    <color name="launcher_icon_background">#F7F4EA</color>
 </resources>
