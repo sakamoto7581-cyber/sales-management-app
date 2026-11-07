@@ -99,7 +99,7 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appeara
 .bh h2{font-size:16px}
 .bh h2.ttl{font-size:20px}
 .bh small{font-size:12.5px;color:var(--ink-soft)}
-.lnk{font-size:12.5px;color:var(--pink-deep);font-weight:700;min-height:44px;padding:0 4px;display:inline-flex;align-items:center}
+.lnk{font-size:12.5px;color:var(--pink-deep);font-weight:700;min-height:44px;padding:0 4px;display:inline-flex;align-items:center;gap:4px}
 .mh{font-size:14px;margin:20px 0 12px;display:flex;gap:8px;align-items:baseline}
 .mh small{font-size:12.5px;color:var(--ink-soft);font-weight:400}
 .mh:first-child{margin-top:0}
@@ -762,7 +762,7 @@ V.editEntry=(p,c)=>{
   <div class="fld"><span class="lbl">いっしょだった人</span>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${d.peopleIds.includes(q.id)?' on':''}" data-act="dPerson" data-id="${esc(q.id)}">${d.peopleIds.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:`<p class="muted">まだ誰も登録されていないよ</p>`}</div>
   <div class="fld"><span class="lbl">写真（${d.photoIds.length}枚えらんでる）</span><div class="pgrid"><button class="addtile tap" data-act="pickEntryPhotos">${icon('plus',22)}新しく追加</button>${phs.map(ph=>{const on=d.photoIds.includes(ph.id);return `<button class="tap${on?' sel':''}" data-act="dPhoto" data-id="${esc(ph.id)}" aria-pressed="${on}"><img src="${photoSrc(ph)}" alt="" loading="lazy">${on?`<span class="ck">${icon('check',14,2.4)}</span>`:''}</button>`}).join('')}</div></div>`;
   const ok=(d.title.trim()||d.body.trim())&&d.date;
-  return{head:hdBack(d.id?'日記をなおす':'日記をかく'),body:b,foot:`<button class="pbtn tap" data-act="saveEntry"${ok?'':' disabled'}>保存する</button>`,nav:false};
+  return{head:hdBack(d.id?'記録をなおす':'記録をかく'),body:b,foot:`<button class="pbtn tap" data-act="saveEntry"${ok?'':' disabled'}>保存する</button>`,nav:false};
 };
 function saveEntry(){
   const c=cur(),d=c.d;if(!d||!(d.title.trim()||d.body.trim())||!d.date)return;
@@ -777,7 +777,7 @@ function saveEntry(){
 V.people=()=>{
   const me=state.myProfile;
   let b=`<p class="catch">日記と、人と、写真と。</p>`;
-  b+=`<section class="blk"><button class="card mecard tap" data-act="openMe">${me?avatar(me,48,true):`<span class="av av-empty" style="--s:48px"><span>${icon('userplus',22)}</span></span>`}<span class="r-main"><b>${me?esc(me.name):'わたしのプロフィール'}</b><small>${me?esc(me.bio||'わたしのプロフィール'):'つくると、コードで交換できるよ'}</small></span><span class="chev">${icon('chev',18)}</span></button></section>`;
+  b+=`<section class="blk"><button class="card mecard tap" data-act="openMe">${me?avatar(me,48,true):`<span class="av av-empty" style="--s:48px"><span>${icon('userplus',22)}</span></span>`}<span class="r-main"><b>${me?esc(me.name):'わたしのプロフィール'}</b><small>${me?esc(me.bio||'わたしのプロフィール'):'つくると、コードで交換できるよ'}</small></span><span class="chev">${icon('chev',18)}</span></button><div class="btns" style="justify-content:flex-end"><button class="lnk" data-act="importCode">${icon('qr',16)}交換コードを取り込む</button></div></section>`;
   if(!ui.selecting)b+=noticesBlock();
   const all=sortedPeople();
   b+=`<section class="blk"><div class="bh"><h2 class="ttl">ひと</h2><small>${all.length}人</small><span class="sp"></span>${all.length>1?`<button class="lnk" data-act="selMode">${ui.selecting?'やめる':'メンバーで見る'}</button>`:''}</div>`;
@@ -813,7 +813,7 @@ V.person=p=>{
   let b=`<section class="hero">${avatar(q,80)}<h1>${esc(q.name)}</h1>${q.yomi?`<div class="yomi">${esc(q.yomi)}</div>`:''}
     <div class="tags">${q.relation?`<span class="pill">${esc(relLabel(q))}</span>`:''}${q.statusKey?`<span class="pill soft">${esc(statusLabel(q.statusKey))}</span>`:''}${x?`<span class="pill" style="background:var(--mint-soft)">${icon('link',12)}プロフィール交換で追加</span>`:''}</div>
     ${q.birthday?`<div class="bd">${icon('cake',16)}${fmtBday(q.birthday)}</div>`:''}
-    ${phone||mail||x?`<div class="btns">${phone?`<a class="sbtn line tap" href="${esc(telHref(phone))}" style="text-decoration:none">${icon('phone',18)}電話</a>`:''}${mail?`<a class="sbtn line tap" href="mailto:${esc(mail)}" style="text-decoration:none">${icon('mail',18)}メール</a>`:''}${x?`<button class="sbtn line tap" data-act="openChat" data-id="${esc(q.id)}">${icon('chat',18)}チャット</button>`:''}</div>`:''}
+    ${phone||mail||x?`<div class="btns">${phone?`<a class="sbtn line tap" href="${esc(telHref(phone))}" style="text-decoration:none">${icon('phone',18)}電話をかける</a>`:''}${mail?`<a class="sbtn line tap" href="mailto:${esc(mail)}" style="text-decoration:none">${icon('mail',18)}メールを送る</a>`:''}${x?`<button class="sbtn line tap" data-act="openChat" data-id="${esc(q.id)}">${icon('chat',18)}チャット</button>`:''}</div>`:''}
   </section>`;
   const own=kvRows([['関係',relLabel(q)],['容姿',q.appearance],['誕生日',q.birthday?fmtBday(q.birthday):''],['住んでいる場所',q.location],['仕事・学校',q.occupation],['近況',[statusLabel(q.statusKey),q.statusMemo].filter(Boolean).join('　')],['電話',q.phone],['メール',q.email],['好きなもの・メモ',q.memo]]);
   const ex=x?kvRows([['ひとこと',x.bio],['好きなもの',x.likes],['住んでいる場所',x.location],['仕事・学校',x.occupation],['近況',[statusLabel(x.statusKey),x.statusMemo].filter(Boolean).join('　')],['電話',x.phone],['メール',x.email]]):'';
@@ -980,11 +980,11 @@ V.search=(p,c)=>{
 function blankMe(){return{name:'',nameKanji:'',color:'pink',birthday:null,location:'',occupation:'',bio:'',likes:'',statusKey:'',statusMemo:'',phone:'',email:''}}
 V.me=()=>{
   const me=state.myProfile;
-  if(!me)return{head:hdBack('わたしのプロフィール'),body:`<section class="hero"><span class="av av-empty" style="--s:80px;margin:0 auto 12px"><span>${icon('userplus',32)}</span></span><h1>わたしのプロフィール</h1><p class="muted" style="margin-top:8px">名前や近況を書いておくと、<br>交換コードで相手に渡せるよ</p><div class="btns"><button class="sbtn pri tap" data-act="editMe">プロフィールをつくる</button><button class="sbtn tap" data-act="importCode">${icon('qr',18)}コードを取りこむ</button></div></section>`};
+  if(!me)return{head:hdBack('わたしのプロフィール'),body:`<section class="hero"><span class="av av-empty" style="--s:80px;margin:0 auto 12px"><span>${icon('userplus',32)}</span></span><h1>わたしのプロフィール</h1><p class="muted" style="margin-top:8px">名前や近況を書いておくと、<br>交換コードで相手に渡せるよ</p><div class="btns"><button class="sbtn pri tap" data-act="editMe">プロフィールをつくる</button><button class="sbtn tap" data-act="importCode">${icon('qr',18)}交換コードを取り込む</button></div></section>`};
   let b=`<section class="hero">${avatar(me,80,true)}<h1>${esc(me.name)}</h1><div class="tags">${me.statusKey?`<span class="pill soft">${esc(statusLabel(me.statusKey))}</span>`:''}</div>${me.birthday?`<div class="bd">${icon('cake',16)}${fmtBday(me.birthday)}</div>`:''}</section>`;
   const rows=kvRows([['ひとこと',me.bio],['好きなもの',me.likes],['住んでいる場所',me.location],['仕事・学校',me.occupation],['近況',[statusLabel(me.statusKey),me.statusMemo].filter(Boolean).join('　')],['電話',me.phone],['メール',me.email]]);
   b+=`<section class="blk"><div class="bh"><h2>わたしについて</h2><span class="sp"></span><button class="lnk" data-act="editMe">なおす</button></div>${rows?`<dl class="rows">${rows}</dl>`:'<p class="muted">名前のほかは、まだ何も書いてないよ</p>'}</section>`;
-  b+=`<section class="blk"><div class="bh"><h2>プロフィール交換</h2></div><p class="muted" style="margin-bottom:12px">交換コードに入るのは、ここに書いた公開用の項目だけ。相手につけた関係・容姿・メモは入らないよ。</p><div class="btns"><button class="sbtn pri tap" data-act="showCode">${icon('qr',18)}交換コードを出す</button><button class="sbtn tap" data-act="importCode">${icon('camera',18)}コードを取りこむ</button></div></section>`;
+  b+=`<section class="blk"><div class="bh"><h2>プロフィール交換</h2></div><p class="muted" style="margin-bottom:12px">交換コードに入るのは、ここに書いた公開用の項目だけ。相手につけた関係・容姿・メモは入らないよ。</p><div class="btns"><button class="sbtn pri tap" data-act="showCode">${icon('qr',18)}交換コードを発行する</button><button class="sbtn tap" data-act="importCode">${icon('camera',18)}交換コードを取り込む</button></div></section>`;
   return{head:hdBack('わたしのプロフィール'),body:b};
 };
 V.editMe=(p,c)=>{
@@ -1029,7 +1029,7 @@ const canCam=()=>'BarcodeDetector' in window&&!!(navigator.mediaDevices&&navigat
 function renderImport(){
   const s=ui.imp;if(!s)return;
   if(s.step==='input'){
-    openModal(`<h2>コードを取りこむ</h2><p class="muted">相手の交換コードを貼り付けるか、QRコードをカメラで読んでね。</p><textarea class="inp code" id="impText" style="margin-top:12px" placeholder="HIBITO1:…">${esc(s.text||'')}</textarea>${canCam()?'':'<p class="muted" style="margin-top:8px">このブラウザではカメラ読み取りが使えないから、貼り付けで取りこんでね。</p>'}<div class="btns">${canCam()?`<button class="sbtn tap" data-act="camStart">${icon('camera',18)}カメラで読む</button>`:''}<button class="sbtn pri tap" data-act="impParse">読み取る</button></div>`);
+    openModal(`<h2>交換コードを取り込む</h2><p class="muted">相手の交換コードを貼り付けるか、QRコードをカメラで読んでね。</p><textarea class="inp code" id="impText" style="margin-top:12px" placeholder="HIBITO1:…">${esc(s.text||'')}</textarea>${canCam()?'':'<p class="muted" style="margin-top:8px">このブラウザではカメラ読み取りが使えないから、貼り付けで取りこんでね。</p>'}<div class="btns">${canCam()?`<button class="sbtn tap" data-act="camStart">${icon('camera',18)}カメラで読む</button>`:''}<button class="sbtn pri tap" data-act="impParse">読み取る</button></div>`);
   }else if(s.step==='cam'){
     openModal(`<h2>QRコードを読む</h2><p class="muted" style="margin-bottom:12px">QRコードを枠の中に入れてね</p><video class="cam" id="cam" playsinline muted autoplay></video><div class="btns"><button class="sbtn tap" data-act="impBack">貼り付けにする</button></div>`);
   }else{
@@ -1148,13 +1148,18 @@ function settingsSheet(){
   const row=(act,ic,bg,label,danger)=>`<button class="srow tap${danger?' danger':''}" data-act="${act}"><span class="ci" style="background:${bg}">${icon(ic,20)}</span>${label}</button>`;
   openSheet(`<h2>設定</h2><div class="sub-h" style="margin-top:0">${icon('palette',14)}デザイン</div><div class="chips wrap" style="margin-bottom:8px">${THEMES.map(t=>`<button class="chip tap${th===t[0]?' on':''}" data-act="setTheme" data-v="${t[0]}"><i class="sw" style="background:${t[2]}"></i>${t[1]}</button>`).join('')}</div>
   ${row('guide','book','var(--mint-soft)','つかいかた')}
-  ${row('review','star','var(--butter-soft)',today().slice(0,4)+'年のふりかえり')}
-  ${row('importCode','qr','var(--mint-soft)','交換コードを取りこむ')}
-  ${s.pinHash?row('pinChange','lock','var(--lav-soft)','PINを変える')+row('pinOff','lock','var(--lav-soft)','PINロックを外す'):row('pinSet','lock','var(--lav-soft)','PINロックをかける')}
+  ${row('review','star','var(--butter-soft)','今年のふりかえり')}
+  ${row('importCode','qr','var(--mint-soft)','交換コードを取り込む')}
+  ${row('lockMenu','lock','var(--lav-soft)','アプリロック')}
   ${row('exportJson','download','var(--beige-soft)','データの書き出し')}
   ${row('importJson','upload','var(--beige-soft)','データの読み込み')}
   ${row('resetSample','refresh','var(--pink-soft)','サンプルデータに戻す')}
   ${row('deleteAll','trash','var(--pink-soft)','すべて削除',true)}`);
+}
+function lockSheet(){
+  const on=!!state.settings.pinHash;
+  const row=(act,label,danger)=>`<button class="srow tap${danger?' danger':''}" data-act="${act}"><span class="ci" style="background:var(--lav-soft)">${icon('lock',20)}</span>${label}</button>`;
+  openSheet(`<h2>アプリロック</h2><p class="muted" style="margin-bottom:8px">${on?'いまはPINでロックしているよ。開くときにPINが必要になるよ。':'4桁のPINを付けると、開くときにPINが必要になるよ。'}</p>${on?row('pinChange','PINを変える')+row('pinOff','PINを外す',true):row('pinSet','PINを付ける')}`);
 }
 function reviewSheet(){
   const y=today().slice(0,4);
@@ -1256,7 +1261,7 @@ const A={
   closeOv:()=>closeOv(),
   confirmOk:()=>{const f=ui.confirmFn;ui.confirmFn=null;if(f)f()},
   fab:()=>openSheet(`<h2>なにを追加する？</h2>
-    <button class="srow tap" data-act="newEntry"><span class="ci" style="background:var(--pink-soft)">${icon('pen',20)}</span>日記をかく</button>
+    <button class="srow tap" data-act="newEntry"><span class="ci" style="background:var(--pink-soft)">${icon('pen',20)}</span>記録をかく</button>
     <button class="srow tap" data-act="newPerson"><span class="ci" style="background:var(--mint-soft)">${icon('userplus',20)}</span>人を登録する</button>
     <button class="srow tap" data-act="addPhoto"><span class="ci" style="background:var(--butter-soft)">${icon('photo',20)}</span>写真を追加する</button>`),
   search:()=>go('search'),
@@ -1316,6 +1321,7 @@ const A={
   sendMsg:()=>sendMsg(),
   setTheme:el=>{state.settings.theme=el.dataset.v;applyTheme();save();settingsSheet();render()},
   review:()=>reviewSheet(),
+  lockMenu:()=>lockSheet(),
   pinSet:()=>startPin('set1'),
   pinChange:()=>startPin('verify','change'),
   pinOff:()=>startPin('verify','off'),
@@ -1328,7 +1334,7 @@ const A={
   deleteAll:()=>confirmDlg('本当にすべて削除する？','削除する',()=>{Object.assign(state,{people:[],entries:[],photos:[],messages:[],myProfile:null});if(save()){toast('すべて削除したよ');resetUI()}else render()})
 };
 /* オーバーレイの中で完結する操作（シートを閉じない） */
-const KEEP=new Set(['setTheme','phPeopleToggle','phEntryToggle','impRel','impSub','impParse','impBack','camStart','copyCode','importCode','review','phPeople','phEntries','closeOv','impSave','phPeopleSave','delEntry','delPerson','delPhoto','resetSample','deleteAll']);
+const KEEP=new Set(['lockMenu','setTheme','phPeopleToggle','phEntryToggle','impRel','impSub','impParse','impBack','camStart','copyCode','importCode','review','phPeople','phEntries','closeOv','impSave','phPeopleSave','delEntry','delPerson','delPhoto','resetSample','deleteAll']);
 function phPeopleSheet(){
   const t=ui.tmp,ppl=sortedPeople();
   openSheet(`<h2>写っている人</h2>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${t.ids.includes(q.id)?' on':''}" data-act="phPeopleToggle" data-id="${esc(q.id)}">${t.ids.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:'<p class="muted">まだ誰も登録されていないよ</p>'}<div class="fld" style="margin-top:16px"><label for="f-phm">メモ</label><input class="inp" id="f-phm" data-tbind="memo" value="${esc(t.memo)}" placeholder="例：夕日がきれいだった"></div><button class="pbtn tap" data-act="phPeopleSave">保存する</button>`);
