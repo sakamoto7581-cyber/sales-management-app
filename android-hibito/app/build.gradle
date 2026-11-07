@@ -1,0 +1,73 @@
+plugins {
+    id 'com.android.application'
+}
+
+// 署名鍵は環境変数から読む（鍵そのものはリポジトリに置かない）
+def keystorePath = System.getenv('HIBITO_KEYSTORE_FILE')
+
+android {
+    namespace 'jp.hibitolog.app'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'jp.hibitolog.app'
+        minSdk 26
+        targetSdk 36
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePath) {
+                storeFile file(keystorePath)
+                storePassword System.getenv('HIBITO_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('HIBITO_KEY_ALIAS')
+                keyPassword System.getenv('HIBITO_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (keystorePath) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            assets.srcDir("$buildDir/generated/hibitoWeb")
+        }
+    }
+}
+
+// Web版（../../hibito）をそのままアプリに同梱する。Web版を直せばアプリも同じ内容になる
+def webSource = file('../../hibito')
+def webOutput = file("$buildDir/generated/hibitoWeb")
+
+tasks.register('copyHibitoWeb', Copy) {
+    from(webSource) {
+        include 'hibito.html'
+        include 'assets/**'
+    }
+    into webOutput
+}
+
+tasks.named('preBuild').configure {
+    dependsOn('copyHibitoWeb')
+}
+
+dependencies {
+    implementation 'androidx.activity:activity:1.9.3'
+    implementation 'androidx.core:core:1.13.1'
+    implementation 'androidx.webkit:webkit:1.12.1'
+}

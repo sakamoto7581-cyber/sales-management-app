@@ -1031,7 +1031,10 @@ function sendMsg(){
 /* ===== 設定・ふりかえり ===== */
 function applyTheme(){
   const t=state.settings.theme||'milk';document.documentElement.dataset.theme=t;
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#FFFBF6';
+  const bg=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#FFFBF6';
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=bg;
+  /* Androidアプリ版：画面上下のバーの色を合わせる */
+  try{if(window.HibitoAndroid&&HibitoAndroid.setThemeColor)HibitoAndroid.setThemeColor(bg)}catch(e){}
 }
 function settingsSheet(){
   const s=state.settings,th=s.theme||'milk';
@@ -1058,9 +1061,12 @@ function reviewSheet(){
 }
 function exportJson(){
   const o=JSON.parse(JSON.stringify(state));o.settings={theme:state.settings.theme};o.exportedAt=new Date().toISOString();
+  /* Androidアプリ版：保存先を選んで書き出す（WebViewはダウンロードを扱えないため） */
+  if(window.HibitoAndroid&&HibitoAndroid.saveTextFile){try{HibitoAndroid.saveTextFile(`hibito-${today()}.json`,JSON.stringify(o));return}catch(e){}}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download=`hibito-${today()}.json`;
   document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('書き出したよ');
 }
+window.hibitoSaved=ok=>toast(ok?'書き出したよ':'書き出せなかったよ');
 function resetUI(){ui.rel='';ui.sub='';ui.phFilter='';ui.selecting=false;ui.sel=[];tab('people')}
 
 /* ===== アプリロック（PIN・ハッシュ保存） ===== */
