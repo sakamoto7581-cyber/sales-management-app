@@ -8,7 +8,7 @@ Web版 `hibito/hibito.html` をアプリに同梱し、WebViewで開くAndroid�
 - アプリ名：ひびとlog
 - Application ID：`jp.hibitolog.app`（Playで一度公開すると変更できません。変えるなら初回アップロード前に）
 - minSdk 26（Android 8.0以上）／ targetSdk・compileSdk 36（Android 16）
-- バージョン：versionCode 1 ／ versionName 1.0.0（Playに上げるたびに versionCode を1ずつ増やす）
+- バージョン：自動。GitHub Actions の実行番号が versionCode になり、versionName は `1.0.<実行番号>`（手元のビルドは 1）。実行ごとに必ず増えるので、Playに上げるたびに手で上げる必要はない
 - 権限：インターネット（見出し用のWebフォントのみ）、カメラ（QR読み取りのみ・任意）
 
 ## Web版との連携
@@ -27,6 +27,9 @@ GitHub Actions の「Build Hibito Android」が、`android-hibito/` か `hibito/
 完了した実行の Artifacts から次の2つを取れます。
 
 - `hibito-debug-apk`：手元の端末に入れて試す用
+  - アプリ名「ひびとlog 試用」、ID `jp.hibitolog.app.debug`。Play版とは別アプリとして入る
+  - いつも同じ鍵（`app/debug.keystore`）で署名するので、新しい試用版を上書きで入れられ、記録も残る
+  - `debug.keystore` は試用版専用で、Android標準のデバッグ鍵と同じく秘密ではない。Play用の鍵とは別物
 - `hibito-release-aab`：Play Console にアップロードする用
 
 ### 署名（Playにアップロードするために必要）
