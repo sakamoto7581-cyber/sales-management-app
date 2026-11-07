@@ -5,6 +5,9 @@ plugins {
 // 署名鍵は環境変数から読む（鍵そのものはリポジトリに置かない）
 def keystorePath = System.getenv('HIBITO_KEYSTORE_FILE')
 
+// 版番号：GitHub Actions の実行番号を使う（実行ごとに必ず増えるので、Playに上げるたびに上がる）。手元のビルドは 1
+def buildNumber = (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
+
 android {
     namespace 'jp.hibitolog.app'
     compileSdk 36
@@ -13,11 +16,19 @@ android {
         applicationId 'jp.hibitolog.app'
         minSdk 26
         targetSdk 36
-        versionCode 1
-        versionName '1.0.0'
+        versionCode buildNumber
+        versionName "1.0.${buildNumber}"
     }
 
     signingConfigs {
+        // 試用版（debug）用の固定鍵。Android標準のデバッグ鍵と同じく秘密ではない。
+        // 毎回同じ鍵で署名するので、新しい試用版を上書きで入れられ、記録も残る
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
         release {
             if (keystorePath) {
                 storeFile file(keystorePath)
@@ -29,6 +40,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Play版と別アプリとして入るので、Play版を入れても試用版の記録は消えない
+            applicationIdSuffix '.debug'
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
