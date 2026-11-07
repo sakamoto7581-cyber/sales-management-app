@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="ja" data-theme="milk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFFBF6">
+<title>ひびとlog</title>
+<link rel="icon" href="assets/symbol.png">
+<link rel="apple-touch-icon" href="assets/symbol.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Shippori+Mincho:wght@400;700&display=swap">
+<style>
+/* ===== フェーズ1：デザイントークン ===== */
+:root{
+  --bg:#FFFBF6; --bg-outer:#F6EEE7; --card:#FFFFFF;
+  --ink:#4A403A; --ink-soft:#8A7D74; --ink-faint:#B8ABA1; --line:#F1E6DC;
+  --pink:#F7C8C4; --pink-deep:#E8877F; --pink-soft:#FDECEA;
+  --mint:#BFE3D0; --mint-soft:#EAF6EF;
+  --beige:#EAD9C2; --beige-soft:#F8F0E4;
+  --lav:#DCD2F0; --lav-soft:#F1EDFB;
+  --butter:#F9E3A1; --butter-soft:#FEF6DB;
+  --danger:#D96C5F;
+  --radius-card:20px; --radius-input:14px; --radius-photo:16px;
+  --shadow-card:0 4px 20px rgba(190,150,130,.08);
+  --shadow-fab:0 8px 24px rgba(232,135,127,.35);
+  --font-head:'Zen Maru Gothic','M PLUS Rounded 1c','Hiragino Maru Gothic ProN','BIZ UDPGothic',sans-serif;
+  --font-body:'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif;
+  --hd-bg:rgba(255,251,246,.92); --nav-bg:rgba(255,255,255,.92);
+  /* 個人の色（テーマ対象外） */
+  --pc-pink:#F7C8C4; --pc-mint:#BFE3D0; --pc-beige:#EAD9C2; --pc-lav:#DCD2F0; --pc-butter:#F9E3A1; --pc-soft:#FDECEA;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="plain"]{
+  --bg:#FAFAF8; --bg-outer:#EFEFEB; --card:#FFFFFF;
+  --ink:#333333; --ink-soft:#75756F; --ink-faint:#AEAEA6; --line:#E8E8E2;
+  --pink:#D9D9D0; --pink-deep:#5F5F58; --pink-soft:#F0F0EA; --beige-soft:#F2F2EE;
+  --radius-card:12px; --radius-input:10px; --radius-photo:10px;
+  --shadow-card:0 1px 3px rgba(0,0,0,.05); --shadow-fab:0 4px 10px rgba(0,0,0,.12);
+  --font-head:var(--font-body); --hd-bg:rgba(250,250,248,.92);
+}
+:root[data-theme="quiet"]{
+  --bg:#F4F3EE; --bg-outer:#E8E7E0; --card:#FCFCFA;
+  --ink:#2F3532; --ink-soft:#69716C; --ink-faint:#A2A9A4; --line:#E1E1D8;
+  --pink:#A8BFA5; --pink-deep:#57705F; --pink-soft:#E9EFE7; --beige-soft:#ECEBE4;
+  --radius-card:16px; --radius-input:12px; --radius-photo:14px;
+  --shadow-card:0 3px 14px rgba(70,90,75,.07); --shadow-fab:0 6px 18px rgba(87,112,95,.3);
+  --font-head:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif; --hd-bg:rgba(244,243,238,.92);
+}
+:root[data-theme="note"]{
+  --bg:#FBF5E9; --bg-outer:#F0E5CF; --card:#FFFDF6;
+  --ink:#4A3F33; --ink-soft:#85786A; --ink-faint:#B8AA98; --line:#E3D2B6;
+  --pink:#E4B98F; --pink-deep:#C05B2E; --pink-soft:#F9EBD6; --beige-soft:#F5EAD7;
+  --radius-card:10px; --radius-input:10px; --radius-photo:10px;
+  --shadow-card:0 3px 12px rgba(150,110,60,.08); --shadow-fab:0 6px 18px rgba(192,91,46,.3);
+  --hd-bg:rgba(251,245,233,.92); --nav-bg:rgba(255,253,246,.92);
+}
+
+/* ===== 基本 ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg-outer);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.7;font-weight:400;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+#app{max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--bg);border-left:1px solid var(--line);border-right:1px solid var(--line);position:relative}
+@media (max-width:521px){#app{border-left:0;border-right:0}}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+img{display:block}
+b,strong,h1,h2,h3{font-weight:700}
+h1,h2,h3,.logo,.ttl{font-family:var(--font-head)}
+.ic{display:block;flex:none}
+.tap{transition:transform 180ms ease,background-color 180ms ease}
+.tap:active{transform:scale(.97)}
+.muted{color:var(--ink-soft);font-size:12.5px}
+.sp{flex:1}
+.hide{display:none!important}
+
+/* ===== ヘッダー ===== */
+.hd{position:sticky;top:0;z-index:20;height:56px;display:flex;align-items:center;gap:10px;padding:0 20px;background:var(--bg);background:var(--hd-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:.02em;line-height:1}
+.logo img{width:28px;height:28px;border-radius:9px;object-fit:cover}
+.logo small{font-size:16px;margin-left:1px}
+.logo .dot{width:6px;height:6px;border-radius:50%;background:var(--pink-deep);align-self:flex-end;margin:0 0 3px -4px}
+.hd-r{margin-left:auto;display:flex;gap:8px}
+.cbtn{width:40px;height:40px;border-radius:50%;background:var(--card);box-shadow:var(--shadow-card);display:grid;place-items:center;color:var(--ink);flex:none}
+.cbtn-sp{width:40px;flex:none}
+.hd-t{font-size:16px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd .inp{flex:1;height:40px;padding:8px 14px}
+input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+
+/* ===== 本体 ===== */
+#main{padding:8px 20px calc(120px + var(--safe-b))}
+#app.no-nav #main{padding-bottom:calc(40px + var(--safe-b))}
+#app.has-foot #main{padding-bottom:calc(110px + var(--safe-b))}
+#app.has-foot.has-nav #main{padding-bottom:calc(180px + var(--safe-b))}
+.fade{animation:fade 180ms ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.catch{font-size:12.5px;color:var(--ink-soft);margin:0 0 12px}
+.blk+.blk,.hero+.blk{margin-top:32px}
+.bh{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.bh h2{font-size:16px}
+.bh h2.ttl{font-size:20px}
+.bh small{font-size:12.5px;color:var(--ink-soft)}
+.lnk{font-size:12.5px;color:var(--pink-deep);font-weight:700;min-height:44px;padding:0 4px;display:inline-flex;align-items:center}
+.mh{font-size:14px;margin:20px 0 12px;display:flex;gap:8px;align-items:baseline}
+.mh small{font-size:12.5px;color:var(--ink-soft);font-weight:400}
+.mh:first-child{margin-top:0}
+
+/* カード・行 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:16px;display:block;width:100%}
+.stack>*+*{margin-top:12px}
+.rows{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.r-main{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.45}
+.r-main b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-main small{font-size:12.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chev{color:var(--ink-faint)}
+.kv{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);min-height:48px;align-items:baseline}
+.kv dt{width:108px;flex:none;font-size:12.5px;color:var(--ink-soft)}
+.kv dd{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word}
+.kv dd a{color:var(--ink)}
+.sub-h{font-size:12.5px;color:var(--ink-soft);margin:20px 0 4px;display:flex;align-items:center;gap:6px}
+
+/* 名前アイコン */
+.av{width:var(--s);height:var(--s);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;color:var(--ink);font-family:var(--font-head);font-weight:700;box-shadow:0 0 0 2px var(--bg);line-height:1;overflow:hidden}
+.av>span{display:inline-flex;align-items:baseline;line-height:1}
+.av b{font-size:calc(var(--s)*.44)}
+.av i{font-style:normal;font-size:calc(var(--s)*.24);margin-left:1px}
+.avs{display:inline-flex;flex:none}
+.avs .av+.av{margin-left:-6px}
+.av-empty{background:var(--beige-soft);color:var(--ink-faint)}
+
+/* ピル・チップ */
+.pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:11px;background:var(--beige-soft);color:var(--ink);white-space:nowrap}
+.pill.soft{background:var(--pink-soft)}
+.mood{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-soft)}
+.mood i{width:8px;height:8px;border-radius:50%;display:block}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:6px 20px}
+.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible;margin:0;padding:6px 0}
+.chip{position:relative;height:32px;padding:0 14px;border-radius:999px;font-size:12.5px;background:var(--card);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;display:inline-flex;align-items:center;gap:4px;flex:none}
+.chip::before{content:"";position:absolute;inset:-6px -2px}
+.chip.on{background:var(--pink-soft);border-color:var(--pink-deep);color:var(--ink)}
+.chip .sw{width:12px;height:12px;border-radius:50%;display:block}
+
+/* 日記カード（簡素形） */
+.ecard{display:flex;gap:12px;align-items:flex-start;text-align:left}
+.ec-main{flex:1;min-width:0}
+.ec-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ecard h3{font-size:16px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clamp1{font-size:15px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ec-ppl{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12.5px;color:var(--ink-soft);min-width:0}
+.ec-ppl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.th{position:relative;flex:none;width:64px;height:64px;border-radius:12px;overflow:hidden;background:var(--beige-soft)}
+.th img{width:100%;height:100%;object-fit:cover}
+.th span{position:absolute;inset:0;display:grid;place-items:center;background:rgba(74,64,58,.38);color:#fff;font-size:12.5px;font-weight:700}
+.th.sm{width:44px;height:44px;border-radius:10px}
+
+/* 写真グリッド */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pgrid>button,.pgrid>div{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--beige-soft);display:block;width:100%}
+.pgrid img{width:100%;height:100%;object-fit:cover}
+.pgrid .sel{outline:2.5px solid var(--pink-deep);outline-offset:-2.5px}
+.pgrid .ck{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:var(--pink-deep);color:#fff;display:grid;place-items:center}
+.pgrid .addtile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1.5px dashed var(--pink);background:var(--card);color:var(--ink-soft);font-size:12px}
+
+/* 入力 */
+.fld{margin-bottom:24px}
+.fld>label,.fld>.lbl{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:8px}
+.inp{width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-input);padding:12px 14px;font-size:15px;color:var(--ink);font-family:inherit;outline:none;transition:border-color 180ms ease,box-shadow 180ms ease;-webkit-appearance:none;appearance:none}
+.inp:focus{border-color:var(--pink-deep);box-shadow:0 0 0 3px var(--pink-soft)}
+textarea.inp{min-height:140px;line-height:1.7;resize:vertical;display:block}
+select.inp{width:auto;padding-right:32px;background-image:none}
+.two{display:flex;gap:8px;align-items:center}
+.colors{display:flex;gap:12px;flex-wrap:wrap}
+.colors button{width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+.colors button i{width:34px;height:34px;border-radius:50%;display:block;box-shadow:0 0 0 1px rgba(74,64,58,.06)}
+.colors button.on i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--pink-deep)}
+.req{color:var(--pink-deep)}
+
+/* ボタン */
+.pbtn{height:52px;width:100%;border-radius:999px;background:var(--pink-deep);color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.pbtn:disabled{background:var(--pink);cursor:default}
+.sbtn{height:44px;padding:0 20px;border-radius:999px;background:var(--beige-soft);color:var(--ink);font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.sbtn.pri{background:var(--pink-deep);color:#fff;font-weight:700}
+.sbtn.danger{background:var(--danger);color:#fff;font-weight:700}
+.sbtn.line{background:var(--card);border:1px solid var(--line)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btns.c{justify-content:center}
+
+/* 下部固定 */
+.foot{position:fixed;left:0;right:0;margin:0 auto;max-width:520px;bottom:0;z-index:25;padding:12px 20px calc(12px + var(--safe-b));background:var(--bg);background:var(--hd-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#app.has-nav .foot{bottom:calc(64px + var(--safe-b));padding-bottom:12px;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+.foot:empty{display:none}
+
+/* 下部ナビ */
+.nav{position:fixed;left:0;right:0;margin:0 auto;max-width:520px;bottom:0;z-index:30;height:calc(64px + var(--safe-b));padding-bottom:var(--safe-b);background:var(--nav-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}
+#app.no-nav .nav{display:none}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink-faint);font-size:10px;line-height:1.2;min-height:44px}
+.tab .tp{width:48px;height:32px;border-radius:999px;display:grid;place-items:center;transition:background-color 180ms ease}
+.tab.on{color:var(--ink)}
+.tab.on .tp{background:var(--pink-soft)}
+.fabw{display:flex;justify-content:center}
+.fab{width:52px;height:52px;border-radius:50%;background:var(--pink-deep);color:#fff;box-shadow:var(--shadow-fab);display:grid;place-items:center;transform:translateY(-14px);transition:transform 180ms ease}
+.fab:active{transform:translateY(-14px) scale(.97)}
+
+/* オーバーレイ */
+#ov{position:fixed;inset:0;z-index:60;display:none}
+#ov.open{display:block}
+.scrim{position:absolute;inset:0;background:rgba(74,64,58,.28);animation:fadeo 180ms ease}
+@keyframes fadeo{from{opacity:0}}
+.sheet{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:520px;background:var(--card);border-radius:24px 24px 0 0;padding:8px 20px calc(24px + var(--safe-b));max-height:88vh;overflow:auto;box-shadow:0 -8px 30px rgba(120,90,70,.12);animation:up 180ms ease}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+.sheet .grab{width:40px;height:4px;border-radius:999px;background:var(--line);margin:4px auto 12px}
+.sheet h2{font-size:16px;margin:4px 0 12px}
+.srow{display:flex;align-items:center;gap:14px;height:64px;width:100%;font-size:15px;text-align:left;border-radius:16px}
+.srow .ci{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--ink)}
+.srow.danger{color:var(--danger)}
+.modal-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none}
+.modal{pointer-events:auto;width:100%;max-width:400px;background:var(--card);border-radius:24px;padding:24px;max-height:88vh;overflow:auto;box-shadow:0 12px 40px rgba(120,90,70,.16);animation:fade 180ms ease}
+.modal h2{font-size:16px;margin-bottom:8px}
+.modal p{font-size:15px}
+.modal .btns{margin-top:20px;justify-content:flex-end}
+
+/* トースト */
+#toast{position:fixed;left:50%;bottom:calc(96px + var(--safe-b));transform:translateX(-50%);background:var(--ink);color:#fff;font-size:12.5px;padding:10px 18px;border-radius:999px;z-index:90;opacity:0;pointer-events:none;transition:opacity 180ms ease;max-width:calc(100% - 40px);text-align:center}
+#toast.show{opacity:1}
+
+/* 空状態・素材 */
+.art{width:100%;height:100%;object-fit:contain}
+.empty{text-align:center;padding:12px 0 8px}
+.empty .ew{width:160px;aspect-ratio:1;margin:0 auto 8px}
+.empty p{font-size:15px;margin-bottom:16px}
+.welcome-art{aspect-ratio:3/2;width:100%;max-width:420px;margin:0 auto}
+
+/* ひと画面 */
+.mecard{display:flex;align-items:center;gap:12px;text-align:left}
+.mecard .r-main b{font-size:15px}
+.ck-c{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;color:#fff;background:var(--card)}
+.row.on .ck-c{background:var(--pink-deep);border-color:var(--pink-deep)}
+.row.on{background:var(--pink-soft);border-radius:12px;border-bottom-color:transparent;padding-left:8px;padding-right:8px}
+
+/* 詳細ヘッダー */
+.hero{text-align:center;padding:8px 0 4px}
+.hero .av{margin:0 auto 12px}
+.hero h1{font-size:20px;line-height:1.4}
+.hero .yomi{font-size:12.5px;color:var(--ink-soft)}
+.hero .tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.hero .bd{display:flex;align-items:center;gap:6px;justify-content:center;font-size:12.5px;color:var(--ink-soft);margin-top:8px}
+.hero .btns{margin-top:16px;justify-content:center}
+.tl-d{width:72px;flex:none;font-size:12.5px;color:var(--ink-soft);line-height:1.4}
+
+/* 日記詳細 */
+.e-title{font-size:20px;line-height:1.5;margin:10px 0 12px}
+.e-body{font-size:15px;line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.e-ph1{width:100%;border-radius:var(--radius-photo);overflow:hidden;background:var(--beige-soft)}
+.e-ph1 img{width:100%;height:auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.g2 button{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--beige-soft)}
+.g2 img{width:100%;height:100%;object-fit:cover}
+
+/* 写真詳細 */
+.ph-big{border-radius:var(--radius-photo);overflow:hidden;background:var(--beige-soft);display:flex;justify-content:center}
+.ph-big img{max-width:100%;max-height:60vh;width:auto;height:auto;object-fit:contain}
+
+/* チャット */
+.note-bar{font-size:12px;color:var(--ink-soft);background:var(--beige-soft);border-radius:999px;padding:6px 14px;text-align:center;margin-bottom:16px}
+.msgs{display:flex;flex-direction:column;gap:8px}
+.bub{max-width:78%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.bub.me{align-self:flex-end;background:var(--pink-soft);border-bottom-right-radius:6px}
+.bub.them{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:6px}
+.bub-t{font-size:11px;color:var(--ink-faint);margin-top:-4px}
+.bub-t.me{align-self:flex-end}
+.chatbar{display:flex;gap:8px;align-items:flex-end}
+.chatbar .inp{flex:1;min-height:44px;max-height:120px;padding:10px 14px;resize:none;line-height:1.5}
+.sendb{width:44px;height:44px;border-radius:50%;background:var(--pink-deep);color:#fff;display:grid;place-items:center;flex:none}
+.sendb:disabled{background:var(--pink)}
+
+/* QR・コード */
+.qr{width:220px;max-width:100%;margin:12px auto;background:#fff;border-radius:16px;padding:8px}
+.qr svg{display:block;width:100%;height:auto}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;min-height:88px!important;word-break:break-all}
+video.cam{width:100%;border-radius:16px;background:var(--beige-soft);aspect-ratio:1;object-fit:cover}
+
+/* ロック */
+#lock{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+#lock.open{display:flex}
+#lock h2{font-family:var(--font-head);font-size:16px;margin:12px 0 4px}
+#lock .err{font-size:12.5px;color:var(--danger);min-height:22px}
+.dots{display:flex;gap:16px;margin:16px 0 24px}
+.dots i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--pink-deep)}
+.dots i.f{background:var(--pink-deep)}
+.pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+.pad button{width:72px;height:72px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:22px;font-family:var(--font-head);display:grid;place-items:center}
+.pad button.ghost{background:none;border:0}
+
+/* 統計（ふりかえり） */
+.big-n{font-size:28px;font-family:var(--font-head);font-weight:700;line-height:1.2}
+.rv{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.rv .card{text-align:center;padding:14px}
+</style>
+</head>
+<body>
+<div id="app" class="has-nav">
+  <header class="hd" id="hd"></header>
+  <main id="main"></main>
+  <div class="foot" id="foot"></div>
+  <nav class="nav" id="nav" aria-label="メニュー"></nav>
+</div>
+<div id="ov"></div>
+<div id="lock"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="fileAdd" accept="image/*" multiple hidden>
+<input type="file" id="fileEntry" accept="image/*" multiple hidden>
+<input type="file" id="fileJson" accept="application/json,.json" hidden>
+<script>
+'use strict';
+/* ===== フェーズ1：共通部品 ===== */
+const KEY='hibito_v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let seq=0;const uid=()=>String(Date.now())+'-'+(++seq);
+const first=s=>{const a=Array.from(String(s||'').trim());return a[0]||''};
+
+/* 日付 */
+const pad2=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const today=()=>ymd(new Date());
+const parseD=s=>{const[y,m,d]=String(s).split('-').map(Number);return new Date(y,m-1,d)};
+const WD='日月火水木金土';
+const fmtDate=s=>{const d=parseD(s);return `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）`};
+const fmtMD=s=>{const d=parseD(s);return `${d.getMonth()+1}月${d.getDate()}日`};
+const fmtBday=b=>{const[m,d]=b.split('-').map(Number);return `${m}月${d}日`};
+const addDays=(s,n)=>{const d=parseD(s);d.setDate(d.getDate()+n);return ymd(d)};
+const daysBetween=(a,b)=>Math.round((parseD(b)-parseD(a))/864e5);
+const monthLabel=s=>{const[y,m]=s.split('-').map(Number);return (String(y)===today().slice(0,4)?'':y+'年')+m+'月'};
+
+/* 語彙 */
+const REL={家族:['父','母','配偶者','きょうだい','子ども','祖父母','親戚','いとこ'],友達:['幼なじみ','地元の友達','高校の友達','大学の友達','ママ友','パパ友','オンラインの友達'],仕事:['同僚','上司','部下','取引先','お客さん','元同僚'],学校:['同級生','先輩','後輩','先生'],趣味:['趣味仲間','サークル仲間','習い事の仲間'],地域:['近所の人','町内の人'],その他:['知人','その他']};
+const REL_KEYS=Object.keys(REL);
+const REL_CHAR={家族:'家',友達:'友',仕事:'仕',学校:'学',趣味:'趣',地域:'地',その他:'他'};
+const STATUS=[['genki','元気'],['busy','忙しい'],['ganbaru','頑張ってる'],['rest','お休み中'],['away','連絡とってない']];
+const statusLabel=k=>(STATUS.find(s=>s[0]===k)||[])[1]||'';
+const MOODS=[['happy','うれしい','var(--pc-butter)'],['calm','おだやか','var(--pc-mint)'],['normal','ふつう','var(--pc-beige)'],['tired','つかれた','var(--pc-lav)'],['sad','かなしい','var(--pc-pink)']];
+const COLORS={pink:'var(--pc-pink)',mint:'var(--pc-mint)',beige:'var(--pc-beige)',lav:'var(--pc-lav)',butter:'var(--pc-butter)',soft:'var(--pc-soft)'};
+const THEMES=[['milk','ミルク','#F7C8C4'],['plain','まっしろ','#D9D9D0'],['quiet','しずか','#A8BFA5'],['note','てちょう','#E4B98F']];
+
+/* アイコン（線の丸いSVG） */
+const IP={
+ search:'<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+ more:'<circle cx="6" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="18" cy="12" r="1.2" fill="currentColor"/>',
+ back:'<path d="M15 5l-7 7 7 7"/>',
+ chev:'<path d="M9 5l7 7-7 7"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ people:'<circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5c0-3.4 2.7-5.8 6-5.8s6 2.4 6 5.8"/><path d="M15.5 5.3a3.2 3.2 0 010 6.4M17.5 13.9c2 .7 3.5 2.6 3.5 5.6"/>',
+ book:'<path d="M6 4h9a4 4 0 014 4v12H9a3 3 0 01-3-3z"/><path d="M6 17a3 3 0 013-3h10"/><path d="M10 8h5"/>',
+ photo:'<rect x="3" y="5" width="18" height="14" rx="4"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-9 8"/>',
+ pen:'<path d="M5 19.5l3.8-.9L19 8.4a2 2 0 000-2.8l-.6-.6a2 2 0 00-2.8 0L5.4 15.2z"/><path d="M14 7l3 3"/>',
+ userplus:'<circle cx="10" cy="8" r="3.8"/><path d="M3.5 20c0-3.6 2.9-6 6.5-6 1.3 0 2.5.3 3.5.9"/><path d="M18 14v6M15 17h6"/>',
+ cake:'<path d="M4 20h16"/><path d="M5.5 20v-6a2 2 0 012-2h9a2 2 0 012 2v6"/><path d="M5.5 15.5c2 1.3 4.2 1.3 6.5 0s4.5-1.3 6.5 0"/><path d="M12 12V8.5"/><path d="M12 4.5c.8.9.8 1.8 0 2.5-.8-.7-.8-1.6 0-2.5z"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ phone:'<path d="M7 3.5h2.5l1.8 4.6-2.2 1.4a11 11 0 005.4 5.4l1.4-2.2 4.6 1.8V17a3 3 0 01-3 3A15.5 15.5 0 014 6.5a3 3 0 013-3z"/>',
+ mail:'<rect x="3" y="5" width="18" height="14" rx="4"/><path d="M4.5 8l7.5 5.5L19.5 8"/>',
+ chat:'<path d="M5 18.5V16a3 3 0 01-1-2.2V7a3 3 0 013-3h10a3 3 0 013 3v6.8a3 3 0 01-3 3H8.5z"/>',
+ trash:'<path d="M4.5 7h15"/><path d="M9.5 7V5a1.5 1.5 0 011.5-1.5h2A1.5 1.5 0 0114.5 5v2"/><path d="M6.5 7l.9 11.5a2 2 0 002 1.5h5.2a2 2 0 002-1.5L17.5 7"/>',
+ qr:'<rect x="4" y="4" width="6" height="6" rx="1.8"/><rect x="14" y="4" width="6" height="6" rx="1.8"/><rect x="4" y="14" width="6" height="6" rx="1.8"/><path d="M14 14h2.5v2.5M20 14v.01M14 20h.01M17.5 20H20v-3"/>',
+ lock:'<rect x="5" y="10.5" width="14" height="10" rx="3"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>',
+ camera:'<rect x="3" y="7" width="18" height="13" rx="4"/><circle cx="12" cy="13.5" r="3.5"/><path d="M9 7l1.2-2.5h3.6L15 7"/>',
+ download:'<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/>',
+ upload:'<path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 20h14"/>',
+ star:'<path d="M12 4l1.9 5.1L19 11l-5.1 1.9L12 18l-1.9-5.1L5 11l5.1-1.9z"/>',
+ palette:'<path d="M12 4a8 8 0 100 16c1.2 0 1.8-.8 1.8-1.7 0-1.4-1.3-1.7-1.3-3 0-1 .8-1.6 1.8-1.6H17a3 3 0 003-3C20 7 16.4 4 12 4z"/><circle cx="8" cy="11" r="1" fill="currentColor"/><circle cx="11.5" cy="8" r="1" fill="currentColor"/><circle cx="15.5" cy="9" r="1" fill="currentColor"/>',
+ refresh:'<path d="M19.5 12a7.5 7.5 0 01-13.2 4.9M4.5 12a7.5 7.5 0 0113.2-4.9"/><path d="M18 3.5v3.8h-3.8M6 20.5v-3.8h3.8"/>',
+ close:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+ group:'<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2.5 19c0-3 2.4-5 5.5-5 1.6 0 3 .5 4 1.4 1-.9 2.4-1.4 4-1.4 3.1 0 5.5 2 5.5 5"/>',
+ send:'<path d="M5 12h12M12 6.5L17.5 12 12 17.5"/>',
+ copy:'<rect x="8.5" y="8.5" width="11" height="11" rx="3"/><path d="M15.5 8.5V7a2.5 2.5 0 00-2.5-2.5H7A2.5 2.5 0 004.5 7v6A2.5 2.5 0 007 15.5h1.5"/>',
+ link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+ edit:'<path d="M5 19.5l3.8-.9L19 8.4a2 2 0 000-2.8l-.6-.6a2 2 0 00-2.8 0L5.4 15.2z"/>',
+ heart:'<path d="M12 19s-7-4.3-7-9.5A3.8 3.8 0 0112 7.3a3.8 3.8 0 017 2.2C19 14.7 12 19 12 19z"/>'
+};
+const icon=(n,s=22,w=1.8)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IP[n]||''}</svg>`;
+
+/* 名前アイコン：主文字＋関係文字 */
+function avatar(p,size,self){
+  if(!p) return `<span class="av av-empty" style="--s:${size}px"><span><b>？</b></span></span>`;
+  const main=first(p.nameKanji)||first(p.name)||'？';
+  const sub=self?'':(REL_CHAR[p.relation]||'');
+  return `<span class="av" style="--s:${size}px;background:${COLORS[p.color]||COLORS.pink}"><span><b>${esc(main)}</b>${sub?`<i>${sub}</i>`:''}</span></span>`;
+}
+const avStack=(list,size)=>`<span class="avs">${list.slice(0,5).map(p=>avatar(p,size)).join('')}</span>`;
+const art=(name,cls='')=>`<div class="${cls}"><img class="art" src="assets/${name}.png" alt="" onerror="this.style.visibility='hidden'"></div>`;
+function empty(img,text,btn,act,id){
+  return `<div class="empty">${art(img,'ew')}<p>${esc(text)}</p>${btn?`<button class="sbtn pri tap" data-act="${act}"${id?` data-id="${esc(id)}"`:''}>${esc(btn)}</button>`:''}</div>`;
+}
+const moodHtml=k=>{const m=MOODS.find(x=>x[0]===k);return m?`<span class="mood"><i style="background:${m[2]}"></i>${m[1]}</span>`:''};
+
+/* トースト・オーバーレイ */
+let toastT;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
+let ovClose=null;
+function openSheet(html){const o=$('#ov');const again=o.classList.contains('open')&&o.querySelector('.sheet');o.innerHTML=`<div class="scrim" data-act="closeOv"${again?' style="animation:none"':''}></div><div class="sheet" role="dialog"${again?' style="animation:none"':''}><div class="grab"></div>${html}</div>`;o.classList.add('open')}
+function openModal(html){const o=$('#ov');const again=o.classList.contains('open')&&o.querySelector('.modal');o.innerHTML=`<div class="scrim" data-act="closeOv"${again?' style="animation:none"':''}></div><div class="modal-wrap"><div class="modal" role="dialog"${again?' style="animation:none"':''}>${html}</div></div>`;o.classList.add('open')}
+function closeOv(){const o=$('#ov');if(ovClose){const f=ovClose;ovClose=null;f()}o.classList.remove('open');o.innerHTML=''}
+function confirmDlg(msg,ok,fn,danger=true){
+  ui.confirmFn=fn;
+  openModal(`<h2>${esc(msg)}</h2><div class="btns"><button class="sbtn tap" data-act="closeOv">やめる</button><button class="sbtn ${danger?'danger':'pri'} tap" data-act="confirmOk">${esc(ok)}</button></div>`);
+}
+
+/* ===== フェーズ2：データ ===== */
+/* サンプル写真（インラインSVG・パステル・文字なし） */
+const SEED_SVG={
+ sea:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FDEBE1"/><stop offset="1" stop-color="#F9D6CB"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><circle cx="200" cy="172" r="48" fill="#F5B3A3"/><rect y="168" width="400" height="132" fill="#C3E0E4"/><g fill="none" stroke="#F4FAFA" stroke-width="5" stroke-linecap="round"><path d="M40 200q20-10 40 0t40 0"/><path d="M230 214q20-10 40 0t40 0"/><path d="M110 240q20-10 40 0t40 0 40 0"/><path d="M290 262q20-10 40 0"/></g><circle cx="320" cy="70" r="16" fill="#FFF6EF"/><circle cx="342" cy="66" r="20" fill="#FFF6EF"/><circle cx="364" cy="72" r="13" fill="#FFF6EF"/></svg>`,
+ cafe:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F8EFE4"/><rect x="-20" y="214" width="440" height="110" rx="30" fill="#EAD9C2"/><ellipse cx="150" cy="216" rx="70" ry="12" fill="#FFFFFF"/><rect x="104" y="140" width="92" height="74" rx="26" fill="#FFFFFF"/><circle cx="208" cy="172" r="18" fill="none" stroke="#FFFFFF" stroke-width="10"/><ellipse cx="150" cy="146" rx="38" ry="8" fill="#D9BFA3"/><g fill="none" stroke="#E6D3C2" stroke-width="5" stroke-linecap="round"><path d="M134 118q-8-12 0-24"/><path d="M162 112q-8-12 0-24"/></g><ellipse cx="292" cy="218" rx="64" ry="11" fill="#FFFFFF"/><path d="M246 214h90v-38q-40-26-90 0z" fill="#FDECEA"/><path d="M246 182q45-24 90-6" stroke="#FFFFFF" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="296" cy="160" r="12" fill="#F2A9A2"/></svg>`,
+ park:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#EEF7F1"/><circle cx="330" cy="64" r="24" fill="#F9E3A1"/><ellipse cx="200" cy="300" rx="300" ry="90" fill="#CDE8D6"/><rect x="104" y="140" width="18" height="96" rx="9" fill="#D9C2A5"/><circle cx="113" cy="120" r="46" fill="#A9D5BC"/><circle cx="80" cy="140" r="30" fill="#B8DDC7"/><circle cx="146" cy="142" r="30" fill="#B8DDC7"/><rect x="214" y="200" width="120" height="14" rx="7" fill="#E5CDB0"/><rect x="214" y="178" width="120" height="12" rx="6" fill="#E5CDB0"/><rect x="226" y="210" width="10" height="30" rx="5" fill="#D9C2A5"/><rect x="312" y="210" width="10" height="30" rx="5" fill="#D9C2A5"/></svg>`,
+ station:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F1EDFB"/><rect x="-20" y="226" width="440" height="100" rx="20" fill="#E3DBF1"/><rect x="40" y="110" width="300" height="110" rx="40" fill="#FFFFFF"/><rect x="40" y="176" width="300" height="14" fill="#F7C8C4"/><rect x="72" y="128" width="56" height="36" rx="12" fill="#DCD2F0"/><rect x="146" y="128" width="56" height="36" rx="12" fill="#DCD2F0"/><rect x="220" y="128" width="56" height="36" rx="12" fill="#DCD2F0"/><circle cx="100" cy="226" r="12" fill="#CFC4E6"/><circle cx="280" cy="226" r="12" fill="#CFC4E6"/><rect x="356" y="70" width="10" height="156" rx="5" fill="#E8E1F4"/><circle cx="361" cy="66" r="14" fill="#F9E3A1"/></svg>`,
+ home:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#FEF6DB"/><rect x="-20" y="196" width="440" height="130" rx="24" fill="#EAD9C2"/><path d="M178 196q-14-40 4-64h36q18 24 4 64z" fill="#BFE3D0"/><g stroke="#A9D5BC" stroke-width="5" stroke-linecap="round"><path d="M200 132V96"/><path d="M200 120l-22-22"/><path d="M200 116l24-26"/></g><circle cx="200" cy="88" r="16" fill="#F7C8C4"/><circle cx="174" cy="94" r="13" fill="#FDECEA"/><circle cx="228" cy="86" r="13" fill="#F7C8C4"/><circle cx="200" cy="88" r="5" fill="#F9E3A1"/><ellipse cx="100" cy="216" rx="46" ry="9" fill="#FFFFFF"/><ellipse cx="300" cy="218" rx="40" ry="8" fill="#FFFFFF"/></svg>`,
+ sky:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D7ECF3"/><stop offset="1" stop-color="#F4FAFB"/></linearGradient></defs><rect width="400" height="300" fill="url(#s)"/><g fill="#FFFFFF"><circle cx="110" cy="180" r="30"/><circle cx="146" cy="168" r="38"/><circle cx="186" cy="184" r="26"/><rect x="80" y="180" width="130" height="30" rx="15"/><circle cx="290" cy="96" r="20"/><circle cx="314" cy="88" r="26"/><circle cx="340" cy="98" r="18"/></g><g fill="none" stroke="#9FB2BC" stroke-width="4" stroke-linecap="round"><path d="M210 92q9-10 18 0q9-10 18 0"/><path d="M250 124q7-8 14 0q7-8 14 0"/></g></svg>`
+};
+const SEED={};for(const k in SEED_SVG)SEED[k]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(SEED_SVG[k]);
+const photoSrc=p=>p?(p.dataUrl||SEED[p.seed]||''):'';
+
+function blankPerson(){return{id:'',name:'',yomi:'',nameKanji:'',relation:'',relationSub:'',appearance:'',statusKey:'',statusMemo:'',location:'',occupation:'',color:'pink',birthday:null,memo:'',phone:'',email:'',exchangedProfile:null,createdAt:0}}
+function defaultSettings(){return{theme:'milk',pinHash:null,pinSalt:null,welcomed:false}}
+
+function sampleState(){
+  const t=today(),dow=parseD(t).getDay(),now=Date.now();
+  const sat=addDays(t,-((dow+1)%7)), sun=addDays(t,-dow);
+  const mk=(i,name,rel,sub,color,bd,memo)=>Object.assign(blankPerson(),{id:'sp'+i+'-'+now,name,relation:rel,relationSub:sub,color,birthday:bd,memo,createdAt:now+i});
+  const A=mk(1,'あかり','友達','高校の友達','mint','05-18','カフェ巡りが好き。甘いものに弱い');
+  const S=mk(2,'そら','家族','きょうだい','pink','09-02','朝が弱い。写真を撮るのが上手');
+  const R=mk(3,'りん','友達','大学の友達','lav',null,'本好き。静かな場所が好き');
+  const H=mk(4,'はると','仕事','同僚','beige',null,'駅まで送ってくれることが多い');
+  const M=mk(5,'めい','家族','母','butter','01-25','お菓子作りが得意');
+  const d1=sat,d2=sun,d3=addDays(t,-3),d4=addDays(t,-6);
+  const ph=(i,seed,date,ppl,memo)=>({id:'sph'+i+'-'+now,date,seed,dataUrl:'',peopleIds:ppl.map(p=>p.id),memo,createdAt:now+10+i});
+  const P1=ph(1,'sea',d1,[S,M],'夕日がきれいだった'),P2=ph(2,'cafe',d2,[A],'いちごのケーキ'),P3=ph(3,'park',d3,[R],'いつものベンチ'),
+        P4=ph(4,'station',d4,[H],''),P5=ph(5,'home',addDays(t,-9),[M,S],'テーブルに花を飾った'),P6=ph(6,'sky',addDays(t,-20),[],'鳥が飛んでいった');
+  const en=(i,date,title,mood,body,phs,ppl)=>({id:'se'+i+'-'+now,date,title,body,mood,peopleIds:ppl.map(p=>p.id),photoIds:phs.map(p=>p.id),createdAt:now+20+i,updatedAt:now+20+i});
+  return{
+    version:1,
+    people:[A,S,R,H,M],
+    photos:[P1,P2,P3,P4,P5,P6],
+    entries:[
+      en(1,d1,'海までドライブ','happy','少し早起きして、海まで車を走らせた。夕方の光がやわらかくて、しばらく三人で黙って波を見ていた。帰りの車で、めいが焼いたクッキーを分けあった。',[P1],[S,M]),
+      en(2,d2,'新しいカフェ','calm','駅の裏にできたカフェにあかりと行った。窓ぎわの席でケーキを半分ずつ食べた。また来ようねと約束した。',[P2],[A]),
+      en(3,d3,'公園で読書','normal','天気がよかったので、りんと公園のベンチで本を読んだ。ほとんど話さなかったけれど、それが心地よかった。',[P3],[R]),
+      en(4,d4,'送ってもらった日','calm','遅くまで残っていたら、はるとが駅まで送ってくれた。電車を待つあいだ、少しだけ仕事以外の話をした。',[P4],[H])
+    ],
+    messages:[],
+    myProfile:null,
+    settings:defaultSettings()
+  };
+}
+
+/* 読み込み時の整形・移行 */
+function migrate(o){
+  o=o&&typeof o==='object'?o:{};
+  const arr=v=>Array.isArray(v)?v:[];
+  const st={version:1,people:arr(o.people),entries:arr(o.entries),photos:arr(o.photos),messages:arr(o.messages),myProfile:o.myProfile&&typeof o.myProfile==='object'?o.myProfile:null,settings:Object.assign(defaultSettings(),o.settings||{})};
+  st.people=st.people.filter(p=>p&&p.id).map(p=>{
+    const q=Object.assign(blankPerson(),p);
+    if(!REL[q.relation]){ if(q.relation==='友人')q.relation='友達'; else if(q.relation&&!REL[q.relation]){q.memo=[q.memo,'関係：'+q.relation].filter(Boolean).join('\n');q.relation='その他'} }
+    if('relationDetail' in q){
+      const det=String(q.relationDetail||'').trim();
+      if(det&&!q.relationSub){
+        const hit=q.relation&&REL[q.relation]?REL[q.relation].find(s=>det.includes(s)):REL_KEYS.map(k=>REL[k].find(s=>det.includes(s))).find(Boolean);
+        if(hit&&(!q.relation||REL[q.relation].includes(hit))){q.relationSub=hit;if(!q.relation)q.relation=REL_KEYS.find(k=>REL[k].includes(hit))}
+        else q.memo=[q.memo,det].filter(Boolean).join('\n');
+      }
+      delete q.relationDetail;
+    }
+    if(q.relationSub&&!(REL[q.relation]||[]).includes(q.relationSub)){q.memo=[q.memo,q.relationSub].filter(Boolean).join('\n');q.relationSub=''}
+    if(!COLORS[q.color])q.color='pink';
+    if(q.birthday&&!/^\d\d-\d\d$/.test(q.birthday))q.birthday=null;
+    return q;
+  });
+  const fix=a=>Array.isArray(a)?a.map(String):[];
+  st.entries=st.entries.filter(e=>e&&e.id&&e.date).map(e=>Object.assign({title:'',body:'',mood:null,createdAt:0,updatedAt:0},e,{peopleIds:fix(e.peopleIds),photoIds:fix(e.photoIds)}));
+  st.photos=st.photos.filter(p=>p&&p.id).map(p=>Object.assign({date:today(),dataUrl:'',seed:'',memo:'',createdAt:0},p,{peopleIds:fix(p.peopleIds)}));
+  const pids=new Set(st.people.map(p=>p.id)),phids=new Set(st.photos.map(p=>p.id));
+  st.entries.forEach(e=>{e.peopleIds=e.peopleIds.filter(i=>pids.has(i));e.photoIds=e.photoIds.filter(i=>phids.has(i))});
+  st.photos.forEach(p=>{p.peopleIds=p.peopleIds.filter(i=>pids.has(i))});
+  st.messages=st.messages.filter(m=>m&&pids.has(m.personId));
+  if(!THEMES.some(t=>t[0]===st.settings.theme))st.settings.theme='milk';
+  return st;
+}
+
+let state,lastSaved=null;
+function load(){
+  let raw=null;
+  try{raw=localStorage.getItem(KEY)}catch(e){}
+  if(raw){try{state=migrate(JSON.parse(raw));lastSaved=JSON.stringify(state);return}catch(e){}}
+  state=sampleState();save();
+}
+function save(){
+  try{const s=JSON.stringify(state);localStorage.setItem(KEY,s);lastSaved=s;return true}
+  catch(e){if(lastSaved)state=JSON.parse(lastSaved);toast('容量がいっぱいで保存できなかったよ');return false}
+}
+
+/* 取得・関係 */
+const person=id=>state.people.find(p=>p.id===id);
+const entry=id=>state.entries.find(e=>e.id===id);
+const photo=id=>state.photos.find(p=>p.id===id);
+const byDateDesc=(a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0);
+const relLabel=p=>p.relation?(p.relation+(p.relationSub?'・'+p.relationSub:'')):'';
+const entryTitle=e=>(e.title||'').trim()||(String(e.body||'').split('\n').find(l=>l.trim())||'').trim()||'無題の日記';
+const entriesOfPhoto=phid=>state.entries.filter(e=>e.photoIds.includes(phid)).sort(byDateDesc);
+function photoPeople(ph){const s=new Set(ph.peopleIds);state.entries.forEach(e=>{if(e.photoIds.includes(ph.id))e.peopleIds.forEach(i=>s.add(i))});return s}
+const entriesWithAll=ids=>state.entries.filter(e=>ids.every(i=>e.peopleIds.includes(i))).sort(byDateDesc);
+const photosWithAll=ids=>state.photos.filter(ph=>{const s=photoPeople(ph);return ids.every(i=>s.has(i))}).sort(byDateDesc);
+function lastDate(pid){let m=null;state.entries.forEach(e=>{if(e.peopleIds.includes(pid)&&(!m||e.date>m))m=e.date});state.photos.forEach(p=>{if(p.peopleIds.includes(pid)&&(!m||p.date>m))m=p.date});return m}
+function sortedPeople(){return state.people.map(p=>({p,d:lastDate(p.id)||''})).sort((a,b)=>b.d.localeCompare(a.d)||(a.p.createdAt||0)-(b.p.createdAt||0)).map(x=>x.p)}
+function timelineOf(ids){
+  const es=entriesWithAll(ids);
+  const inEntry=new Set();es.forEach(e=>e.photoIds.forEach(i=>inEntry.add(i)));
+  const ps=photosWithAll(ids).filter(ph=>!inEntry.has(ph.id));
+  return [...es.map(e=>({t:'e',date:e.date,createdAt:e.createdAt,o:e})),...ps.map(p=>({t:'p',date:p.date,createdAt:p.createdAt,o:p}))].sort(byDateDesc);
+}
+
+/* ===== 画面遷移 ===== */
+let stack=[{name:'people',p:{}}],skipPop=0;
+const ui={rel:'',sub:'',phFilter:'',selecting:false,sel:[],tmp:{},locked:false,pin:null,imp:null,confirmFn:null};
+const cur=()=>stack[stack.length-1];
+function go(name,p={},d=null){cur().y=window.scrollY;stack.push({name,p,d});try{history.pushState({h:stack.length},'')}catch(e){}render();window.scrollTo(0,0)}
+function back(){if(stack.length<=1)return;try{history.back()}catch(e){popView()}}
+function popView(){if(stack.length>1){stack.pop();render();window.scrollTo(0,cur().y||0)}}
+window.addEventListener('popstate',()=>{if(skipPop>0){skipPop--;return}if($('#ov').classList.contains('open'))closeOv();popView()});
+function tab(name){
+  ui.selecting=false;ui.sel=[];
+  const n=stack.length-1;stack=[{name,p:{}}];
+  if(n>0){skipPop++;try{history.go(-n)}catch(e){skipPop--}}
+  render();window.scrollTo(0,0);
+}
+const NAV=[['people','ひと','people'],['records','きろく','book'],['fab'],['photos','しゃしん','photo']];
+function renderNav(){
+  const root=stack[0].name;
+  $('#nav').innerHTML=NAV.map(n=>n[0]==='fab'?`<div class="fabw"><button class="fab" data-act="fab" aria-label="追加する">${icon('plus',24,2)}</button></div>`:`<button class="tab${root===n[0]?' on':''}" data-act="tab" data-v="${n[0]}"><span class="tp">${icon(n[2])}</span>${n[1]}</button>`).join('');
+}
+let lastViewKey='';
+function build(){const c=cur();return V[c.name]?V[c.name](c.p||{},c):null}
+function render(){
+  if(ui.locked){renderLock();return}
+  let v=build();
+  while(!v&&stack.length>1){stack.pop();v=build()}
+  if(!v){stack=[{name:'people',p:{}}];v=build()}
+  const key=stack.length+':'+cur().name+':'+JSON.stringify(cur().p);
+  const same=key===lastViewKey,y=window.scrollY;lastViewKey=key;
+  const app=$('#app');
+  const nav=v.nav!==false;
+  app.classList.toggle('has-nav',nav);app.classList.toggle('no-nav',!nav);app.classList.toggle('has-foot',!!v.foot);
+  if(!same||!v.keepHead)$('#hd').innerHTML=v.head;
+  const m=$('#main');m.innerHTML=v.body;
+  if(!same){m.classList.remove('fade');void m.offsetWidth;m.classList.add('fade')}
+  $('#foot').innerHTML=v.foot||'';
+  renderNav();
+  if(same)window.scrollTo(0,y);
+  if(v.after)v.after();
+}
+/* 入力に合わせて一部だけ更新（フォーカスを保つ） */
+function live(){
+  const v=build();if(!v)return;
+  const t=document.createElement('template');t.innerHTML=v.body;
+  document.querySelectorAll('#main [data-live]').forEach(el=>{const n=t.content.querySelector(`[data-live="${el.dataset.live}"]`);if(n&&el.innerHTML!==n.innerHTML)el.innerHTML=n.innerHTML});
+  const f=$('#foot');if(f.innerHTML!==(v.foot||''))f.innerHTML=v.foot||'';
+}
+
+/* ヘッダー */
+const hdLogo=more=>`<div class="logo"><img src="assets/symbol.png" alt="" onerror="this.remove()"><span>ひびと<small>log</small></span><i class="dot"></i></div><div class="hd-r"><button class="cbtn tap" data-act="search" aria-label="さがす">${icon('search',20)}</button>${more?`<button class="cbtn tap" data-act="settings" aria-label="設定">${icon('more',20)}</button>`:''}</div>`;
+const hdBack=(title,menu,id)=>`<button class="cbtn tap" data-act="back" aria-label="もどる">${icon('back',20)}</button><h1 class="hd-t">${esc(title)}</h1>${menu?`<button class="cbtn tap" data-act="${menu}"${id?` data-id="${esc(id)}"`:''} aria-label="メニュー">${icon('more',20)}</button>`:'<span class="cbtn-sp"></span>'}`;
+
+/* 部品：日記カード（簡素形） */
+function entryCard(e){
+  const ppl=e.peopleIds.map(person).filter(Boolean);
+  const phs=e.photoIds.map(photo).filter(Boolean);
+  const body=String(e.body||'').replace(/\s+/g,' ').trim();
+  const showBody=body&&body!==entryTitle(e);
+  return `<button class="card ecard tap" data-act="openEntry" data-id="${esc(e.id)}">
+    <div class="ec-main">
+      <div class="ec-top"><span class="pill">${fmtDate(e.date)}</span>${moodHtml(e.mood)}</div>
+      <h3>${esc(entryTitle(e))}</h3>
+      ${showBody?`<p class="clamp1">${esc(body)}</p>`:''}
+      ${ppl.length?`<div class="ec-ppl">${avStack(ppl,28)}<span>${esc(ppl.map(p=>p.name).join('・'))}</span></div>`:''}
+    </div>
+    ${phs.length?`<span class="th"><img src="${photoSrc(phs[0])}" alt="" loading="lazy">${phs.length>1?`<span>+${phs.length-1}</span>`:''}</span>`:''}
+  </button>`;
+}
+function photoGridByMonth(list){
+  if(!list.length)return'';
+  const g={};list.forEach(p=>{const k=p.date.slice(0,7);(g[k]=g[k]||[]).push(p)});
+  return Object.keys(g).sort().reverse().map(k=>`<h3 class="mh">${monthLabel(k)}<small>${g[k].length}枚</small></h3><div class="pgrid">${g[k].map(p=>`<button class="tap" data-act="openPhoto" data-id="${esc(p.id)}" aria-label="写真"><img src="${photoSrc(p)}" alt="" loading="lazy"></button>`).join('')}</div>`).join('');
+}
+const plainGrid=list=>`<div class="pgrid">${list.map(p=>`<button class="tap" data-act="openPhoto" data-id="${esc(p.id)}" aria-label="写真"><img src="${photoSrc(p)}" alt="" loading="lazy"></button>`).join('')}</div>`;
+function tlRows(items){
+  return `<div class="rows">${items.map(it=>{
+    if(it.t==='e'){const e=it.o,ph=e.photoIds.map(photo).find(Boolean);
+      return `<button class="row tap" data-act="openEntry" data-id="${esc(e.id)}"><span class="tl-d">${fmtDate(e.date)}</span><span class="r-main"><b>${esc(entryTitle(e))}</b></span>${ph?`<span class="th sm"><img src="${photoSrc(ph)}" alt="" loading="lazy"></span>`:''}</button>`}
+    const p=it.o;
+    return `<button class="row tap" data-act="openPhoto" data-id="${esc(p.id)}"><span class="tl-d">${fmtDate(p.date)}</span><span class="r-main"><b>${esc(p.memo||'写真を残した')}</b></span><span class="th sm"><img src="${photoSrc(p)}" alt="" loading="lazy"></span></button>`;
+  }).join('')}</div>`;
+}
+const V={};
+
+/* ===== きろく（日記タイムライン） ===== */
+V.records=()=>{
+  let b='';
+  const es=[...state.entries].sort(byDateDesc);
+  if(!es.length){
+    b+=`<section class="blk">${art('welcome','welcome-art')}</section>`;
+    b+=`<section class="blk">${empty('empty-records','まだ日記がないよ','最初の日記をかく','newEntry')}</section>`;
+  }else{
+    const d=parseD(today());
+    b+=`<section class="blk"><button class="card tap" style="background:var(--pink-soft);border-color:transparent;text-align:left" data-act="newEntry"><span class="muted" style="display:block">${d.getMonth()+1}月${d.getDate()}日 ${WD[d.getDay()]}曜日</span><b style="font-size:16px;font-family:var(--font-head)">今日はどんな日だった？</b></button></section>`;
+    const mem=memoryPick();
+    if(mem)b+=`<section class="blk"><div class="bh"><h2>思い出</h2><span class="pill soft">${esc(mem.label)}</span></div>${entryCard(mem.e)}</section>`;
+    let lastM='',list='';
+    es.forEach(e=>{const m=e.date.slice(0,7);if(m!==lastM){const n=es.filter(x=>x.date.slice(0,7)===m).length;list+=`${lastM?'</div>':''}<h3 class="mh">${monthLabel(m)}<small>${n}件</small></h3><div class="stack">`;lastM=m}list+=entryCard(e)});
+    b+=`<section class="blk"><div class="bh"><h2 class="ttl">きろく</h2><small>${es.length}件</small></div>${list}</div></section>`;
+  }
+  return{head:hdLogo(false),body:b};
+};
+function memoryPick(){
+  const t=today(),md=t.slice(5),y=+t.slice(0,4);
+  const past=state.entries.filter(e=>e.date<t).sort(byDateDesc);
+  if(!past.length)return null;
+  const same=past.find(e=>e.date.slice(5)===md&&+e.date.slice(0,4)<y);
+  if(same)return{e:same,label:`${y-(+same.date.slice(0,4))}年前の今日`};
+  return{e:past[Number(t.replace(/-/g,''))%past.length],label:'あの日のきろく'};
+}
+
+/* ===== 日記詳細 ===== */
+V.entry=p=>{
+  const e=entry(p.id);if(!e)return null;
+  const phs=e.photoIds.map(photo).filter(Boolean);
+  const ppl=e.peopleIds.map(person).filter(Boolean);
+  let b=`<section class="blk"><div class="ec-top"><span class="pill">${fmtDate(e.date)}</span>${moodHtml(e.mood)}</div><h1 class="e-title">${esc(entryTitle(e))}</h1>${e.body?`<div class="e-body">${esc(e.body)}</div>`:''}</section>`;
+  if(phs.length){
+    b+=`<section class="blk"><button class="e-ph1 tap" data-act="openPhoto" data-id="${esc(phs[0].id)}" aria-label="写真"><img src="${photoSrc(phs[0])}" alt=""></button>${phs.length>1?`<div class="g2">${phs.slice(1).map(ph=>`<button class="tap" data-act="openPhoto" data-id="${esc(ph.id)}" aria-label="写真"><img src="${photoSrc(ph)}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</section>`;
+  }
+  if(ppl.length){
+    b+=`<section class="blk"><div class="bh"><h2>いっしょだった人</h2><small>${ppl.length}人</small></div><div class="rows">${ppl.map(q=>`<button class="row tap" data-act="openPerson" data-id="${esc(q.id)}">${avatar(q,40)}<span class="r-main"><b>${esc(q.name)}</b></span>${q.relation?`<span class="pill">${esc(relLabel(q))}</span>`:''}<span class="chev">${icon('chev',18)}</span></button>`).join('')}</div></section>`;
+  }
+  return{head:hdBack('日記','entryMenu',e.id),body:b};
+};
+
+/* ===== 日記編集 ===== */
+function newEntryDraft(preset){return{id:null,date:today(),title:'',body:'',mood:null,peopleIds:preset||[],photoIds:[],newPhotos:[]}}
+V.editEntry=(p,c)=>{
+  if(!c.d){const e=p.id&&entry(p.id);c.d=e?{id:e.id,date:e.date,title:e.title,body:e.body,mood:e.mood,peopleIds:[...e.peopleIds],photoIds:[...e.photoIds],newPhotos:[]}:newEntryDraft(p.people)}
+  const d=c.d;
+  const ppl=sortedPeople();
+  const phs=[...d.newPhotos.map(n=>({id:n.id,dataUrl:n.dataUrl})),...[...state.photos].sort(byDateDesc)];
+  let b=`<div class="fld"><label for="f-date">日付</label><input class="inp" type="date" id="f-date" data-bind="date" value="${esc(d.date)}"></div>
+  <div class="fld"><label for="f-title">タイトル（なくてもいいよ）</label><input class="inp" id="f-title" data-bind="title" value="${esc(d.title)}" placeholder="例：海までドライブ" maxlength="60"></div>
+  <div class="fld"><span class="lbl">気分</span><div class="chips wrap">${MOODS.map(m=>`<button class="chip tap${d.mood===m[0]?' on':''}" data-act="dMood" data-v="${m[0]}"><i class="sw" style="background:${m[2]}"></i>${m[1]}</button>`).join('')}</div></div>
+  <div class="fld"><label for="f-body">本文</label><textarea class="inp" id="f-body" data-bind="body" placeholder="今日はどんな日だった？">${esc(d.body)}</textarea></div>
+  <div class="fld"><span class="lbl">いっしょだった人</span>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${d.peopleIds.includes(q.id)?' on':''}" data-act="dPerson" data-id="${esc(q.id)}">${d.peopleIds.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:`<p class="muted">まだ誰も登録されていないよ</p>`}</div>
+  <div class="fld"><span class="lbl">写真（${d.photoIds.length}枚えらんでる）</span><div class="pgrid"><button class="addtile tap" data-act="pickEntryPhotos">${icon('plus',22)}新しく追加</button>${phs.map(ph=>{const on=d.photoIds.includes(ph.id);return `<button class="tap${on?' sel':''}" data-act="dPhoto" data-id="${esc(ph.id)}" aria-pressed="${on}"><img src="${photoSrc(ph)}" alt="" loading="lazy">${on?`<span class="ck">${icon('check',14,2.4)}</span>`:''}</button>`}).join('')}</div></div>`;
+  const ok=(d.title.trim()||d.body.trim())&&d.date;
+  return{head:hdBack(d.id?'日記をなおす':'日記をかく'),body:b,foot:`<button class="pbtn tap" data-act="saveEntry"${ok?'':' disabled'}>保存する</button>`,nav:false};
+};
+function saveEntry(){
+  const c=cur(),d=c.d;if(!d||!(d.title.trim()||d.body.trim())||!d.date)return;
+  const now=Date.now();
+  d.newPhotos.forEach((n,i)=>{if(d.photoIds.includes(n.id))state.photos.push({id:n.id,date:d.date,dataUrl:n.dataUrl,seed:'',peopleIds:[...d.peopleIds],memo:'',createdAt:now+i})});
+  if(d.id){const e=entry(d.id);if(e)Object.assign(e,{date:d.date,title:d.title.trim(),body:d.body,mood:d.mood,peopleIds:[...d.peopleIds],photoIds:[...d.photoIds],updatedAt:now})}
+  else state.entries.push({id:uid(),date:d.date,title:d.title.trim(),body:d.body,mood:d.mood,peopleIds:[...d.peopleIds],photoIds:[...d.photoIds],createdAt:now,updatedAt:now});
+  if(save()){toast('保存したよ');back()}else render();
+}
+
+/* ===== フェーズ3：ひと ===== */
+V.people=()=>{
+  const me=state.myProfile;
+  let b=`<p class="catch">日記と、人と、写真と。</p>`;
+  b+=`<section class="blk"><button class="card mecard tap" data-act="openMe">${me?avatar(me,48,true):`<span class="av av-empty" style="--s:48px"><span>${icon('userplus',22)}</span></span>`}<span class="r-main"><b>${me?esc(me.name):'わたしのプロフィール'}</b><small>${me?esc(me.bio||'わたしのプロフィール'):'つくると、コードで交換できるよ'}</small></span><span class="chev">${icon('chev',18)}</span></button></section>`;
+  if(!ui.selecting)b+=noticesBlock();
+  const all=sortedPeople();
+  b+=`<section class="blk"><div class="bh"><h2 class="ttl">ひと</h2><small>${all.length}人</small><span class="sp"></span>${all.length>1?`<button class="lnk" data-act="selMode">${ui.selecting?'やめる':'メンバーで見る'}</button>`:''}</div>`;
+  if(!all.length){b+=empty('empty-people','まだ誰もいないよ','人を登録する','newPerson')+'</section>';return{head:hdLogo(true),body:b}}
+  if(ui.selecting)b+=`<p class="muted" style="margin-bottom:8px">いっしょの記録を見たい人を2人以上えらんでね</p>`;
+  const used=REL_KEYS.filter(k=>all.some(p=>p.relation===k));
+  if(used.length>1||ui.rel){
+    b+=`<div class="chips"><button class="chip tap${!ui.rel?' on':''}" data-act="fRel" data-v="">すべて</button>${used.map(k=>`<button class="chip tap${ui.rel===k?' on':''}" data-act="fRel" data-v="${k}">${k}</button>`).join('')}</div>`;
+    if(ui.rel){const subs=REL[ui.rel].filter(s=>all.some(p=>p.relation===ui.rel&&p.relationSub===s));if(subs.length)b+=`<div class="chips"><button class="chip tap${!ui.sub?' on':''}" data-act="fSub" data-v="">${esc(ui.rel)}すべて</button>${subs.map(s=>`<button class="chip tap${ui.sub===s?' on':''}" data-act="fSub" data-v="${esc(s)}">${esc(s)}</button>`).join('')}</div>`}
+  }
+  const list=all.filter(p=>(!ui.rel||p.relation===ui.rel)&&(!ui.sub||p.relationSub===ui.sub));
+  b+=list.length?`<div class="rows" style="margin-top:8px">${list.map(p=>{const on=ui.sel.includes(p.id);return `<button class="row tap${ui.selecting&&on?' on':''}" data-act="${ui.selecting?'selToggle':'openPerson'}" data-id="${esc(p.id)}">${ui.selecting?`<span class="ck-c">${on?icon('check',14,2.4):''}</span>`:''}${avatar(p,40)}<span class="r-main"><b>${esc(p.name)}</b><small>${esc(relLabel(p)||'関係はまだ')}</small></span>${ui.selecting?'':`<span class="chev">${icon('chev',18)}</span>`}</button>`}).join('')}</div>`:`<p class="muted" style="padding:16px 0">この分類の人はいないよ</p>`;
+  b+='</section>';
+  const n=ui.sel.length;
+  return{head:hdLogo(true),body:b,foot:ui.selecting?`<button class="pbtn tap" data-act="openGroup"${n<2?' disabled':''}>${icon('group',20)}このメンバーで見る（${n}人）</button>`:''};
+};
+function noticesBlock(){
+  const t=today(),yr=+t.slice(0,4);
+  const bd=state.people.filter(p=>p.birthday).map(p=>{const[m,d]=p.birthday.split('-').map(Number);let dt=ymd(new Date(yr,m-1,d));if(dt<t)dt=ymd(new Date(yr+1,m-1,d));return{p,days:daysBetween(t,dt)}}).filter(x=>x.days<=30).sort((a,b)=>a.days-b.days).slice(0,3);
+  const lt=state.people.map(p=>{const l=lastDate(p.id);return{p,l,days:l?daysBetween(l,t):Infinity}}).filter(x=>x.days>=90).sort((a,b)=>b.days-a.days||(a.p.createdAt||0)-(b.p.createdAt||0)).slice(0,3);
+  if(!bd.length&&!lt.length)return'';
+  const row=(p,txt)=>`<button class="row tap" data-act="openPerson" data-id="${esc(p.id)}">${avatar(p,28)}<span class="r-main"><b>${esc(p.name)}</b><small>${esc(txt)}</small></span><span class="chev">${icon('chev',18)}</span></button>`;
+  return `<section class="blk"><div class="bh"><h2>お知らせ</h2></div><div class="rows">${bd.map(x=>row(x.p,x.days===0?'今日が誕生日':`もうすぐ誕生日・${fmtBday(x.p.birthday)}・あと${x.days}日`)).join('')}${lt.map(x=>row(x.p,x.l?`${x.days}日ぶり（最後：${fmtMD(x.l)}）`:'まだ記録がない')).join('')}</div></section>`;
+}
+
+/* ===== ひとの詳細 ===== */
+function kvRows(rows){return rows.filter(r=>r[1]).map(r=>`<div class="kv"><dt>${esc(r[0])}</dt><dd>${r[2]?r[1]:esc(r[1])}</dd></div>`).join('')}
+const telHref=s=>'tel:'+String(s).replace(/[^\d+]/g,'');
+V.person=p=>{
+  const q=person(p.id);if(!q)return null;
+  const x=q.exchangedProfile||null;
+  const phone=q.phone||(x&&x.phone)||'',mail=q.email||(x&&x.email)||'';
+  let b=`<section class="hero">${avatar(q,80)}<h1>${esc(q.name)}</h1>${q.yomi?`<div class="yomi">${esc(q.yomi)}</div>`:''}
+    <div class="tags">${q.relation?`<span class="pill">${esc(relLabel(q))}</span>`:''}${q.statusKey?`<span class="pill soft">${esc(statusLabel(q.statusKey))}</span>`:''}${x?`<span class="pill" style="background:var(--mint-soft)">${icon('link',12)}プロフィール交換で追加</span>`:''}</div>
+    ${q.birthday?`<div class="bd">${icon('cake',16)}${fmtBday(q.birthday)}</div>`:''}
+    ${phone||mail||x?`<div class="btns">${phone?`<a class="sbtn line tap" href="${esc(telHref(phone))}" style="text-decoration:none">${icon('phone',18)}電話</a>`:''}${mail?`<a class="sbtn line tap" href="mailto:${esc(mail)}" style="text-decoration:none">${icon('mail',18)}メール</a>`:''}${x?`<button class="sbtn line tap" data-act="openChat" data-id="${esc(q.id)}">${icon('chat',18)}チャット</button>`:''}</div>`:''}
+  </section>`;
+  const own=kvRows([['関係',relLabel(q)],['容姿',q.appearance],['誕生日',q.birthday?fmtBday(q.birthday):''],['住んでいる場所',q.location],['仕事・学校',q.occupation],['近況',[statusLabel(q.statusKey),q.statusMemo].filter(Boolean).join('　')],['電話',q.phone],['メール',q.email],['好きなもの・メモ',q.memo]]);
+  const ex=x?kvRows([['ひとこと',x.bio],['好きなもの',x.likes],['住んでいる場所',x.location],['仕事・学校',x.occupation],['近況',[statusLabel(x.statusKey),x.statusMemo].filter(Boolean).join('　')],['電話',x.phone],['メール',x.email]]):'';
+  b+=`<section class="blk"><div class="bh"><h2>その人について</h2><span class="sp"></span><button class="lnk" data-act="editPerson" data-id="${esc(q.id)}">なおす</button></div>${own?`<dl class="rows">${own}</dl>`:(ex?'':`<p class="muted">まだ何も書いてないよ。関係や容姿、近況を書いておけるよ</p>`)}${ex?`<div class="sub-h">${icon('link',14)}プロフィール交換で受け取った内容</div><dl class="rows">${ex}</dl>`:''}</section>`;
+  const tl=timelineOf([q.id]);
+  b+=`<section class="blk"><div class="bh"><h2>いつ・何をしたか</h2><small>${tl.length}件</small></div>${tl.length?tlRows(tl)+`<div class="btns" style="margin-top:12px"><button class="lnk" data-act="newEntryWith" data-id="${esc(q.id)}">${icon('plus',16)}この人との記録を追加</button></div>`:empty('empty-records','この人との記録はまだないよ','この人との記録を追加','newEntryWith',q.id)}</section>`;
+  const phs=photosWithAll([q.id]);
+  if(phs.length)b+=`<section class="blk"><div class="bh"><h2>しゃしん</h2><small>${phs.length}枚</small></div>${plainGrid(phs)}</section>`;
+  return{head:hdBack('ひと','personMenu',q.id),body:b};
+};
+
+/* ===== メンバー（グループ） ===== */
+V.group=p=>{
+  const ppl=(p.ids||[]).map(person).filter(Boolean);if(ppl.length<2)return null;
+  const ids=ppl.map(x=>x.id);
+  const tl=timelineOf(ids),es=entriesWithAll(ids),phs=photosWithAll(ids);
+  const last=tl.length?tl[0].date:null;
+  let b=`<section class="hero">${avStack(ppl,56)}<h1 style="margin-top:12px">${esc(ppl.map(x=>x.name).join('・'))}</h1><div class="bd">${last?`最後に全員で集まった日：${fmtMD(last)}`:'全員そろった記録はまだないよ'}</div></section>`;
+  b+=`<section class="blk"><div class="bh"><h2>いっしょの記録</h2><small>日記${es.length}件</small></div>${tl.length?tlRows(tl):empty('empty-group','このメンバーの記録はまだないよ','このメンバーで記録を追加','newEntryGroup')}</section>`;
+  if(phs.length)b+=`<section class="blk"><div class="bh"><h2>いっしょのしゃしん</h2><small>${phs.length}枚</small></div>${plainGrid(phs)}</section>`;
+  return{head:hdBack('メンバー'),body:b};
+};
+
+/* ===== 人の編集 ===== */
+function personFields(d,isMe){
+  const colorRow=`<div class="colors">${Object.keys(COLORS).map(k=>`<button class="tap${d.color===k?' on':''}" data-act="dColor" data-v="${k}" aria-label="${k}"><i style="background:${COLORS[k]}"></i></button>`).join('')}</div>`;
+  const months=`<option value="">—</option>`+Array.from({length:12},(_,i)=>`<option value="${i+1}"${+d.bm===i+1?' selected':''}>${i+1}月</option>`).join('');
+  const days=`<option value="">—</option>`+Array.from({length:31},(_,i)=>`<option value="${i+1}"${+d.bd===i+1?' selected':''}>${i+1}日</option>`).join('');
+  const f=(k,label,ph,type='text')=>`<div class="fld"><label for="f-${k}">${label}</label><input class="inp" id="f-${k}" type="${type}" data-bind="${k}" value="${esc(d[k]||'')}" placeholder="${esc(ph)}"></div>`;
+  let h=`<div class="hero" data-live="prev" style="padding-bottom:20px">${avatar(Object.assign({},d,{name:d.name||'？'}),80,isMe)}</div>`;
+  h+=`<div class="fld"><label for="f-name">名前 <span class="req">*</span></label><input class="inp" id="f-name" data-bind="name" value="${esc(d.name)}" placeholder="例：あかり" maxlength="30"></div>`;
+  if(!isMe)h+=f('yomi','よみがな（なくてもいいよ）','例：あかり');
+  h+=f('nameKanji','漢字表記（なくてもいいよ・アイコンの文字になるよ）','例：坂元拓也');
+  if(!isMe){
+    h+=`<div class="fld"><span class="lbl">関係</span><div class="chips wrap">${REL_KEYS.map(k=>`<button class="chip tap${d.relation===k?' on':''}" data-act="dRel" data-v="${k}">${k}</button>`).join('')}</div>${d.relation?`<div class="chips wrap" style="margin-top:4px">${REL[d.relation].map(s=>`<button class="chip tap${d.relationSub===s?' on':''}" data-act="dRelSub" data-v="${esc(s)}">${esc(s)}</button>`).join('')}</div>`:''}</div>`;
+    h+=`<div class="fld"><label for="f-appearance">容姿メモ（なくてもいいよ）</label><input class="inp" id="f-appearance" data-bind="appearance" value="${esc(d.appearance)}" placeholder="例：肩までの茶髪・眼鏡・背が高め"></div>`;
+  }else{
+    h+=f('bio','ひとこと','例：カフェと散歩が好きです');
+    h+=f('likes','好きなもの','例：紅茶、古い映画');
+  }
+  h+=`<div class="fld"><span class="lbl">近況</span><div class="chips wrap">${STATUS.map(s=>`<button class="chip tap${d.statusKey===s[0]?' on':''}" data-act="dStatus" data-v="${s[0]}">${s[1]}</button>`).join('')}</div><input class="inp" style="margin-top:8px" data-bind="statusMemo" value="${esc(d.statusMemo)}" placeholder="ひとことメモ（例：引っ越したばかり）"></div>`;
+  h+=f('location','住んでいる場所（なくてもいいよ）','例：横浜');
+  h+=f('occupation','仕事・学校（なくてもいいよ）','例：デザイン事務所');
+  h+=f('phone','電話番号（なくてもいいよ）','例：090-0000-0000','tel');
+  h+=f('email','メールアドレス（なくてもいいよ）','例：name@example.com','email');
+  h+=`<div class="fld"><span class="lbl">アイコンの色</span>${colorRow}</div>`;
+  h+=`<div class="fld"><span class="lbl">誕生日（なくてもいいよ）</span><div class="two"><select class="inp" data-bind="bm" aria-label="月">${months}</select><select class="inp" data-bind="bd" aria-label="日">${days}</select></div></div>`;
+  if(!isMe)h+=`<div class="fld"><label for="f-memo">メモ（好きなものや、関係のこまかいことなど）</label><textarea class="inp" id="f-memo" data-bind="memo" placeholder="例：カフェ巡りが好き">${esc(d.memo)}</textarea></div>`;
+  return h;
+}
+V.editPerson=(p,c)=>{
+  if(!c.d){const q=p.id&&person(p.id);const base=q?Object.assign({},q):blankPerson();const[bm,bd]=(base.birthday||'').split('-');c.d=Object.assign(base,{bm:bm?+bm:'',bd:bd?+bd:''})}
+  const d=c.d;
+  return{head:hdBack(d.id?'人をなおす':'人を登録する'),body:personFields(d,false),foot:`<button class="pbtn tap" data-act="savePerson"${d.name.trim()?'':' disabled'}>保存する</button>`,nav:false};
+};
+const bdayOf=d=>d.bm&&d.bd?pad2(d.bm)+'-'+pad2(d.bd):null;
+function savePerson(){
+  const d=cur().d;if(!d||!d.name.trim())return;
+  const keys=['name','yomi','nameKanji','relation','relationSub','appearance','statusKey','statusMemo','location','occupation','color','memo','phone','email'];
+  const val={};keys.forEach(k=>val[k]=typeof d[k]==='string'?d[k].trim():d[k]);val.birthday=bdayOf(d);
+  let id=d.id;
+  if(id){const q=person(id);if(q)Object.assign(q,val)}
+  else{id=uid();state.people.push(Object.assign(blankPerson(),val,{id,createdAt:Date.now()}))}
+  if(save()){toast('保存したよ');if(d.id)back();else{stack[stack.length-1]={name:'person',p:{id}};render();window.scrollTo(0,0)}}else render();
+}
+function deletePerson(id){
+  confirmDlg('本当に削除する？','削除する',()=>{
+    state.people=state.people.filter(p=>p.id!==id);
+    state.entries.forEach(e=>e.peopleIds=e.peopleIds.filter(i=>i!==id));
+    state.photos.forEach(p=>p.peopleIds=p.peopleIds.filter(i=>i!==id));
+    state.messages=state.messages.filter(m=>m.personId!==id);
+    ui.sel=ui.sel.filter(i=>i!==id);
+    if(save()){toast('削除したよ');back()}else render();
+  });
+}
+
+/* ===== フェーズ4：しゃしん ===== */
+V.photos=()=>{
+  const all=[...state.photos].sort(byDateDesc);
+  let b=`<section class="blk"><div class="bh"><h2 class="ttl">しゃしん</h2><small>${all.length}枚</small></div>`;
+  if(!all.length)return{head:hdLogo(false),body:b+empty('empty-photos','まだ写真がないよ','写真を追加する','addPhoto')+'</section>'};
+  if(ui.phFilter&&!person(ui.phFilter))ui.phFilter='';
+  const ppl=sortedPeople();
+  if(ppl.length)b+=`<div class="chips" style="margin-bottom:8px"><button class="chip tap${!ui.phFilter?' on':''}" data-act="fPh" data-v="">すべて</button>${ppl.map(q=>`<button class="chip tap${ui.phFilter===q.id?' on':''}" data-act="fPh" data-v="${esc(q.id)}">${esc(q.name)}</button>`).join('')}</div>`;
+  const list=ui.phFilter?all.filter(ph=>photoPeople(ph).has(ui.phFilter)):all;
+  b+=list.length?photoGridByMonth(list):`<p class="muted" style="padding:16px 0">この人の写真はまだないよ</p>`;
+  return{head:hdLogo(false),body:b+'</section>'};
+};
+V.photo=p=>{
+  const ph=photo(p.id);if(!ph)return null;
+  const ppl=ph.peopleIds.map(person).filter(Boolean);
+  const es=entriesOfPhoto(ph.id);
+  let b=`<section class="blk"><div class="ph-big"><img src="${photoSrc(ph)}" alt=""></div></section>`;
+  b+=`<section class="blk"><dl class="rows"><div class="kv"><dt>日付</dt><dd>${fmtDate(ph.date)}</dd></div>${ph.memo?`<div class="kv"><dt>メモ</dt><dd>${esc(ph.memo)}</dd></div>`:''}</dl>
+    <div class="sub-h">写っている人</div>${ppl.length?`<div class="rows">${ppl.map(q=>`<button class="row tap" data-act="openPerson" data-id="${esc(q.id)}">${avatar(q,40)}<span class="r-main"><b>${esc(q.name)}</b><small>${esc(relLabel(q))}</small></span><span class="chev">${icon('chev',18)}</span></button>`).join('')}</div>`:`<p class="muted">まだ誰もえらばれていないよ</p>`}</section>`;
+  if(es.length)b+=`<section class="blk"><div class="bh"><h2>この日の日記</h2></div><div class="stack">${es.map(entryCard).join('')}</div></section>`;
+  return{head:hdBack('しゃしん','photoMenu',ph.id),body:b};
+};
+V.addPhotos=(p,c)=>{
+  const d=c.d;if(!d||!d.items.length)return null;
+  const ppl=sortedPeople();
+  const b=`<div class="fld"><span class="lbl">追加する写真（${d.items.length}枚）</span><div class="pgrid">${d.items.map(u=>`<div><img src="${u}" alt=""></div>`).join('')}</div></div>
+  <div class="fld"><label for="f-pdate">日付</label><input class="inp" type="date" id="f-pdate" data-bind="date" value="${esc(d.date)}"></div>
+  <div class="fld"><span class="lbl">写っている人</span>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${d.peopleIds.includes(q.id)?' on':''}" data-act="dPerson" data-id="${esc(q.id)}">${d.peopleIds.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:'<p class="muted">まだ誰も登録されていないよ</p>'}</div>
+  <div class="fld"><label for="f-pmemo">メモ（なくてもいいよ）</label><input class="inp" id="f-pmemo" data-bind="memo" value="${esc(d.memo)}" placeholder="例：夕日がきれいだった"></div>`;
+  return{head:hdBack('写真を追加する'),body:b,foot:`<button class="pbtn tap" data-act="savePhotos"${d.date?'':' disabled'}>保存する</button>`,nav:false};
+};
+function savePhotos(){
+  const d=cur().d;if(!d||!d.date)return;const now=Date.now();
+  d.items.forEach((u,i)=>state.photos.push({id:uid(),date:d.date,dataUrl:u,seed:'',peopleIds:[...d.peopleIds],memo:d.memo.trim(),createdAt:now+i}));
+  if(save()){toast('保存したよ');back()}else render();
+}
+function deletePhoto(id){
+  confirmDlg('本当に削除する？','削除する',()=>{
+    state.photos=state.photos.filter(p=>p.id!==id);
+    state.entries.forEach(e=>e.photoIds=e.photoIds.filter(i=>i!==id));
+    if(save()){toast('削除したよ');back()}else render();
+  });
+}
+/* 写真の取り込み：長辺1200pxに縮小、JPEG品質0.82 */
+function fileToDataUrl(file){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file),im=new Image();
+    im.onload=()=>{
+      const w=im.naturalWidth,h=im.naturalHeight,s=Math.min(1,1200/Math.max(w,h));
+      const cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(w*s));cv.height=Math.max(1,Math.round(h*s));
+      const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.drawImage(im,0,0,cv.width,cv.height);
+      URL.revokeObjectURL(url);res(cv.toDataURL('image/jpeg',0.82));
+    };
+    im.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('img'))};
+    im.src=url;
+  });
+}
+async function readImages(files){
+  const out=[];let bad=0;
+  if(files.length)toast('写真を読みこんでいるよ…');
+  for(const f of files){try{out.push(await fileToDataUrl(f))}catch(e){bad++}}
+  if(bad)toast('読みこめない写真があったよ');
+  return out;
+}
+
+/* ===== 統合検索 ===== */
+V.search=(p,c)=>{
+  if(!c.d)c.d={q:''};
+  const q=c.d.q.trim().toLowerCase();
+  let r='';
+  if(!q)r=`<p class="muted" style="padding:24px 0;text-align:center">日記・人・写真のメモから探せるよ</p>`;
+  else{
+    const has=s=>String(s||'').toLowerCase().includes(q);
+    const es=state.entries.filter(e=>has(e.title)||has(e.body)).sort(byDateDesc);
+    const ps=sortedPeople().filter(x=>has(x.name)||has(x.yomi)||has(x.nameKanji)||has(x.memo)||has(x.relation)||has(x.relationSub)||has(x.appearance)||has(x.location)||has(x.occupation));
+    const phs=state.photos.filter(x=>has(x.memo)).sort(byDateDesc);
+    if(!es.length&&!ps.length&&!phs.length)r=empty('empty-search','見つからなかったよ');
+    else{
+      if(es.length)r+=`<section class="blk"><div class="bh"><h2>日記</h2><small>${es.length}件</small></div><div class="stack">${es.map(entryCard).join('')}</div></section>`;
+      if(ps.length)r+=`<section class="blk"><div class="bh"><h2>ひと</h2><small>${ps.length}人</small></div><div class="rows">${ps.map(x=>`<button class="row tap" data-act="openPerson" data-id="${esc(x.id)}">${avatar(x,40)}<span class="r-main"><b>${esc(x.name)}</b><small>${esc(relLabel(x)||'関係はまだ')}</small></span><span class="chev">${icon('chev',18)}</span></button>`).join('')}</div></section>`;
+      if(phs.length)r+=`<section class="blk"><div class="bh"><h2>しゃしん</h2><small>${phs.length}枚</small></div>${plainGrid(phs)}</section>`;
+    }
+  }
+  return{head:`<button class="cbtn tap" data-act="back" aria-label="もどる">${icon('back',20)}</button><input class="inp" id="q" type="search" data-bind="q" value="${esc(c.d.q)}" placeholder="さがす" enterkeyhint="search" autocomplete="off">`,keepHead:true,body:`<div data-live="res">${r}</div>`,nav:false,after:()=>{const i=$('#q');if(i&&document.activeElement!==i&&!c.focused){c.focused=true;i.focus()}}};
+};
+
+/* ===== フェーズ5：わたしのプロフィール・交換 ===== */
+function blankMe(){return{name:'',nameKanji:'',color:'pink',birthday:null,location:'',occupation:'',bio:'',likes:'',statusKey:'',statusMemo:'',phone:'',email:''}}
+V.me=()=>{
+  const me=state.myProfile;
+  if(!me)return{head:hdBack('わたしのプロフィール'),body:`<section class="hero"><span class="av av-empty" style="--s:80px;margin:0 auto 12px"><span>${icon('userplus',32)}</span></span><h1>わたしのプロフィール</h1><p class="muted" style="margin-top:8px">名前や近況を書いておくと、<br>交換コードで相手に渡せるよ</p><div class="btns"><button class="sbtn pri tap" data-act="editMe">プロフィールをつくる</button><button class="sbtn tap" data-act="importCode">${icon('qr',18)}コードを取りこむ</button></div></section>`};
+  let b=`<section class="hero">${avatar(me,80,true)}<h1>${esc(me.name)}</h1><div class="tags">${me.statusKey?`<span class="pill soft">${esc(statusLabel(me.statusKey))}</span>`:''}</div>${me.birthday?`<div class="bd">${icon('cake',16)}${fmtBday(me.birthday)}</div>`:''}</section>`;
+  const rows=kvRows([['ひとこと',me.bio],['好きなもの',me.likes],['住んでいる場所',me.location],['仕事・学校',me.occupation],['近況',[statusLabel(me.statusKey),me.statusMemo].filter(Boolean).join('　')],['電話',me.phone],['メール',me.email]]);
+  b+=`<section class="blk"><div class="bh"><h2>わたしについて</h2><span class="sp"></span><button class="lnk" data-act="editMe">なおす</button></div>${rows?`<dl class="rows">${rows}</dl>`:'<p class="muted">名前のほかは、まだ何も書いてないよ</p>'}</section>`;
+  b+=`<section class="blk"><div class="bh"><h2>プロフィール交換</h2></div><p class="muted" style="margin-bottom:12px">交換コードに入るのは、ここに書いた公開用の項目だけ。相手につけた関係・容姿・メモは入らないよ。</p><div class="btns"><button class="sbtn pri tap" data-act="showCode">${icon('qr',18)}交換コードを出す</button><button class="sbtn tap" data-act="importCode">${icon('camera',18)}コードを取りこむ</button></div></section>`;
+  return{head:hdBack('わたしのプロフィール'),body:b};
+};
+V.editMe=(p,c)=>{
+  if(!c.d){const base=Object.assign(blankMe(),state.myProfile||{});const[bm,bd]=(base.birthday||'').split('-');c.d=Object.assign(base,{bm:bm?+bm:'',bd:bd?+bd:''})}
+  const d=c.d;
+  return{head:hdBack('プロフィールをなおす'),body:personFields(d,true),foot:`<button class="pbtn tap" data-act="saveMe"${d.name.trim()?'':' disabled'}>保存する</button>`,nav:false};
+};
+function saveMe(){
+  const d=cur().d;if(!d||!d.name.trim())return;
+  const me=blankMe();Object.keys(me).forEach(k=>{if(k!=='birthday')me[k]=typeof d[k]==='string'?d[k].trim():d[k]});me.birthday=bdayOf(d);
+  state.myProfile=me;if(save()){toast('保存したよ');back()}else render();
+}
+/* 交換コード：公開項目だけを入れる */
+const b64uEnc=s=>{const by=new TextEncoder().encode(s);let bin='';by.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const b64uDec=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const bin=atob(s);return new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0)))};
+const CODE_KEYS=[['n','name'],['k','nameKanji'],['c','color'],['b','birthday'],['l','location'],['o','occupation'],['h','bio'],['f','likes'],['s','statusKey'],['m','statusMemo'],['p','phone'],['e','email']];
+function makeCode(me){const o={v:1};CODE_KEYS.forEach(([s,k])=>{if(me[k])o[s]=me[k]});return 'HIBITO1:'+b64uEnc(JSON.stringify(o))}
+function parseCode(text){
+  try{
+    const m=String(text||'').match(/HIBITO1:([A-Za-z0-9_-]+)/);if(!m)return null;
+    const o=JSON.parse(b64uDec(m[1]));if(!o||typeof o!=='object')return null;
+    const r=blankMe();CODE_KEYS.forEach(([s,k])=>{if(typeof o[s]==='string')r[k]=o[s].slice(0,300).trim()});
+    if(!r.name)return null;
+    if(!COLORS[r.color])r.color='pink';
+    if(!/^\d\d-\d\d$/.test(r.birthday||''))r.birthday=null;
+    if(!STATUS.some(x=>x[0]===r.statusKey))r.statusKey='';
+    return r;
+  }catch(e){return null}
+}
+function showCode(){
+  const me=state.myProfile;if(!me){go('editMe');return}
+  const code=makeCode(me);
+  openModal(`<h2>交換コード</h2><p class="muted">相手のひびとlogで読みとってもらってね。入っているのは公開用の項目だけだよ。</p><div class="qr">${QR.svg(code)}</div><textarea class="inp code" id="codeOut" readonly>${esc(code)}</textarea><div class="btns"><button class="sbtn tap" data-act="closeOv">とじる</button><button class="sbtn pri tap" data-act="copyCode">${icon('copy',18)}コピーする</button></div>`);
+}
+function copyCode(){
+  const t=$('#codeOut');if(!t)return;
+  const done=()=>toast('コピーしたよ');
+  const fb=()=>{t.select();try{document.execCommand('copy');done()}catch(e){toast('長押しでコピーしてね')}};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).then(done,fb);else fb();
+}
+const canCam=()=>'BarcodeDetector' in window&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
+function renderImport(){
+  const s=ui.imp;if(!s)return;
+  if(s.step==='input'){
+    openModal(`<h2>コードを取りこむ</h2><p class="muted">相手の交換コードを貼り付けるか、QRコードをカメラで読んでね。</p><textarea class="inp code" id="impText" style="margin-top:12px" placeholder="HIBITO1:…">${esc(s.text||'')}</textarea>${canCam()?'':'<p class="muted" style="margin-top:8px">このブラウザではカメラ読み取りが使えないから、貼り付けで取りこんでね。</p>'}<div class="btns">${canCam()?`<button class="sbtn tap" data-act="camStart">${icon('camera',18)}カメラで読む</button>`:''}<button class="sbtn pri tap" data-act="impParse">読み取る</button></div>`);
+  }else if(s.step==='cam'){
+    openModal(`<h2>QRコードを読む</h2><p class="muted" style="margin-bottom:12px">QRコードを枠の中に入れてね</p><video class="cam" id="cam" playsinline muted autoplay></video><div class="btns"><button class="sbtn tap" data-act="impBack">貼り付けにする</button></div>`);
+  }else{
+    const d=s.data,ex=s.existing;
+    const prev=Object.assign({},d,{relation:s.rel});
+    openModal(`<div class="hero" style="padding-top:0">${avatar(prev,64,!s.rel)}<h1 style="font-size:16px">${esc(d.name)}</h1>${d.bio?`<p class="muted">${esc(d.bio)}</p>`:''}</div>${ex?`<p style="margin-top:12px">すでにいる「${esc(ex.name)}」の交換プロフィールを新しくするよ。</p><div class="btns"><button class="sbtn tap" data-act="closeOv">やめる</button><button class="sbtn pri tap" data-act="impSave">更新する</button></div>`:`<div class="fld" style="margin:16px 0 0"><span class="lbl">関係をえらんでね</span><div class="chips wrap">${REL_KEYS.map(k=>`<button class="chip tap${s.rel===k?' on':''}" data-act="impRel" data-v="${k}">${k}</button>`).join('')}</div>${s.rel?`<div class="chips wrap">${REL[s.rel].map(x=>`<button class="chip tap${s.sub===x?' on':''}" data-act="impSub" data-v="${esc(x)}">${esc(x)}</button>`).join('')}</div>`:''}</div><div class="btns"><button class="sbtn tap" data-act="closeOv">やめる</button><button class="sbtn pri tap" data-act="impSave"${s.rel?'':' disabled style="opacity:.5"'}>登録する</button></div>`}`);
+  }
+}
+function impParse(text){
+  const d=parseCode(text);
+  if(!d){toast('コードが読み取れなかったよ');return}
+  const existing=state.people.find(p=>p.exchangedProfile&&p.name===d.name)||null;
+  ui.imp={step:'rel',data:d,rel:'',sub:'',existing};renderImport();
+}
+function impSave(){
+  const s=ui.imp;if(!s||!s.data)return;const d=s.data;
+  let id;
+  if(s.existing){const q=person(s.existing.id);if(!q)return;q.exchangedProfile=Object.assign({},d,{receivedAt:Date.now()});q.nameKanji=q.nameKanji||d.nameKanji;if(d.birthday)q.birthday=d.birthday;id=q.id}
+  else{if(!s.rel)return;id=uid();state.people.push(Object.assign(blankPerson(),{id,name:d.name,nameKanji:d.nameKanji,color:d.color,birthday:d.birthday,relation:s.rel,relationSub:s.sub,exchangedProfile:Object.assign({},d,{receivedAt:Date.now()}),createdAt:Date.now()}))}
+  if(!save()){render();return}
+  const upd=!!s.existing;ui.imp=null;closeOv();toast(upd?'プロフィールを更新したよ':'登録したよ');go('person',{id});
+}
+async function camStart(){
+  if(!canCam()){toast('カメラが使えないみたい。コードを貼り付けてね');return}
+  ui.imp={step:'cam'};renderImport();ovClose=stopCam;
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    const v=$('#cam');if(!v){st.getTracks().forEach(t=>t.stop());return}
+    ui.camStream=st;v.srcObject=st;await v.play();
+    const det=new BarcodeDetector({formats:['qr_code']});
+    const loop=async()=>{
+      if(!ui.camStream)return;
+      try{const r=await det.detect(v);if(r.length&&r[0].rawValue){const txt=r[0].rawValue;stopCam();ovClose=null;impParse(txt);return}}catch(e){}
+      ui.camT=setTimeout(loop,300);
+    };loop();
+  }catch(e){stopCam();ovClose=null;ui.imp={step:'input',text:''};renderImport();toast('カメラが使えないみたい。コードを貼り付けてね')}
+}
+function stopCam(){clearTimeout(ui.camT);if(ui.camStream){ui.camStream.getTracks().forEach(t=>t.stop());ui.camStream=null}}
+
+/* QRコード生成（外部サービスに送らず、この中で作る） */
+const QR=(()=>{
+  const ECC={L:[-1,7,10,15,20,26,18,20,24,30,18,20,24,26,30,22,24,28,30,28,28,28,28,30,30,26,28,30,30,30,30,30,30,30,30,30,30,30,30,30,30],M:[-1,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26,26,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28]};
+  const NB={L:[-1,1,1,1,1,1,2,2,2,2,4,4,4,4,4,6,6,6,6,7,8,8,9,9,10,12,12,12,13,14,15,16,17,18,19,19,20,21,22,24,25],M:[-1,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16,17,17,18,20,21,23,25,26,28,29,31,33,35,37,38,40,43,45,47,49]};
+  const FB={L:1,M:0};
+  const rawMods=v=>{let r=(16*v+128)*v+64;if(v>=2){const n=Math.floor(v/7)+2;r-=(25*n-10)*n-55;if(v>=7)r-=36}return r};
+  const dataCw=(v,e)=>Math.floor(rawMods(v)/8)-ECC[e][v]*NB[e][v];
+  const mul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^((z>>>7)*0x11D);z^=((y>>>i)&1)*x}return z};
+  const divisor=deg=>{const r=new Array(deg).fill(0);r[deg-1]=1;let root=1;for(let i=0;i<deg;i++){for(let j=0;j<deg;j++){r[j]=mul(r[j],root);if(j+1<deg)r[j]^=r[j+1]}root=mul(root,2)}return r};
+  const remd=(data,div)=>{const r=new Array(div.length).fill(0);for(const b of data){const f=b^r.shift();r.push(0);div.forEach((c,i)=>{r[i]^=mul(c,f)})}return r};
+  function make(text,ecl='M'){
+    const bytes=Array.from(new TextEncoder().encode(text));
+    let v=1;for(;v<=40;v++){if(4+(v<10?8:16)+bytes.length*8<=dataCw(v,ecl)*8)break}
+    if(v>40)return null;
+    const bits=[];const put=(val,n)=>{for(let i=n-1;i>=0;i--)bits.push((val>>>i)&1)};
+    put(4,4);put(bytes.length,v<10?8:16);bytes.forEach(b=>put(b,8));
+    const cap=dataCw(v,ecl)*8;put(0,Math.min(4,cap-bits.length));put(0,(8-bits.length%8)%8);
+    for(let p=0xEC;bits.length<cap;p^=0xEC^0x11)put(p,8);
+    const data=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=(b<<1)|bits[i+j];data.push(b)}
+    const nb=NB[ecl][v],el=ECC[ecl][v],raw=Math.floor(rawMods(v)/8),nshort=nb-raw%nb,slen=Math.floor(raw/nb),div=divisor(el),blocks=[];
+    for(let i=0,k=0;i<nb;i++){const dat=data.slice(k,k+slen-el+(i<nshort?0:1));k+=dat.length;const ec=remd(dat,div);if(i<nshort)dat.push(0);blocks.push(dat.concat(ec))}
+    const all=[];for(let i=0;i<blocks[0].length;i++)blocks.forEach((b,j)=>{if(i!==slen-el||j>=nshort)all.push(b[i])});
+    const size=v*4+17,M=[],F=[];for(let i=0;i<size;i++){M.push(new Array(size).fill(false));F.push(new Array(size).fill(false))}
+    const set=(x,y,d)=>{M[y][x]=d;F[y][x]=true};
+    for(let i=0;i<size;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+    const finder=(x,y)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const xx=x+dx,yy=y+dy;if(xx>=0&&xx<size&&yy>=0&&yy<size){const ds=Math.max(Math.abs(dx),Math.abs(dy));set(xx,yy,ds!==2&&ds!==4)}}};
+    finder(3,3);finder(size-4,3);finder(3,size-4);
+    const ap=[];if(v>1){const n=Math.floor(v/7)+2,step=v===32?26:Math.ceil((v*4+4)/(n*2-2))*2;ap.push(6);for(let pos=size-7;ap.length<n;pos-=step)ap.splice(1,0,pos)}
+    const L=ap.length-1;
+    ap.forEach((a,i)=>ap.forEach((b,j)=>{if((i===0&&j===0)||(i===0&&j===L)||(i===L&&j===0))return;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)set(a+dx,b+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}));
+    const fmt=mask=>{const d=FB[ecl]<<3|mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const bb=(d<<10|r)^0x5412,g=i=>((bb>>>i)&1)===1;
+      for(let i=0;i<=5;i++)set(8,i,g(i));set(8,7,g(6));set(8,8,g(7));set(7,8,g(8));for(let i=9;i<15;i++)set(14-i,8,g(i));
+      for(let i=0;i<8;i++)set(size-1-i,8,g(i));for(let i=8;i<15;i++)set(8,size-15+i,g(i));set(8,size-8,true)};
+    fmt(0);
+    if(v>=7){let r=v;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const bb=v<<12|r;for(let i=0;i<18;i++){const bit=((bb>>>i)&1)===1,a=size-11+i%3,b=Math.floor(i/3);set(a,b,bit);set(b,a,bit)}}
+    let i=0;for(let right=size-1;right>=1;right-=2){if(right===6)right=5;for(let vert=0;vert<size;vert++)for(let j=0;j<2;j++){const x=right-j,up=((right+1)&2)===0,y=up?size-1-vert:vert;if(!F[y][x]&&i<all.length*8){M[y][x]=((all[i>>>3]>>>(7-(i&7)))&1)===1;i++}}}
+    const MF=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+    const apply=m=>{for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(!F[y][x]&&MF[m](x,y))M[y][x]=!M[y][x]};
+    const penalty=()=>{let p=0;
+      for(let y=0;y<size;y++){let run=1;for(let x=1;x<=size;x++){if(x<size&&M[y][x]===M[y][x-1])run++;else{if(run>=5)p+=run-2;run=1}}}
+      for(let x=0;x<size;x++){let run=1;for(let y=1;y<=size;y++){if(y<size&&M[y][x]===M[y-1][x])run++;else{if(run>=5)p+=run-2;run=1}}}
+      for(let y=0;y<size-1;y++)for(let x=0;x<size-1;x++){const c=M[y][x];if(c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1])p+=3}
+      let dark=0;M.forEach(r=>r.forEach(c=>{if(c)dark++}));const tot=size*size;p+=(Math.ceil(Math.abs(dark*20-tot*10)/tot)-1)*10;return p};
+    let best=0,bp=Infinity;for(let m=0;m<8;m++){apply(m);fmt(m);const pp=penalty();if(pp<bp){bp=pp;best=m}apply(m)}
+    apply(best);fmt(best);
+    return{size,M};
+  }
+  function svg(text){const q=make(text);if(!q)return'';const n=q.size+8;let d='';q.M.forEach((r,y)=>r.forEach((c,x)=>{if(c)d+=`M${x+4} ${y+4}h1v1h-1z`}));return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" role="img" aria-label="QRコード"><rect width="${n}" height="${n}" fill="#fff"/><path d="${d}" fill="#2B2522"/></svg>`}
+  return{make,svg};
+})();
+
+/* ===== チャット（試作：この端末の中だけ） ===== */
+const fmtTime=t=>{const d=new Date(t);return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${pad2(d.getMinutes())}`};
+V.chat=p=>{
+  const q=person(p.id);if(!q||!q.exchangedProfile)return null;
+  const ms=state.messages.filter(m=>m.personId===q.id).sort((a,b)=>a.createdAt-b.createdAt);
+  const b=`<div class="note-bar">試作版：この端末の中だけのチャットだよ</div><div class="msgs">${ms.length?ms.map(m=>{const me=m.from==='me';return `<div class="bub ${me?'me':'them'}">${esc(m.text)}</div><div class="bub-t${me?' me':''}">${fmtTime(m.createdAt)}</div>`}).join(''):`<p class="muted" style="text-align:center;padding:24px 0">まだメッセージはないよ</p>`}</div>`;
+  return{head:hdBack(q.name),body:b,foot:`<div class="chatbar"><textarea class="inp" id="chatIn" rows="1" placeholder="メッセージ" aria-label="メッセージ"></textarea><button class="sendb tap" data-act="sendMsg" aria-label="送る">${icon('send',20,2)}</button></div>`,nav:false,after:()=>window.scrollTo(0,document.body.scrollHeight)};
+};
+function sendMsg(){
+  const i=$('#chatIn');const text=i?i.value.trim():'';if(!text)return;
+  state.messages.push({id:uid(),personId:cur().p.id,text,from:'me',createdAt:Date.now()});
+  if(!save()){render();return}
+  render();window.scrollTo(0,document.body.scrollHeight);const n=$('#chatIn');if(n)n.focus();
+}
+
+/* ===== 設定・ふりかえり ===== */
+function applyTheme(){
+  const t=state.settings.theme||'milk';document.documentElement.dataset.theme=t;
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#FFFBF6';
+}
+function settingsSheet(){
+  const s=state.settings,th=s.theme||'milk';
+  const row=(act,ic,bg,label,danger)=>`<button class="srow tap${danger?' danger':''}" data-act="${act}"><span class="ci" style="background:${bg}">${icon(ic,20)}</span>${label}</button>`;
+  openSheet(`<h2>設定</h2><div class="sub-h" style="margin-top:0">${icon('palette',14)}デザイン</div><div class="chips wrap" style="margin-bottom:8px">${THEMES.map(t=>`<button class="chip tap${th===t[0]?' on':''}" data-act="setTheme" data-v="${t[0]}"><i class="sw" style="background:${t[2]}"></i>${t[1]}</button>`).join('')}</div>
+  ${row('review','star','var(--butter-soft)',today().slice(0,4)+'年のふりかえり')}
+  ${row('importCode','qr','var(--mint-soft)','交換コードを取りこむ')}
+  ${s.pinHash?row('pinChange','lock','var(--lav-soft)','PINを変える')+row('pinOff','lock','var(--lav-soft)','PINロックを外す'):row('pinSet','lock','var(--lav-soft)','PINロックをかける')}
+  ${row('exportJson','download','var(--beige-soft)','データの書き出し')}
+  ${row('importJson','upload','var(--beige-soft)','データの読み込み')}
+  ${row('resetSample','refresh','var(--pink-soft)','サンプルデータに戻す')}
+  ${row('deleteAll','trash','var(--pink-soft)','すべて削除',true)}`);
+}
+function reviewSheet(){
+  const y=today().slice(0,4);
+  const es=state.entries.filter(e=>e.date.startsWith(y)),ps=state.photos.filter(p=>p.date.startsWith(y));
+  const cnt={};es.forEach(e=>e.peopleIds.forEach(i=>cnt[i]=(cnt[i]||0)+1));
+  const top=Object.keys(cnt).map(i=>({p:person(i),n:cnt[i]})).filter(x=>x.p).sort((a,b)=>b.n-a.n).slice(0,3);
+  const mc={};es.forEach(e=>{const m=+e.date.slice(5,7);mc[m]=(mc[m]||0)+1});
+  const bm=Object.keys(mc).map(Number).sort((a,b)=>mc[b]-mc[a]||a-b)[0];
+  openSheet(`<h2>${y}年のふりかえり</h2>${!es.length&&!ps.length?'<p class="muted" style="padding:12px 0 8px">今年の記録はまだないよ</p>':`<div class="rv"><div class="card"><div class="big-n">${es.length}</div><div class="muted">日記</div></div><div class="card"><div class="big-n">${ps.length}</div><div class="muted">写真</div></div></div>
+  <div class="sub-h">一緒にいた回数</div>${top.length?`<div class="rows">${top.map((x,i)=>`<button class="row tap" data-act="openPerson" data-id="${esc(x.p.id)}"><b style="width:20px;text-align:center">${i+1}</b>${avatar(x.p,28)}<span class="r-main"><b>${esc(x.p.name)}</b></span><span class="muted">${x.n}回</span></button>`).join('')}</div>`:'<p class="muted">まだいないよ</p>'}
+  ${bm?`<div class="sub-h">一番記録の多い月</div><p><b style="font-size:16px">${bm}月</b> <span class="muted">${mc[bm]}件</span></p>`:''}`}`);
+}
+function exportJson(){
+  const o=JSON.parse(JSON.stringify(state));o.settings={theme:state.settings.theme};o.exportedAt=new Date().toISOString();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download=`hibito-${today()}.json`;
+  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('書き出したよ');
+}
+function resetUI(){ui.rel='';ui.sub='';ui.phFilter='';ui.selecting=false;ui.sel=[];tab('people')}
+
+/* ===== アプリロック（PIN・ハッシュ保存） ===== */
+function sha256(str){
+  const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const ror=(x,n)=>(x>>>n)|(x<<(32-n));
+  const by=Array.from(new TextEncoder().encode(str)),l=by.length*8;
+  by.push(0x80);while(by.length%64!==56)by.push(0);
+  for(let i=7;i>=0;i--)by.push(i>=4?0:(l>>>(i*8))&255);
+  let H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];const w=new Array(64);
+  for(let o=0;o<by.length;o+=64){
+    for(let t=0;t<16;t++)w[t]=(by[o+4*t]<<24)|(by[o+4*t+1]<<16)|(by[o+4*t+2]<<8)|by[o+4*t+3];
+    for(let t=16;t<64;t++){const a=w[t-15],b=w[t-2];w[t]=(w[t-16]+(ror(a,7)^ror(a,18)^(a>>>3))+w[t-7]+(ror(b,17)^ror(b,19)^(b>>>10)))|0}
+    let[a,b,c,d,e,f,g,h]=H;
+    for(let t=0;t<64;t++){const t1=(h+(ror(e,6)^ror(e,11)^ror(e,25))+((e&f)^(~e&g))+K[t]+w[t])|0,t2=((ror(a,2)^ror(a,13)^ror(a,22))+((a&b)^(a&c)^(b&c)))|0;h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0}
+    H=[H[0]+a,H[1]+b,H[2]+c,H[3]+d,H[4]+e,H[5]+f,H[6]+g,H[7]+h].map(x=>x|0);
+  }
+  return H.map(x=>(x>>>0).toString(16).padStart(8,'0')).join('');
+}
+const hashPin=pin=>sha256((state.settings.pinSalt||'')+':'+pin);
+function randHex(){const a=new Uint8Array(16);(window.crypto||{}).getRandomValues?crypto.getRandomValues(a):a.forEach((_,i)=>a[i]=Math.random()*256|0);return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('')}
+function startPin(mode,next){ui.pin={mode,buf:'',first:'',next:next||'',err:''};$('#lock').classList.add('open');renderPin()}
+function closePin(){ui.pin=null;$('#lock').classList.remove('open');$('#lock').innerHTML=''}
+function renderLock(){$('#hd').innerHTML='';$('#main').innerHTML='';$('#foot').innerHTML='';$('#nav').innerHTML='';if(!ui.pin||ui.pin.mode!=='unlock')startPin('unlock');else renderPin()}
+function renderPin(){
+  const m=ui.pin;if(!m)return;
+  const T={unlock:'PINを入れてね',set1:'新しいPINを4桁で入れてね',set2:'確認のため、もう一度入れてね',verify:'今のPINを入れてね'};
+  $('#lock').innerHTML=`<img src="assets/symbol.png" alt="" style="width:56px;height:56px;border-radius:16px" onerror="this.remove()"><h2>${T[m.mode]}</h2><div class="err" role="alert">${esc(m.err)}</div><div class="dots">${[0,1,2,3].map(i=>`<i class="${i<m.buf.length?'f':''}"></i>`).join('')}</div><div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="tap" data-act="pinKey" data-v="${n}">${n}</button>`).join('')}${m.mode==='unlock'?'<span></span>':`<button class="ghost tap" data-act="pinCancel" style="font-size:12.5px">やめる</button>`}<button class="tap" data-act="pinKey" data-v="0">0</button><button class="ghost tap" data-act="pinDel" aria-label="ひとつ消す">${icon('back',22)}</button></div>`;
+}
+function pinKey(v){const m=ui.pin;if(!m||m.buf.length>=4||m.busy)return;m.buf+=v;m.err='';renderPin();if(m.buf.length===4){m.busy=true;setTimeout(()=>{m.busy=false;pinDone()},160)}}
+function pinDone(){
+  const m=ui.pin,s=state.settings;if(!m)return;
+  const wrong=t=>{m.buf='';m.err=t;renderPin()};
+  if(m.mode==='unlock'){if(hashPin(m.buf)===s.pinHash){ui.locked=false;closePin();render();if(!s.welcomed)showWelcome()}else wrong('PINがちがうよ')}
+  else if(m.mode==='verify'){
+    if(hashPin(m.buf)!==s.pinHash)return wrong('PINがちがうよ');
+    if(m.next==='off'){s.pinHash=null;s.pinSalt=null;closePin();if(save())toast('ロックを外したよ')}
+    else{m.mode='set1';m.buf='';renderPin()}
+  }else if(m.mode==='set1'){m.first=m.buf;m.buf='';m.mode='set2';renderPin()}
+  else if(m.mode==='set2'){
+    if(m.buf!==m.first){m.mode='set1';m.first='';return wrong('PINが合わなかったよ。もう一度入れてね')}
+    const salt=randHex(),prevH=s.pinHash,prevS=s.pinSalt;s.pinSalt=salt;s.pinHash=sha256(salt+':'+m.buf);closePin();
+    if(save())toast('PINを設定したよ');else{s.pinHash=prevH;s.pinSalt=prevS}
+  }
+}
+
+/* ===== はじめての起動 ===== */
+function showWelcome(){
+  ovClose=()=>{state.settings.welcomed=true;save()};
+  openModal(`${art('welcome','welcome-art')}<h2 style="text-align:center;font-family:var(--font-head);font-size:22px;margin-top:8px">ひびと<small style="font-size:16px">log</small></h2><p class="muted" style="text-align:center">日記と、人と、写真と。</p><p style="text-align:center;margin-top:12px">人を中心に、日記と写真が集まる<br>思い出アルバムだよ。<br>サンプルが入っているから、さわってみてね。</p><div class="btns c"><button class="sbtn pri tap" data-act="closeOv">はじめる</button></div>`);
+}
+
+/* ===== 操作（イベント委譲） ===== */
+const fileAct={};
+const A={
+  back:()=>back(),
+  tab:el=>{const v=el.dataset.v;if(stack.length===1&&stack[0].name===v){window.scrollTo({top:0,behavior:'smooth'});return}tab(v)},
+  closeOv:()=>closeOv(),
+  confirmOk:()=>{const f=ui.confirmFn;ui.confirmFn=null;if(f)f()},
+  fab:()=>openSheet(`<h2>なにを追加する？</h2>
+    <button class="srow tap" data-act="newEntry"><span class="ci" style="background:var(--pink-soft)">${icon('pen',20)}</span>日記をかく</button>
+    <button class="srow tap" data-act="newPerson"><span class="ci" style="background:var(--mint-soft)">${icon('userplus',20)}</span>人を登録する</button>
+    <button class="srow tap" data-act="addPhoto"><span class="ci" style="background:var(--butter-soft)">${icon('photo',20)}</span>写真を追加する</button>`),
+  search:()=>go('search'),
+  settings:()=>settingsSheet(),
+  newEntry:()=>go('editEntry',{}),
+  newEntryWith:el=>go('editEntry',{people:[el.dataset.id]}),
+  newEntryGroup:()=>go('editEntry',{people:[...(cur().p.ids||[])]}),
+  newPerson:()=>go('editPerson',{}),
+  addPhoto:()=>{const f=$('#fileAdd');f.value='';f.click()},
+  openEntry:el=>go('entry',{id:el.dataset.id}),
+  openPerson:el=>go('person',{id:el.dataset.id}),
+  openPhoto:el=>go('photo',{id:el.dataset.id}),
+  openMe:()=>go('me'),
+  openChat:el=>go('chat',{id:el.dataset.id}),
+  openGroup:()=>{if(ui.sel.length<2)return;const ids=[...ui.sel];ui.selecting=false;ui.sel=[];go('group',{ids})},
+  selMode:()=>{ui.selecting=!ui.selecting;ui.sel=[];render()},
+  selToggle:el=>{const id=el.dataset.id;ui.sel=ui.sel.includes(id)?ui.sel.filter(i=>i!==id):[...ui.sel,id];render()},
+  fRel:el=>{ui.rel=el.dataset.v;ui.sub='';render()},
+  fSub:el=>{ui.sub=el.dataset.v;render()},
+  fPh:el=>{ui.phFilter=el.dataset.v;render()},
+  dMood:el=>{const d=cur().d;d.mood=d.mood===el.dataset.v?null:el.dataset.v;render()},
+  dPerson:el=>{const d=cur().d,id=el.dataset.id;d.peopleIds=d.peopleIds.includes(id)?d.peopleIds.filter(i=>i!==id):[...d.peopleIds,id];render()},
+  dPhoto:el=>{const d=cur().d,id=el.dataset.id;d.photoIds=d.photoIds.includes(id)?d.photoIds.filter(i=>i!==id):[...d.photoIds,id];render()},
+  pickEntryPhotos:()=>{const f=$('#fileEntry');f.value='';f.click()},
+  saveEntry:()=>saveEntry(),
+  dRel:el=>{const d=cur().d;d.relation=d.relation===el.dataset.v?'':el.dataset.v;d.relationSub='';render()},
+  dRelSub:el=>{const d=cur().d;d.relationSub=d.relationSub===el.dataset.v?'':el.dataset.v;render()},
+  dStatus:el=>{const d=cur().d;d.statusKey=d.statusKey===el.dataset.v?'':el.dataset.v;render()},
+  dColor:el=>{cur().d.color=el.dataset.v;render()},
+  savePerson:()=>savePerson(),
+  savePhotos:()=>savePhotos(),
+  editPerson:el=>go('editPerson',{id:el.dataset.id}),
+  editEntry:el=>go('editEntry',{id:el.dataset.id}),
+  entryMenu:el=>openSheet(`<button class="srow tap" data-act="editEntry" data-id="${esc(el.dataset.id)}"><span class="ci" style="background:var(--beige-soft)">${icon('edit',20)}</span>なおす</button><button class="srow tap danger" data-act="delEntry" data-id="${esc(el.dataset.id)}"><span class="ci" style="background:var(--pink-soft)">${icon('trash',20)}</span>削除する</button>`),
+  personMenu:el=>openSheet(`<button class="srow tap" data-act="editPerson" data-id="${esc(el.dataset.id)}"><span class="ci" style="background:var(--beige-soft)">${icon('edit',20)}</span>なおす</button><button class="srow tap danger" data-act="delPerson" data-id="${esc(el.dataset.id)}"><span class="ci" style="background:var(--pink-soft)">${icon('trash',20)}</span>削除する</button>`),
+  photoMenu:el=>openSheet(`<button class="srow tap" data-act="phPeople" data-id="${esc(el.dataset.id)}"><span class="ci" style="background:var(--mint-soft)">${icon('people',20)}</span>人を付け替える</button><button class="srow tap" data-act="phEntries" data-id="${esc(el.dataset.id)}"><span class="ci" style="background:var(--beige-soft)">${icon('book',20)}</span>日記に貼る</button><button class="srow tap danger" data-act="delPhoto" data-id="${esc(el.dataset.id)}"><span class="ci" style="background:var(--pink-soft)">${icon('trash',20)}</span>削除する</button>`),
+  delEntry:el=>{const id=el.dataset.id;confirmDlg('本当に削除する？','削除する',()=>{state.entries=state.entries.filter(e=>e.id!==id);if(save()){toast('削除したよ');back()}else render()})},
+  delPerson:el=>deletePerson(el.dataset.id),
+  delPhoto:el=>deletePhoto(el.dataset.id),
+  phPeople:el=>{const ph=photo(el.dataset.id);if(!ph)return;ui.tmp={id:ph.id,ids:[...ph.peopleIds],memo:ph.memo||''};phPeopleSheet()},
+  phPeopleToggle:el=>{const id=el.dataset.id,t=ui.tmp;t.ids=t.ids.includes(id)?t.ids.filter(i=>i!==id):[...t.ids,id];phPeopleSheet()},
+  phPeopleSave:()=>{const ph=photo(ui.tmp.id);if(!ph)return closeOv();ph.peopleIds=[...ui.tmp.ids];ph.memo=String(ui.tmp.memo||'').trim();closeOv();if(save())toast('保存したよ');render()},
+  phEntries:el=>{ui.tmp={id:el.dataset.id};phEntriesSheet()},
+  phEntryToggle:el=>{const e=entry(el.dataset.id),id=ui.tmp.id;if(!e)return;e.photoIds=e.photoIds.includes(id)?e.photoIds.filter(i=>i!==id):[...e.photoIds,id];save();phEntriesSheet();render()},
+  editMe:()=>go('editMe'),
+  saveMe:()=>saveMe(),
+  showCode:()=>showCode(),
+  copyCode:()=>copyCode(),
+  importCode:()=>{ui.imp={step:'input',text:''};renderImport()},
+  impParse:()=>{const t=$('#impText');if(ui.imp)ui.imp.text=t?t.value:'';impParse(t?t.value:'')},
+  impBack:()=>{stopCam();ovClose=null;ui.imp={step:'input',text:''};renderImport()},
+  impRel:el=>{ui.imp.rel=el.dataset.v;ui.imp.sub='';renderImport()},
+  impSub:el=>{ui.imp.sub=ui.imp.sub===el.dataset.v?'':el.dataset.v;renderImport()},
+  impSave:()=>impSave(),
+  camStart:()=>camStart(),
+  sendMsg:()=>sendMsg(),
+  setTheme:el=>{state.settings.theme=el.dataset.v;applyTheme();save();settingsSheet();render()},
+  review:()=>reviewSheet(),
+  pinSet:()=>startPin('set1'),
+  pinChange:()=>startPin('verify','change'),
+  pinOff:()=>startPin('verify','off'),
+  pinKey:el=>pinKey(el.dataset.v),
+  pinDel:()=>{if(ui.pin){ui.pin.buf=ui.pin.buf.slice(0,-1);renderPin()}},
+  pinCancel:()=>closePin(),
+  exportJson:()=>exportJson(),
+  importJson:()=>{const f=$('#fileJson');f.value='';f.click()},
+  resetSample:()=>confirmDlg('今のデータを消して、サンプルに戻す？','戻す',()=>{const s=state.settings;state=sampleState();state.settings=s;if(save()){toast('サンプルに戻したよ');resetUI()}else render()}),
+  deleteAll:()=>confirmDlg('本当にすべて削除する？','削除する',()=>{Object.assign(state,{people:[],entries:[],photos:[],messages:[],myProfile:null});if(save()){toast('すべて削除したよ');resetUI()}else render()})
+};
+/* オーバーレイの中で完結する操作（シートを閉じない） */
+const KEEP=new Set(['setTheme','phPeopleToggle','phEntryToggle','impRel','impSub','impParse','impBack','camStart','copyCode','importCode','review','phPeople','phEntries','closeOv','impSave','phPeopleSave','delEntry','delPerson','delPhoto','resetSample','deleteAll']);
+function phPeopleSheet(){
+  const t=ui.tmp,ppl=sortedPeople();
+  openSheet(`<h2>写っている人</h2>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${t.ids.includes(q.id)?' on':''}" data-act="phPeopleToggle" data-id="${esc(q.id)}">${t.ids.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:'<p class="muted">まだ誰も登録されていないよ</p>'}<div class="fld" style="margin-top:16px"><label for="f-phm">メモ</label><input class="inp" id="f-phm" data-tbind="memo" value="${esc(t.memo)}" placeholder="例：夕日がきれいだった"></div><button class="pbtn tap" data-act="phPeopleSave">保存する</button>`);
+}
+function phEntriesSheet(){
+  const id=ui.tmp.id,es=[...state.entries].sort(byDateDesc);
+  openSheet(`<h2>日記に貼る</h2>${es.length?`<div class="rows">${es.map(e=>{const on=e.photoIds.includes(id);return `<button class="row tap${on?' on':''}" data-act="phEntryToggle" data-id="${esc(e.id)}"><span class="ck-c">${on?icon('check',14,2.4):''}</span><span class="tl-d">${fmtDate(e.date)}</span><span class="r-main"><b>${esc(entryTitle(e))}</b></span></button>`}).join('')}</div>`:'<p class="muted">まだ日記がないよ</p>'}<div class="btns c" style="margin-top:16px"><button class="sbtn tap" data-act="closeOv">とじる</button></div>`);
+}
+/* 削除系：シートを閉じてから確認を出す */
+['delEntry','delPerson','delPhoto','resetSample','deleteAll'].forEach(k=>{const f=A[k];A[k]=el=>{closeOv();f(el)}});
+
+document.addEventListener('click',ev=>{
+  const el=ev.target.closest('[data-act]');if(!el||el.disabled)return;
+  const act=el.dataset.act,fn=A[act];if(!fn)return;
+  if(el.tagName==='A')return;
+  ev.preventDefault();
+  if(el.closest('#ov')&&!KEEP.has(act))closeOv();
+  fn(el,ev);
+});
+function onInput(ev){
+  const el=ev.target;
+  if(el.dataset.bind){const c=cur();if(c.d){c.d[el.dataset.bind]=el.value;live()}}
+  else if(el.dataset.tbind){ui.tmp[el.dataset.tbind]=el.value}
+  if(el.id==='chatIn'){el.style.height='auto';el.style.height=Math.min(120,el.scrollHeight)+'px'}
+}
+document.addEventListener('input',onInput);
+document.addEventListener('change',ev=>{if(ev.target.tagName==='SELECT')onInput(ev)});
+document.addEventListener('keydown',ev=>{
+  if(ui.pin&&/^[0-9]$/.test(ev.key)){pinKey(ev.key);ev.preventDefault();return}
+  if(ui.pin&&ev.key==='Backspace'){A.pinDel();ev.preventDefault();return}
+  if(ev.key==='Escape'&&$('#ov').classList.contains('open'))closeOv();
+  if(ev.key==='Enter'&&ev.target.id==='chatIn'&&!ev.shiftKey&&!ev.isComposing){ev.preventDefault();sendMsg()}
+});
+$('#fileAdd').addEventListener('change',async ev=>{
+  const files=Array.from(ev.target.files||[]);if(!files.length)return;
+  const items=await readImages(files);if(!items.length)return;
+  const pre=cur().name==='person'?[cur().p.id]:[];
+  go('addPhotos',{},{items,date:today(),peopleIds:pre,memo:''});
+});
+$('#fileEntry').addEventListener('change',async ev=>{
+  const files=Array.from(ev.target.files||[]);if(!files.length)return;
+  const items=await readImages(files);const d=cur().d;if(!d||!d.newPhotos)return;
+  items.forEach(u=>{const id=uid();d.newPhotos.unshift({id,dataUrl:u});d.photoIds.push(id)});render();
+});
+$('#fileJson').addEventListener('change',ev=>{
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    let o;try{o=JSON.parse(r.result)}catch(e){toast('ファイルが読み込めなかったよ');return}
+    if(!o||!Array.isArray(o.people)||!Array.isArray(o.entries)||!Array.isArray(o.photos)){toast('ひびとlogのデータではないみたい');return}
+    confirmDlg('今のデータを、読み込んだ内容に置きかえる？','置きかえる',()=>{
+      const keep=state.settings,ns=migrate(o);
+      ns.settings=Object.assign({},keep,{theme:(o.settings&&THEMES.some(t=>t[0]===o.settings.theme))?o.settings.theme:keep.theme,welcomed:true});
+      const prev=state;state=ns;
+      if(save()){applyTheme();toast('読み込んだよ');resetUI()}else{state=prev;render()}
+    },false);
+  };
+  r.onerror=()=>toast('ファイルが読み込めなかったよ');
+  r.readAsText(f);
+});
+
+/* ===== 起動 ===== */
+load();applyTheme();
+try{history.replaceState({h:1},'')}catch(e){}
+if(state.settings.pinHash)ui.locked=true;
+render();
+if(!ui.locked&&!state.settings.welcomed)showWelcome();
+</script>
+</body>
+</html>
