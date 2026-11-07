@@ -99,7 +99,7 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appeara
 .bh h2{font-size:16px}
 .bh h2.ttl{font-size:20px}
 .bh small{font-size:12.5px;color:var(--ink-soft)}
-.lnk{font-size:12.5px;color:var(--pink-deep);font-weight:700;min-height:44px;padding:0 4px;display:inline-flex;align-items:center}
+.lnk{font-size:12.5px;color:var(--pink-deep);font-weight:700;min-height:44px;padding:0 4px;display:inline-flex;align-items:center;gap:4px}
 .mh{font-size:14px;margin:20px 0 12px;display:flex;gap:8px;align-items:baseline}
 .mh small{font-size:12.5px;color:var(--ink-soft);font-weight:400}
 .mh:first-child{margin-top:0}
@@ -292,6 +292,13 @@ video.cam{width:100%;border-radius:16px;background:var(--beige-soft);aspect-rati
 .pad button{width:72px;height:72px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:22px;font-family:var(--font-head);display:grid;place-items:center}
 .pad button.ghost{background:none;border:0}
 
+/* つかいかた */
+.g-sec h2{font-size:16px;margin-bottom:8px}
+.g-sec p{margin:0 0 8px;word-break:break-word}
+.g-list{padding-left:1.5em;margin:0 0 8px}
+.g-list li{margin-bottom:4px}
+.g-list li::marker{color:var(--pink-deep)}
+
 /* 統計（ふりかえり） */
 .big-n{font-size:28px;font-family:var(--font-head);font-weight:700;line-height:1.2}
 .rv{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
@@ -311,6 +318,106 @@ video.cam{width:100%;border-radius:16px;background:var(--beige-soft);aspect-rati
 <input type="file" id="fileAdd" accept="image/*" multiple hidden>
 <input type="file" id="fileEntry" accept="image/*" multiple hidden>
 <input type="file" id="fileJson" accept="application/json,.json" hidden>
+<!-- つかいかたガイド本文（デザイン指示書の本文をそのまま。要約・改変しない） -->
+<script type="text/plain" id="guide-src">
+## はじめに
+
+ひびとlog は、大切な人との日々を残す手帳だよ。
+人を登録して、その人と「いつ・何をしたか」を記録していくのが基本の使い方。
+写真も一緒に残せるよ。
+
+## ひとを登録する
+
+1. 「ひと」画面の＋ボタンから登録できるよ
+2. 名前と関係（家族・友達・仕事など）を選んでね。関係は大分類と小分類の2段で選べるよ
+3. 漢字表記を入れると、アイコンの文字がその漢字になるよ
+4. 誕生日や場所、近況も書いておくと、その人のページが充実するよ
+
+## 記録をつける
+
+1. 下の＋ボタンから「記録をかく」を選ぶよ
+2. 日付・タイトル・内容を書いて、一緒だった人を選んでね
+3. 写真も一緒に付けられるよ
+4. 記録は「きろく」に新しい順に並んで、選んだ人のページにも自動で出るよ
+
+## 人のページ
+
+人を押すと、その人のページが開くよ。
+- 「その人について」：関係・容姿・誕生日・場所・近況などのプロフィール
+- 「いつ・何をしたか」：その人との記録の一覧
+- 「しゃしん」：その人が写っている写真
+
+関係や容姿、近況のメモは自分の手帳だけの情報で、交換では渡らないよ。
+
+## メンバーで見る
+
+「ひと」画面で人を2人以上選ぶと「このメンバーで見る」が出るよ。
+全員が一緒にいた記録と写真だけが見られるよ。家族の集まりや、いつものメンバーとの思い出を振り返るのに便利。
+
+## わたしのプロフィール
+
+「ひと」画面の先頭に、自分のプロフィールを作れるよ。
+名前・誕生日・場所・仕事・ひとこと・好きなもの・近況と、電話番号・メールアドレスが書けるよ。
+ここに書いた内容が、プロフィール交換で相手に渡るよ。
+
+## プロフィール交換
+
+自分のプロフィールを、コードやQRで相手に渡せるよ。
+
+渡すとき：
+1. 自分のプロフィール画面で「交換コードを発行する」を押す
+2. 出てきたコードをコピーするか、QRを見せてね
+
+受け取るとき：
+1. 「ひと」画面の「交換コードを取り込む」から、コードを貼るかQRを読み取る
+2. 関係を選ぶと、その人が「ひと」に登録されるよ
+
+渡るのは公開項目だけ。関係・容姿・近況メモなどの手帳の情報は渡らないよ。
+
+## 連絡する（電話・メール）
+
+電話番号やメールアドレスが登録してある人のページでは、押すと「電話をかける」「メールを送る」が選べるよ。そのまま端末の電話・メールアプリが開くよ。
+
+## チャット
+
+プロフィールを交換した人とは、アプリの中でチャットができるよ。
+その人のページから開いてね。
+（試作版では、この端末の中だけのチャットだよ）
+
+## お知らせ
+
+「ひと」画面の上に、こんなお知らせが出ることがあるよ。
+- もうすぐ誕生日：30日以内の人の誕生日
+- 久しぶりの人：90日以上記録がない人
+
+どちらも押すとその人のページに行けるよ。誕生日のお祝いや、久しぶりの連絡のきっかけに使ってね。
+
+## 思い出とふりかえり
+
+「きろく」の先頭には「思い出」が出るよ。去年の今日の記録や、昔の記録が写真と一緒に表示されるよ。
+設定の「今年のふりかえり」では、今年の記録の数や、よく一緒にいた人も見られるよ。
+
+## デザインを変える
+
+設定の「デザイン」から、テーマを切り替えられるよ。
+ミルク／まっしろ／しずか／てちょう、の4種類。気分で変えてね。
+
+## アプリロック
+
+設定の「アプリロック」で4桁のPINを付けられるよ。
+付けると、開くときにPINが必要になるよ。大切な手帳だから、気になる人は付けてね。
+
+## バックアップ
+
+設定から、データをJSONで書き出せるよ。機種変更のときは、新しい端末で読み込めば元どおりになるよ。
+ときどき書き出しておくと安心だよ。
+
+## データについて
+
+- 記録した内容は、あなたの手帳の中だけのものだよ
+- プロフィール交換で渡るのは、自分で公開用に書いた項目だけ
+- チャットや共有の本格的な仕組みは、今後のアップデートで育てていく予定だよ
+</script>
 <script>
 'use strict';
 /* ===== フェーズ1：共通部品 ===== */
@@ -655,7 +762,7 @@ V.editEntry=(p,c)=>{
   <div class="fld"><span class="lbl">いっしょだった人</span>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${d.peopleIds.includes(q.id)?' on':''}" data-act="dPerson" data-id="${esc(q.id)}">${d.peopleIds.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:`<p class="muted">まだ誰も登録されていないよ</p>`}</div>
   <div class="fld"><span class="lbl">写真（${d.photoIds.length}枚えらんでる）</span><div class="pgrid"><button class="addtile tap" data-act="pickEntryPhotos">${icon('plus',22)}新しく追加</button>${phs.map(ph=>{const on=d.photoIds.includes(ph.id);return `<button class="tap${on?' sel':''}" data-act="dPhoto" data-id="${esc(ph.id)}" aria-pressed="${on}"><img src="${photoSrc(ph)}" alt="" loading="lazy">${on?`<span class="ck">${icon('check',14,2.4)}</span>`:''}</button>`}).join('')}</div></div>`;
   const ok=(d.title.trim()||d.body.trim())&&d.date;
-  return{head:hdBack(d.id?'日記をなおす':'日記をかく'),body:b,foot:`<button class="pbtn tap" data-act="saveEntry"${ok?'':' disabled'}>保存する</button>`,nav:false};
+  return{head:hdBack(d.id?'記録をなおす':'記録をかく'),body:b,foot:`<button class="pbtn tap" data-act="saveEntry"${ok?'':' disabled'}>保存する</button>`,nav:false};
 };
 function saveEntry(){
   const c=cur(),d=c.d;if(!d||!(d.title.trim()||d.body.trim())||!d.date)return;
@@ -670,7 +777,7 @@ function saveEntry(){
 V.people=()=>{
   const me=state.myProfile;
   let b=`<p class="catch">日記と、人と、写真と。</p>`;
-  b+=`<section class="blk"><button class="card mecard tap" data-act="openMe">${me?avatar(me,48,true):`<span class="av av-empty" style="--s:48px"><span>${icon('userplus',22)}</span></span>`}<span class="r-main"><b>${me?esc(me.name):'わたしのプロフィール'}</b><small>${me?esc(me.bio||'わたしのプロフィール'):'つくると、コードで交換できるよ'}</small></span><span class="chev">${icon('chev',18)}</span></button></section>`;
+  b+=`<section class="blk"><button class="card mecard tap" data-act="openMe">${me?avatar(me,48,true):`<span class="av av-empty" style="--s:48px"><span>${icon('userplus',22)}</span></span>`}<span class="r-main"><b>${me?esc(me.name):'わたしのプロフィール'}</b><small>${me?esc(me.bio||'わたしのプロフィール'):'つくると、コードで交換できるよ'}</small></span><span class="chev">${icon('chev',18)}</span></button><div class="btns" style="justify-content:flex-end"><button class="lnk" data-act="importCode">${icon('qr',16)}交換コードを取り込む</button></div></section>`;
   if(!ui.selecting)b+=noticesBlock();
   const all=sortedPeople();
   b+=`<section class="blk"><div class="bh"><h2 class="ttl">ひと</h2><small>${all.length}人</small><span class="sp"></span>${all.length>1?`<button class="lnk" data-act="selMode">${ui.selecting?'やめる':'メンバーで見る'}</button>`:''}</div>`;
@@ -706,7 +813,7 @@ V.person=p=>{
   let b=`<section class="hero">${avatar(q,80)}<h1>${esc(q.name)}</h1>${q.yomi?`<div class="yomi">${esc(q.yomi)}</div>`:''}
     <div class="tags">${q.relation?`<span class="pill">${esc(relLabel(q))}</span>`:''}${q.statusKey?`<span class="pill soft">${esc(statusLabel(q.statusKey))}</span>`:''}${x?`<span class="pill" style="background:var(--mint-soft)">${icon('link',12)}プロフィール交換で追加</span>`:''}</div>
     ${q.birthday?`<div class="bd">${icon('cake',16)}${fmtBday(q.birthday)}</div>`:''}
-    ${phone||mail||x?`<div class="btns">${phone?`<a class="sbtn line tap" href="${esc(telHref(phone))}" style="text-decoration:none">${icon('phone',18)}電話</a>`:''}${mail?`<a class="sbtn line tap" href="mailto:${esc(mail)}" style="text-decoration:none">${icon('mail',18)}メール</a>`:''}${x?`<button class="sbtn line tap" data-act="openChat" data-id="${esc(q.id)}">${icon('chat',18)}チャット</button>`:''}</div>`:''}
+    ${phone||mail||x?`<div class="btns">${phone?`<a class="sbtn line tap" href="${esc(telHref(phone))}" style="text-decoration:none">${icon('phone',18)}電話をかける</a>`:''}${mail?`<a class="sbtn line tap" href="mailto:${esc(mail)}" style="text-decoration:none">${icon('mail',18)}メールを送る</a>`:''}${x?`<button class="sbtn line tap" data-act="openChat" data-id="${esc(q.id)}">${icon('chat',18)}チャット</button>`:''}</div>`:''}
   </section>`;
   const own=kvRows([['関係',relLabel(q)],['容姿',q.appearance],['誕生日',q.birthday?fmtBday(q.birthday):''],['住んでいる場所',q.location],['仕事・学校',q.occupation],['近況',[statusLabel(q.statusKey),q.statusMemo].filter(Boolean).join('　')],['電話',q.phone],['メール',q.email],['好きなもの・メモ',q.memo]]);
   const ex=x?kvRows([['ひとこと',x.bio],['好きなもの',x.likes],['住んでいる場所',x.location],['仕事・学校',x.occupation],['近況',[statusLabel(x.statusKey),x.statusMemo].filter(Boolean).join('　')],['電話',x.phone],['メール',x.email]]):'';
@@ -873,11 +980,11 @@ V.search=(p,c)=>{
 function blankMe(){return{name:'',nameKanji:'',color:'pink',birthday:null,location:'',occupation:'',bio:'',likes:'',statusKey:'',statusMemo:'',phone:'',email:''}}
 V.me=()=>{
   const me=state.myProfile;
-  if(!me)return{head:hdBack('わたしのプロフィール'),body:`<section class="hero"><span class="av av-empty" style="--s:80px;margin:0 auto 12px"><span>${icon('userplus',32)}</span></span><h1>わたしのプロフィール</h1><p class="muted" style="margin-top:8px">名前や近況を書いておくと、<br>交換コードで相手に渡せるよ</p><div class="btns"><button class="sbtn pri tap" data-act="editMe">プロフィールをつくる</button><button class="sbtn tap" data-act="importCode">${icon('qr',18)}コードを取りこむ</button></div></section>`};
+  if(!me)return{head:hdBack('わたしのプロフィール'),body:`<section class="hero"><span class="av av-empty" style="--s:80px;margin:0 auto 12px"><span>${icon('userplus',32)}</span></span><h1>わたしのプロフィール</h1><p class="muted" style="margin-top:8px">名前や近況を書いておくと、<br>交換コードで相手に渡せるよ</p><div class="btns"><button class="sbtn pri tap" data-act="editMe">プロフィールをつくる</button><button class="sbtn tap" data-act="importCode">${icon('qr',18)}交換コードを取り込む</button></div></section>`};
   let b=`<section class="hero">${avatar(me,80,true)}<h1>${esc(me.name)}</h1><div class="tags">${me.statusKey?`<span class="pill soft">${esc(statusLabel(me.statusKey))}</span>`:''}</div>${me.birthday?`<div class="bd">${icon('cake',16)}${fmtBday(me.birthday)}</div>`:''}</section>`;
   const rows=kvRows([['ひとこと',me.bio],['好きなもの',me.likes],['住んでいる場所',me.location],['仕事・学校',me.occupation],['近況',[statusLabel(me.statusKey),me.statusMemo].filter(Boolean).join('　')],['電話',me.phone],['メール',me.email]]);
   b+=`<section class="blk"><div class="bh"><h2>わたしについて</h2><span class="sp"></span><button class="lnk" data-act="editMe">なおす</button></div>${rows?`<dl class="rows">${rows}</dl>`:'<p class="muted">名前のほかは、まだ何も書いてないよ</p>'}</section>`;
-  b+=`<section class="blk"><div class="bh"><h2>プロフィール交換</h2></div><p class="muted" style="margin-bottom:12px">交換コードに入るのは、ここに書いた公開用の項目だけ。相手につけた関係・容姿・メモは入らないよ。</p><div class="btns"><button class="sbtn pri tap" data-act="showCode">${icon('qr',18)}交換コードを出す</button><button class="sbtn tap" data-act="importCode">${icon('camera',18)}コードを取りこむ</button></div></section>`;
+  b+=`<section class="blk"><div class="bh"><h2>プロフィール交換</h2></div><p class="muted" style="margin-bottom:12px">交換コードに入るのは、ここに書いた公開用の項目だけ。相手につけた関係・容姿・メモは入らないよ。</p><div class="btns"><button class="sbtn pri tap" data-act="showCode">${icon('qr',18)}交換コードを発行する</button><button class="sbtn tap" data-act="importCode">${icon('camera',18)}交換コードを取り込む</button></div></section>`;
   return{head:hdBack('わたしのプロフィール'),body:b};
 };
 V.editMe=(p,c)=>{
@@ -922,7 +1029,7 @@ const canCam=()=>'BarcodeDetector' in window&&!!(navigator.mediaDevices&&navigat
 function renderImport(){
   const s=ui.imp;if(!s)return;
   if(s.step==='input'){
-    openModal(`<h2>コードを取りこむ</h2><p class="muted">相手の交換コードを貼り付けるか、QRコードをカメラで読んでね。</p><textarea class="inp code" id="impText" style="margin-top:12px" placeholder="HIBITO1:…">${esc(s.text||'')}</textarea>${canCam()?'':'<p class="muted" style="margin-top:8px">このブラウザではカメラ読み取りが使えないから、貼り付けで取りこんでね。</p>'}<div class="btns">${canCam()?`<button class="sbtn tap" data-act="camStart">${icon('camera',18)}カメラで読む</button>`:''}<button class="sbtn pri tap" data-act="impParse">読み取る</button></div>`);
+    openModal(`<h2>交換コードを取り込む</h2><p class="muted">相手の交換コードを貼り付けるか、QRコードをカメラで読んでね。</p><textarea class="inp code" id="impText" style="margin-top:12px" placeholder="HIBITO1:…">${esc(s.text||'')}</textarea>${canCam()?'':'<p class="muted" style="margin-top:8px">このブラウザではカメラ読み取りが使えないから、貼り付けで取りこんでね。</p>'}<div class="btns">${canCam()?`<button class="sbtn tap" data-act="camStart">${icon('camera',18)}カメラで読む</button>`:''}<button class="sbtn pri tap" data-act="impParse">読み取る</button></div>`);
   }else if(s.step==='cam'){
     openModal(`<h2>QRコードを読む</h2><p class="muted" style="margin-bottom:12px">QRコードを枠の中に入れてね</p><video class="cam" id="cam" playsinline muted autoplay></video><div class="btns"><button class="sbtn tap" data-act="impBack">貼り付けにする</button></div>`);
   }else{
@@ -1040,13 +1147,19 @@ function settingsSheet(){
   const s=state.settings,th=s.theme||'milk';
   const row=(act,ic,bg,label,danger)=>`<button class="srow tap${danger?' danger':''}" data-act="${act}"><span class="ci" style="background:${bg}">${icon(ic,20)}</span>${label}</button>`;
   openSheet(`<h2>設定</h2><div class="sub-h" style="margin-top:0">${icon('palette',14)}デザイン</div><div class="chips wrap" style="margin-bottom:8px">${THEMES.map(t=>`<button class="chip tap${th===t[0]?' on':''}" data-act="setTheme" data-v="${t[0]}"><i class="sw" style="background:${t[2]}"></i>${t[1]}</button>`).join('')}</div>
-  ${row('review','star','var(--butter-soft)',today().slice(0,4)+'年のふりかえり')}
-  ${row('importCode','qr','var(--mint-soft)','交換コードを取りこむ')}
-  ${s.pinHash?row('pinChange','lock','var(--lav-soft)','PINを変える')+row('pinOff','lock','var(--lav-soft)','PINロックを外す'):row('pinSet','lock','var(--lav-soft)','PINロックをかける')}
+  ${row('guide','book','var(--mint-soft)','つかいかた')}
+  ${row('review','star','var(--butter-soft)','今年のふりかえり')}
+  ${row('importCode','qr','var(--mint-soft)','交換コードを取り込む')}
+  ${row('lockMenu','lock','var(--lav-soft)','アプリロック')}
   ${row('exportJson','download','var(--beige-soft)','データの書き出し')}
   ${row('importJson','upload','var(--beige-soft)','データの読み込み')}
   ${row('resetSample','refresh','var(--pink-soft)','サンプルデータに戻す')}
   ${row('deleteAll','trash','var(--pink-soft)','すべて削除',true)}`);
+}
+function lockSheet(){
+  const on=!!state.settings.pinHash;
+  const row=(act,label,danger)=>`<button class="srow tap${danger?' danger':''}" data-act="${act}"><span class="ci" style="background:var(--lav-soft)">${icon('lock',20)}</span>${label}</button>`;
+  openSheet(`<h2>アプリロック</h2><p class="muted" style="margin-bottom:8px">${on?'いまはPINでロックしているよ。開くときにPINが必要になるよ。':'4桁のPINを付けると、開くときにPINが必要になるよ。'}</p>${on?row('pinChange','PINを変える')+row('pinOff','PINを外す',true):row('pinSet','PINを付ける')}`);
 }
 function reviewSheet(){
   const y=today().slice(0,4);
@@ -1116,8 +1229,29 @@ function pinDone(){
 /* ===== はじめての起動 ===== */
 function showWelcome(){
   ovClose=()=>{state.settings.welcomed=true;save()};
-  openModal(`${art('welcome','welcome-art')}<h2 style="text-align:center;font-family:var(--font-head);font-size:22px;margin-top:8px">ひびと<small style="font-size:16px">log</small></h2><p class="muted" style="text-align:center">日記と、人と、写真と。</p><p style="text-align:center;margin-top:12px">人を中心に、日記と写真が集まる<br>思い出アルバムだよ。<br>サンプルが入っているから、さわってみてね。</p><div class="btns c"><button class="sbtn pri tap" data-act="closeOv">はじめる</button></div>`);
+  openModal(`${art('welcome','welcome-art')}<h2 style="text-align:center;font-family:var(--font-head);font-size:22px;margin-top:8px">ひびと<small style="font-size:16px">log</small></h2><p class="muted" style="text-align:center">日記と、人と、写真と。</p><p style="text-align:center;margin-top:12px">人を中心に、日記と写真が集まる<br>思い出アルバムだよ。<br>サンプルが入っているから、さわってみてね。</p><div class="btns c"><button class="sbtn tap" data-act="guide">つかいかたを見る</button><button class="sbtn pri tap" data-act="closeOv">はじめる</button></div>`);
 }
+
+/* ===== つかいかた ===== */
+function guideHtml(){
+  const el=document.getElementById('guide-src');const src=el?el.textContent:'';
+  const secs=[];let sec=null;
+  src.split('\n').forEach(l=>{if(l.startsWith('## ')){sec={h:l.slice(3).trim(),lines:[]};secs.push(sec)}else if(sec)sec.lines.push(l)});
+  return secs.map(x=>{
+    let out='',para=[],list=null;
+    const flushP=()=>{if(para.length){out+=`<p>${para.map(esc).join('<br>')}</p>`;para=[]}};
+    const flushL=()=>{if(list){out+=`<${list.t} class="g-list">${list.items.map(i=>`<li>${esc(i)}</li>`).join('')}</${list.t}>`;list=null}};
+    x.lines.forEach(l=>{
+      const n=l.match(/^\d+\.\s+(.*)$/),b=l.match(/^-\s+(.*)$/);
+      if(n||b){flushP();const t=n?'ol':'ul';if(!list||list.t!==t){flushL();list={t,items:[]}}list.items.push((n||b)[1])}
+      else if(!l.trim()){flushP();flushL()}
+      else{flushL();para.push(l)}
+    });
+    flushP();flushL();
+    return `<section class="blk g-sec"><h2>${esc(x.h)}</h2>${out}</section>`;
+  }).join('');
+}
+V.guide=()=>({head:hdBack('つかいかた'),body:guideHtml()});
 
 /* ===== 操作（イベント委譲） ===== */
 const fileAct={};
@@ -1127,10 +1261,11 @@ const A={
   closeOv:()=>closeOv(),
   confirmOk:()=>{const f=ui.confirmFn;ui.confirmFn=null;if(f)f()},
   fab:()=>openSheet(`<h2>なにを追加する？</h2>
-    <button class="srow tap" data-act="newEntry"><span class="ci" style="background:var(--pink-soft)">${icon('pen',20)}</span>日記をかく</button>
+    <button class="srow tap" data-act="newEntry"><span class="ci" style="background:var(--pink-soft)">${icon('pen',20)}</span>記録をかく</button>
     <button class="srow tap" data-act="newPerson"><span class="ci" style="background:var(--mint-soft)">${icon('userplus',20)}</span>人を登録する</button>
     <button class="srow tap" data-act="addPhoto"><span class="ci" style="background:var(--butter-soft)">${icon('photo',20)}</span>写真を追加する</button>`),
   search:()=>go('search'),
+  guide:()=>go('guide'),
   settings:()=>settingsSheet(),
   newEntry:()=>go('editEntry',{}),
   newEntryWith:el=>go('editEntry',{people:[el.dataset.id]}),
@@ -1186,6 +1321,7 @@ const A={
   sendMsg:()=>sendMsg(),
   setTheme:el=>{state.settings.theme=el.dataset.v;applyTheme();save();settingsSheet();render()},
   review:()=>reviewSheet(),
+  lockMenu:()=>lockSheet(),
   pinSet:()=>startPin('set1'),
   pinChange:()=>startPin('verify','change'),
   pinOff:()=>startPin('verify','off'),
@@ -1198,7 +1334,7 @@ const A={
   deleteAll:()=>confirmDlg('本当にすべて削除する？','削除する',()=>{Object.assign(state,{people:[],entries:[],photos:[],messages:[],myProfile:null});if(save()){toast('すべて削除したよ');resetUI()}else render()})
 };
 /* オーバーレイの中で完結する操作（シートを閉じない） */
-const KEEP=new Set(['setTheme','phPeopleToggle','phEntryToggle','impRel','impSub','impParse','impBack','camStart','copyCode','importCode','review','phPeople','phEntries','closeOv','impSave','phPeopleSave','delEntry','delPerson','delPhoto','resetSample','deleteAll']);
+const KEEP=new Set(['lockMenu','setTheme','phPeopleToggle','phEntryToggle','impRel','impSub','impParse','impBack','camStart','copyCode','importCode','review','phPeople','phEntries','closeOv','impSave','phPeopleSave','delEntry','delPerson','delPhoto','resetSample','deleteAll']);
 function phPeopleSheet(){
   const t=ui.tmp,ppl=sortedPeople();
   openSheet(`<h2>写っている人</h2>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${t.ids.includes(q.id)?' on':''}" data-act="phPeopleToggle" data-id="${esc(q.id)}">${t.ids.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:'<p class="muted">まだ誰も登録されていないよ</p>'}<div class="fld" style="margin-top:16px"><label for="f-phm">メモ</label><input class="inp" id="f-phm" data-tbind="memo" value="${esc(t.memo)}" placeholder="例：夕日がきれいだった"></div><button class="pbtn tap" data-act="phPeopleSave">保存する</button>`);
