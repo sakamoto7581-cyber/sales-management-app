@@ -36,15 +36,23 @@ GitHub Actions の「Build Hibito Android」が、`android-hibito/` か `hibito/
 
 アップロード鍵を GitHub の Secrets に登録すると、署名済みのAABが作られます（未登録なら署名なし）。
 
-1. 鍵を作る（1回だけ。鍵とパスワードは失くさないよう、安全な場所に保管する）
+1. 鍵を作る（1回だけ）
    `keytool -genkeypair -v -keystore hibito-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias hibito`
-2. Base64にする：`base64 -w0 hibito-upload.jks`（macOSは `base64 -i hibito-upload.jks`）
-3. リポジトリの Settings → Secrets and variables → Actions に4つ登録する
-   - `HIBITO_KEYSTORE_BASE64`：2の出力
-   - `HIBITO_KEYSTORE_PASSWORD`：鍵ストアのパスワード
+   - keytool は Java（または Android Studio）に付いている。`keytool -help` で使えるか確かめる
+   - パスワードを2回聞かれる。続く名前・国などは名前と国（`JP`）だけでよい
+   - 最近のJavaで作る鍵（PKCS12形式）は、鍵のパスワードがこのパスワードと同じになる
+2. `hibito-upload.jks` とパスワードを2か所以上にバックアップする（パスワード管理アプリ・自分だけのクラウドなど）。Git には絶対に入れない
+3. Base64にしてコピーする
+   - macOS：`base64 -i hibito-upload.jks | pbcopy`
+   - Windows（PowerShell）：`[Convert]::ToBase64String([IO.File]::ReadAllBytes("hibito-upload.jks")) | Set-Clipboard`
+   - Linux：`base64 -w0 hibito-upload.jks`
+4. リポジトリの Settings → Secrets and variables → Actions に4つ登録する
+   - `HIBITO_KEYSTORE_BASE64`：3でコピーした文字
+   - `HIBITO_KEYSTORE_PASSWORD`：1のパスワード
    - `HIBITO_KEY_ALIAS`：`hibito`
-   - `HIBITO_KEY_PASSWORD`：鍵のパスワード
-4. Actions の「Build Hibito Android」を Run workflow で実行する
+   - `HIBITO_KEY_PASSWORD`：1と同じパスワード
+5. Actions の「Build Hibito Android」を Run workflow で実行する。ログの「Prepare upload key」に「Upload key found」と出れば署名済み
+6. Play Console に初めて上げるときは「Google Play アプリ署名」を使う（利用者に届くアプリは Google 管理の鍵で署名され、この鍵はアップロード用になる）
 
 Android Studio で `android-hibito` を開き、Build → Generate Signed App Bundle で作ることもできます。
 
