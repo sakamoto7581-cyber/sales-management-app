@@ -513,56 +513,21 @@ function confirmDlg(msg,ok,fn,danger=true){
 }
 
 /* ===== フェーズ2：データ ===== */
-/* サンプル写真（インラインSVG・パステル・文字なし） */
-const SEED_SVG={
- sea:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FDEBE1"/><stop offset="1" stop-color="#F9D6CB"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><circle cx="200" cy="172" r="48" fill="#F5B3A3"/><rect y="168" width="400" height="132" fill="#C3E0E4"/><g fill="none" stroke="#F4FAFA" stroke-width="5" stroke-linecap="round"><path d="M40 200q20-10 40 0t40 0"/><path d="M230 214q20-10 40 0t40 0"/><path d="M110 240q20-10 40 0t40 0 40 0"/><path d="M290 262q20-10 40 0"/></g><circle cx="320" cy="70" r="16" fill="#FFF6EF"/><circle cx="342" cy="66" r="20" fill="#FFF6EF"/><circle cx="364" cy="72" r="13" fill="#FFF6EF"/></svg>`,
- cafe:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F8EFE4"/><rect x="-20" y="214" width="440" height="110" rx="30" fill="#EAD9C2"/><ellipse cx="150" cy="216" rx="70" ry="12" fill="#FFFFFF"/><rect x="104" y="140" width="92" height="74" rx="26" fill="#FFFFFF"/><circle cx="208" cy="172" r="18" fill="none" stroke="#FFFFFF" stroke-width="10"/><ellipse cx="150" cy="146" rx="38" ry="8" fill="#D9BFA3"/><g fill="none" stroke="#E6D3C2" stroke-width="5" stroke-linecap="round"><path d="M134 118q-8-12 0-24"/><path d="M162 112q-8-12 0-24"/></g><ellipse cx="292" cy="218" rx="64" ry="11" fill="#FFFFFF"/><path d="M246 214h90v-38q-40-26-90 0z" fill="#FDECEA"/><path d="M246 182q45-24 90-6" stroke="#FFFFFF" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="296" cy="160" r="12" fill="#F2A9A2"/></svg>`,
- park:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#EEF7F1"/><circle cx="330" cy="64" r="24" fill="#F9E3A1"/><ellipse cx="200" cy="300" rx="300" ry="90" fill="#CDE8D6"/><rect x="104" y="140" width="18" height="96" rx="9" fill="#D9C2A5"/><circle cx="113" cy="120" r="46" fill="#A9D5BC"/><circle cx="80" cy="140" r="30" fill="#B8DDC7"/><circle cx="146" cy="142" r="30" fill="#B8DDC7"/><rect x="214" y="200" width="120" height="14" rx="7" fill="#E5CDB0"/><rect x="214" y="178" width="120" height="12" rx="6" fill="#E5CDB0"/><rect x="226" y="210" width="10" height="30" rx="5" fill="#D9C2A5"/><rect x="312" y="210" width="10" height="30" rx="5" fill="#D9C2A5"/></svg>`,
- station:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F1EDFB"/><rect x="-20" y="226" width="440" height="100" rx="20" fill="#E3DBF1"/><rect x="40" y="110" width="300" height="110" rx="40" fill="#FFFFFF"/><rect x="40" y="176" width="300" height="14" fill="#F7C8C4"/><rect x="72" y="128" width="56" height="36" rx="12" fill="#DCD2F0"/><rect x="146" y="128" width="56" height="36" rx="12" fill="#DCD2F0"/><rect x="220" y="128" width="56" height="36" rx="12" fill="#DCD2F0"/><circle cx="100" cy="226" r="12" fill="#CFC4E6"/><circle cx="280" cy="226" r="12" fill="#CFC4E6"/><rect x="356" y="70" width="10" height="156" rx="5" fill="#E8E1F4"/><circle cx="361" cy="66" r="14" fill="#F9E3A1"/></svg>`,
- home:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#FEF6DB"/><rect x="-20" y="196" width="440" height="130" rx="24" fill="#EAD9C2"/><path d="M178 196q-14-40 4-64h36q18 24 4 64z" fill="#BFE3D0"/><g stroke="#A9D5BC" stroke-width="5" stroke-linecap="round"><path d="M200 132V96"/><path d="M200 120l-22-22"/><path d="M200 116l24-26"/></g><circle cx="200" cy="88" r="16" fill="#F7C8C4"/><circle cx="174" cy="94" r="13" fill="#FDECEA"/><circle cx="228" cy="86" r="13" fill="#F7C8C4"/><circle cx="200" cy="88" r="5" fill="#F9E3A1"/><ellipse cx="100" cy="216" rx="46" ry="9" fill="#FFFFFF"/><ellipse cx="300" cy="218" rx="40" ry="8" fill="#FFFFFF"/></svg>`,
- sky:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D7ECF3"/><stop offset="1" stop-color="#F4FAFB"/></linearGradient></defs><rect width="400" height="300" fill="url(#s)"/><g fill="#FFFFFF"><circle cx="110" cy="180" r="30"/><circle cx="146" cy="168" r="38"/><circle cx="186" cy="184" r="26"/><rect x="80" y="180" width="130" height="30" rx="15"/><circle cx="290" cy="96" r="20"/><circle cx="314" cy="88" r="26"/><circle cx="340" cy="98" r="18"/></g><g fill="none" stroke="#9FB2BC" stroke-width="4" stroke-linecap="round"><path d="M210 92q9-10 18 0q9-10 18 0"/><path d="M250 124q7-8 14 0q7-8 14 0"/></g></svg>`
-};
-const SEED={};for(const k in SEED_SVG)SEED[k]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(SEED_SVG[k]);
-const photoSrc=p=>p?(p.dataUrl||SEED[p.seed]||''):'';
+const photoSrc=p=>p?(p.dataUrl||''):'';
 
 function blankPerson(){return{id:'',name:'',yomi:'',nameKanji:'',relation:'',relationSub:'',appearance:'',statusKey:'',statusMemo:'',location:'',occupation:'',color:'pink',birthday:null,memo:'',phone:'',email:'',exchangedProfile:null,createdAt:0}}
 function defaultSettings(){return{theme:'milk',pinHash:null,pinSalt:null,welcomed:false}}
 
-function sampleState(){
-  const t=today(),dow=parseD(t).getDay(),now=Date.now();
-  const sat=addDays(t,-((dow+1)%7)), sun=addDays(t,-dow);
-  const mk=(i,name,rel,sub,color,bd,memo)=>Object.assign(blankPerson(),{id:'sp'+i+'-'+now,name,relation:rel,relationSub:sub,color,birthday:bd,memo,createdAt:now+i});
-  const A=mk(1,'あかり','友達','高校の友達','mint','05-18','カフェ巡りが好き。甘いものに弱い');
-  const S=mk(2,'そら','家族','きょうだい','pink','09-02','朝が弱い。写真を撮るのが上手');
-  const R=mk(3,'りん','友達','大学の友達','lav',null,'本好き。静かな場所が好き');
-  const H=mk(4,'はると','仕事','同僚','beige',null,'駅まで送ってくれることが多い');
-  const M=mk(5,'めい','家族','母','butter','01-25','お菓子作りが得意');
-  const d1=sat,d2=sun,d3=addDays(t,-3),d4=addDays(t,-6);
-  const ph=(i,seed,date,ppl,memo)=>({id:'sph'+i+'-'+now,date,seed,dataUrl:'',peopleIds:ppl.map(p=>p.id),memo,createdAt:now+10+i});
-  const P1=ph(1,'sea',d1,[S,M],'夕日がきれいだった'),P2=ph(2,'cafe',d2,[A],'いちごのケーキ'),P3=ph(3,'park',d3,[R],'いつものベンチ'),
-        P4=ph(4,'station',d4,[H],''),P5=ph(5,'home',addDays(t,-9),[M,S],'テーブルに花を飾った'),P6=ph(6,'sky',addDays(t,-20),[],'鳥が飛んでいった');
-  const en=(i,date,title,mood,body,phs,ppl)=>({id:'se'+i+'-'+now,date,title,body,mood,peopleIds:ppl.map(p=>p.id),photoIds:phs.map(p=>p.id),createdAt:now+20+i,updatedAt:now+20+i});
-  return{
-    version:1,
-    people:[A,S,R,H,M],
-    photos:[P1,P2,P3,P4,P5,P6],
-    entries:[
-      en(1,d1,'海までドライブ','happy','少し早起きして、海まで車を走らせた。夕方の光がやわらかくて、しばらく三人で黙って波を見ていた。帰りの車で、めいが焼いたクッキーを分けあった。',[P1],[S,M]),
-      en(2,d2,'新しいカフェ','calm','駅の裏にできたカフェにあかりと行った。窓ぎわの席でケーキを半分ずつ食べた。また来ようねと約束した。',[P2],[A]),
-      en(3,d3,'公園で読書','normal','天気がよかったので、りんと公園のベンチで本を読んだ。ほとんど話さなかったけれど、それが心地よかった。',[P3],[R]),
-      en(4,d4,'送ってもらった日','calm','遅くまで残っていたら、はるとが駅まで送ってくれた。電車を待つあいだ、少しだけ仕事以外の話をした。',[P4],[H])
-    ],
-    messages:[],
-    myProfile:null,
-    settings:defaultSettings()
-  };
-}
+function emptyState(){return{version:1,people:[],entries:[],photos:[],messages:[],myProfile:null,settings:defaultSettings()}}
 
 /* 読み込み時の整形・移行 */
 function migrate(o){
   o=o&&typeof o==='object'?o:{};
   const arr=v=>Array.isArray(v)?v:[];
   const st={version:1,people:arr(o.people),entries:arr(o.entries),photos:arr(o.photos),messages:arr(o.messages),myProfile:o.myProfile&&typeof o.myProfile==='object'?o.myProfile:null,settings:Object.assign(defaultSettings(),o.settings||{})};
+  // 以前の版が自動で入れたサンプル（IDが sp/sph/se＋番号-時刻）は取り除く。利用者のIDは「数字-数字」なので重ならない
+  const isSample=x=>x&&/^s(p|ph|e)\d+-\d+$/.test(String(x.id));
+  st.people=st.people.filter(x=>!isSample(x));st.entries=st.entries.filter(x=>!isSample(x));st.photos=st.photos.filter(x=>!isSample(x)&&x.dataUrl);
   st.people=st.people.filter(p=>p&&p.id).map(p=>{
     const q=Object.assign(blankPerson(),p);
     if(!REL[q.relation]){ if(q.relation==='友人')q.relation='友達'; else if(q.relation&&!REL[q.relation]){q.memo=[q.memo,'関係：'+q.relation].filter(Boolean).join('\n');q.relation='その他'} }
@@ -582,7 +547,7 @@ function migrate(o){
   });
   const fix=a=>Array.isArray(a)?a.map(String):[];
   st.entries=st.entries.filter(e=>e&&e.id&&e.date).map(e=>Object.assign({title:'',body:'',mood:null,createdAt:0,updatedAt:0},e,{peopleIds:fix(e.peopleIds),photoIds:fix(e.photoIds)}));
-  st.photos=st.photos.filter(p=>p&&p.id).map(p=>Object.assign({date:today(),dataUrl:'',seed:'',memo:'',createdAt:0},p,{peopleIds:fix(p.peopleIds)}));
+  st.photos=st.photos.filter(p=>p&&p.id).map(p=>{const q=Object.assign({date:today(),dataUrl:'',memo:'',createdAt:0},p,{peopleIds:fix(p.peopleIds)});delete q.seed;return q});
   const pids=new Set(st.people.map(p=>p.id)),phids=new Set(st.photos.map(p=>p.id));
   st.entries.forEach(e=>{e.peopleIds=e.peopleIds.filter(i=>pids.has(i));e.photoIds=e.photoIds.filter(i=>phids.has(i))});
   st.photos.forEach(p=>{p.peopleIds=p.peopleIds.filter(i=>pids.has(i))});
@@ -596,7 +561,7 @@ function load(){
   let raw=null;
   try{raw=localStorage.getItem(KEY)}catch(e){}
   if(raw){try{state=migrate(JSON.parse(raw));lastSaved=JSON.stringify(state);return}catch(e){}}
-  state=sampleState();save();
+  state=emptyState();save();
 }
 function save(){
   try{const s=JSON.stringify(state);localStorage.setItem(KEY,s);lastSaved=s;return true}
@@ -767,7 +732,7 @@ V.editEntry=(p,c)=>{
 function saveEntry(){
   const c=cur(),d=c.d;if(!d||!(d.title.trim()||d.body.trim())||!d.date)return;
   const now=Date.now();
-  d.newPhotos.forEach((n,i)=>{if(d.photoIds.includes(n.id))state.photos.push({id:n.id,date:d.date,dataUrl:n.dataUrl,seed:'',peopleIds:[...d.peopleIds],memo:'',createdAt:now+i})});
+  d.newPhotos.forEach((n,i)=>{if(d.photoIds.includes(n.id))state.photos.push({id:n.id,date:d.date,dataUrl:n.dataUrl,peopleIds:[...d.peopleIds],memo:'',createdAt:now+i})});
   if(d.id){const e=entry(d.id);if(e)Object.assign(e,{date:d.date,title:d.title.trim(),body:d.body,mood:d.mood,peopleIds:[...d.peopleIds],photoIds:[...d.photoIds],updatedAt:now})}
   else state.entries.push({id:uid(),date:d.date,title:d.title.trim(),body:d.body,mood:d.mood,peopleIds:[...d.peopleIds],photoIds:[...d.photoIds],createdAt:now,updatedAt:now});
   if(save()){toast('保存したよ');back()}else render();
@@ -846,7 +811,7 @@ function personFields(d,isMe){
   let h=`<div class="hero" data-live="prev" style="padding-bottom:20px">${avatar(Object.assign({},d,{name:d.name||'？'}),80,isMe)}</div>`;
   h+=`<div class="fld"><label for="f-name">名前 <span class="req">*</span></label><input class="inp" id="f-name" data-bind="name" value="${esc(d.name)}" placeholder="例：あかり" maxlength="30"></div>`;
   if(!isMe)h+=f('yomi','よみがな（なくてもいいよ）','例：あかり');
-  h+=f('nameKanji','漢字表記（なくてもいいよ・アイコンの文字になるよ）','例：坂元拓也');
+  h+=f('nameKanji','漢字表記（なくてもいいよ・アイコンの文字になるよ）','例：山田花子');
   if(!isMe){
     h+=`<div class="fld"><span class="lbl">関係</span><div class="chips wrap">${REL_KEYS.map(k=>`<button class="chip tap${d.relation===k?' on':''}" data-act="dRel" data-v="${k}">${k}</button>`).join('')}</div>${d.relation?`<div class="chips wrap" style="margin-top:4px">${REL[d.relation].map(s=>`<button class="chip tap${d.relationSub===s?' on':''}" data-act="dRelSub" data-v="${esc(s)}">${esc(s)}</button>`).join('')}</div>`:''}</div>`;
     h+=`<div class="fld"><label for="f-appearance">容姿メモ（なくてもいいよ）</label><input class="inp" id="f-appearance" data-bind="appearance" value="${esc(d.appearance)}" placeholder="例：肩までの茶髪・眼鏡・背が高め"></div>`;
@@ -923,7 +888,7 @@ V.addPhotos=(p,c)=>{
 };
 function savePhotos(){
   const d=cur().d;if(!d||!d.date)return;const now=Date.now();
-  d.items.forEach((u,i)=>state.photos.push({id:uid(),date:d.date,dataUrl:u,seed:'',peopleIds:[...d.peopleIds],memo:d.memo.trim(),createdAt:now+i}));
+  d.items.forEach((u,i)=>state.photos.push({id:uid(),date:d.date,dataUrl:u,peopleIds:[...d.peopleIds],memo:d.memo.trim(),createdAt:now+i}));
   if(save()){toast('保存したよ');back()}else render();
 }
 function deletePhoto(id){
@@ -1153,7 +1118,6 @@ function settingsSheet(){
   ${row('lockMenu','lock','var(--lav-soft)','アプリロック')}
   ${row('exportJson','download','var(--beige-soft)','データの書き出し')}
   ${row('importJson','upload','var(--beige-soft)','データの読み込み')}
-  ${row('resetSample','refresh','var(--pink-soft)','サンプルデータに戻す')}
   ${row('deleteAll','trash','var(--pink-soft)','すべて削除',true)}`);
 }
 function lockSheet(){
@@ -1229,7 +1193,7 @@ function pinDone(){
 /* ===== はじめての起動 ===== */
 function showWelcome(){
   ovClose=()=>{state.settings.welcomed=true;save()};
-  openModal(`${art('welcome','welcome-art')}<h2 style="text-align:center;font-family:var(--font-head);font-size:22px;margin-top:8px">ひびと<small style="font-size:16px">log</small></h2><p class="muted" style="text-align:center">日記と、人と、写真と。</p><p style="text-align:center;margin-top:12px">人を中心に、日記と写真が集まる<br>思い出アルバムだよ。<br>サンプルが入っているから、さわってみてね。</p><div class="btns c"><button class="sbtn tap" data-act="guide">つかいかたを見る</button><button class="sbtn pri tap" data-act="closeOv">はじめる</button></div>`);
+  openModal(`${art('welcome','welcome-art')}<h2 style="text-align:center;font-family:var(--font-head);font-size:22px;margin-top:8px">ひびと<small style="font-size:16px">log</small></h2><p class="muted" style="text-align:center">日記と、人と、写真と。</p><p style="text-align:center;margin-top:12px">人を中心に、日記と写真が集まる<br>思い出アルバムだよ。<br>まずは「ひと」に、大切な人を登録してみてね。</p><div class="btns c"><button class="sbtn tap" data-act="guide">つかいかたを見る</button><button class="sbtn pri tap" data-act="closeOv">はじめる</button></div>`);
 }
 
 /* ===== つかいかた ===== */
@@ -1330,11 +1294,10 @@ const A={
   pinCancel:()=>closePin(),
   exportJson:()=>exportJson(),
   importJson:()=>{const f=$('#fileJson');f.value='';f.click()},
-  resetSample:()=>confirmDlg('今のデータを消して、サンプルに戻す？','戻す',()=>{const s=state.settings;state=sampleState();state.settings=s;if(save()){toast('サンプルに戻したよ');resetUI()}else render()}),
   deleteAll:()=>confirmDlg('本当にすべて削除する？','削除する',()=>{Object.assign(state,{people:[],entries:[],photos:[],messages:[],myProfile:null});if(save()){toast('すべて削除したよ');resetUI()}else render()})
 };
 /* オーバーレイの中で完結する操作（シートを閉じない） */
-const KEEP=new Set(['lockMenu','setTheme','phPeopleToggle','phEntryToggle','impRel','impSub','impParse','impBack','camStart','copyCode','importCode','review','phPeople','phEntries','closeOv','impSave','phPeopleSave','delEntry','delPerson','delPhoto','resetSample','deleteAll']);
+const KEEP=new Set(['lockMenu','setTheme','phPeopleToggle','phEntryToggle','impRel','impSub','impParse','impBack','camStart','copyCode','importCode','review','phPeople','phEntries','closeOv','impSave','phPeopleSave','delEntry','delPerson','delPhoto','deleteAll']);
 function phPeopleSheet(){
   const t=ui.tmp,ppl=sortedPeople();
   openSheet(`<h2>写っている人</h2>${ppl.length?`<div class="chips wrap">${ppl.map(q=>`<button class="chip tap${t.ids.includes(q.id)?' on':''}" data-act="phPeopleToggle" data-id="${esc(q.id)}">${t.ids.includes(q.id)?icon('check',14,2):''}${esc(q.name)}</button>`).join('')}</div>`:'<p class="muted">まだ誰も登録されていないよ</p>'}<div class="fld" style="margin-top:16px"><label for="f-phm">メモ</label><input class="inp" id="f-phm" data-tbind="memo" value="${esc(t.memo)}" placeholder="例：夕日がきれいだった"></div><button class="pbtn tap" data-act="phPeopleSave">保存する</button>`);
@@ -1344,7 +1307,7 @@ function phEntriesSheet(){
   openSheet(`<h2>日記に貼る</h2>${es.length?`<div class="rows">${es.map(e=>{const on=e.photoIds.includes(id);return `<button class="row tap${on?' on':''}" data-act="phEntryToggle" data-id="${esc(e.id)}"><span class="ck-c">${on?icon('check',14,2.4):''}</span><span class="tl-d">${fmtDate(e.date)}</span><span class="r-main"><b>${esc(entryTitle(e))}</b></span></button>`}).join('')}</div>`:'<p class="muted">まだ日記がないよ</p>'}<div class="btns c" style="margin-top:16px"><button class="sbtn tap" data-act="closeOv">とじる</button></div>`);
 }
 /* 削除系：シートを閉じてから確認を出す */
-['delEntry','delPerson','delPhoto','resetSample','deleteAll'].forEach(k=>{const f=A[k];A[k]=el=>{closeOv();f(el)}});
+['delEntry','delPerson','delPhoto','deleteAll'].forEach(k=>{const f=A[k];A[k]=el=>{closeOv();f(el)}});
 
 document.addEventListener('click',ev=>{
   const el=ev.target.closest('[data-act]');if(!el||el.disabled)return;
